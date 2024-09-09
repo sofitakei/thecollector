@@ -30,9 +30,8 @@ const InviteMember = () => {
   return (
     <Stack sx={{ img: { maxHeight: 200 } }}>
       {/* TODO: generate QR code links */}
-      <img alt='QR code to invite member' src='/src/qr.svg' />
-      <Link onClick={handleCopyLink}>Copy Link</Link>
-      {copied && <span> Copied!</span>}
+      {/* <Link onClick={handleCopyLink}>Copy Link</Link>
+      {copied && <span> Copied!</span>} */}
       <p>
         Complete the following fields to send a link to invite members to the
         property.

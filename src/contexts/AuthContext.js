@@ -21,11 +21,13 @@ const AuthProvider = ({ children, session }) => {
           .from('profiles')
           .select()
           .eq('email', session.user.email)
-        const { data: user } = await supabase
-          .from('profiles')
-          .update({ auth_user_id: session.user.id })
-          .eq('id', existingUser[0].id)
-        setUserProfile(user[0])
+        if (!error && existingUser.length && !existingUser[0].auth_user_id) {
+          const { data: user } = await supabase
+            .from('profiles')
+            .update({ auth_user_id: session.user.id })
+            .eq('id', existingUser[0].id)
+          setUserProfile(user[0])
+        }
       } else {
         setUserProfile(data[0])
       }

@@ -7,7 +7,7 @@ import { fields } from './config'
 import { useState } from 'react'
 import { supabase } from '../supabaseClient'
 import { useAuth } from '../contexts/AuthContext'
-
+import { getFormFields } from '../utils'
 const PropertyForm = () => {
   const navigate = useNavigate()
   const { currentProperty, setRefresh } = usePropertiesContext() || {}
@@ -18,8 +18,7 @@ const PropertyForm = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    const formData = new FormData(e.target)
-    const formFields = Object.fromEntries(formData.entries())
+    const formFields = getFormFields(e.target)
     let propertyId = currentProperty?.id
     if (!formFields.name) {
       setErrors('Company field is required')

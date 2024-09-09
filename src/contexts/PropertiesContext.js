@@ -87,7 +87,7 @@ const PropertiesProvider = props => {
   const sessionPropertyUser = allUsersForCurrentProperty.find(
     ({ user_id }) => user_id === userProfile?.id
   )
-  console.log(properties)
+
   return (
     <propertiesContext.Provider
       {...props}
