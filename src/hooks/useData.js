@@ -12,6 +12,7 @@ export const useData = ({ table, columns, filter, refresh, setRefresh }) => {
         .from(table)
         .select(columns)
         .eq('user_id', userProfile?.id)
+      console.log({ error })
       setData(data)
     }
     if (!userProfile?.id) {

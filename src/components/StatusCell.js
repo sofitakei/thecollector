@@ -4,23 +4,18 @@ import RunCircleIcon from '@mui/icons-material/RunCircle'
 import { Stack, TableCell, Tooltip, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 
-const StatusCell = ({ status = 'incomplete' }) => (
-  <TableCell align='right'>
-    <Stack direction='row' justifyContent='flex-end' spacing={2}>
-      {status === 'complete' ? (
-        <CheckCircleIcon fontSize='small' sx={{ color: 'green' }} />
-      ) : status === 'incomplete' ? (
-        <RunCircleIcon fontSize='small' sx={{ color: 'orange' }} />
-      ) : null}
-      <Typography>{status}</Typography>
-      {status && status !== 'complete' && (
-        <Tooltip title='Send Reminder'>
-          <ForwardToInboxIcon />
-        </Tooltip>
-      )}
-    </Stack>
-  </TableCell>
-)
+const statusColor = {
+  complete: 'green',
+  incomplete: 'red',
+}
+const StatusCell = ({ getter, item }) => {
+  const status = getter(item)
+  return (
+    <TableCell>
+      <Typography sx={{ color: statusColor[status] }}>{status}</Typography>
+    </TableCell>
+  )
+}
 
 StatusCell.propTypes = {
   status: PropTypes.string,

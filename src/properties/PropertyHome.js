@@ -32,20 +32,21 @@ const PropertyHome = () => {
 
   return (
     <Stack>
-      <Alert severity='info'>TODO: you have some outstanding tasks.</Alert>
+      {/* <Alert severity='info'>TODO: you have some outstanding tasks.</Alert>
       <Alert severity='warning'>
         Missing manager. Click here to add a manager.
       </Alert>
       <Alert severity='error'>
         Missing payment. Click here to make a payment.
-      </Alert>
-      <br />
-      DEV ONLY
-      <Box border={1} p={4} my={2}>
+      </Alert> */}
+
+      <Alert severity='warning' sx={{ my: 2, width: 400 }}>
+        DEV ONLY
+        <br />
         <Button variant='outlined' size='small' onClick={handleManagerChange}>
           {isManager ? 'demote me' : 'promote me to manager'}
         </Button>
-      </Box>
+      </Alert>
       <Button variant='outlined'>
         {isManager ? 'SUBMIT FORM' : 'Request manager access'}
       </Button>

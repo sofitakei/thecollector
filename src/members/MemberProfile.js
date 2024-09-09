@@ -1,8 +1,8 @@
 import {
+  Box,
   Button,
   Checkbox,
   FormControlLabel,
-  Grid,
   Stack,
   Typography,
 } from '@mui/material'
@@ -10,11 +10,12 @@ import { Link, useLocation, useParams } from 'react-router-dom'
 
 import { usePropertiesContext } from '../contexts/PropertiesContext'
 import { groups } from './config'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 
 const MemberProfile = () => {
   const { propertyId, fileId } = useParams()
   const { currentUser, currentProperty } = usePropertiesContext()
+  const [verified, setVerified] = useState(false)
   const historic = Boolean(fileId)
 
   //TODO: when it's a historic form, if you're a manager, you get all the users
@@ -22,9 +23,21 @@ const MemberProfile = () => {
   const users = fileId
     ? currentProperty.forms.find(({ id }) => fileId === `${id}`)?.users
     : [currentUser]
-  console.log({ users })
+
   const { pathname } = useLocation()
   if (!currentProperty || !users) return <div>Loading</div>
+  const isComplete = users.every(user => {
+    const fieldValues = groups.map(({ fields }) => {
+      const emptyFields = fields.reduce(
+        (acc, { name, required }) =>
+          user[name] || !required ? acc : [...acc, name],
+        []
+      )
+      return emptyFields
+    })
+    return fieldValues.flat().length === 0
+  })
+
   return (
     <Stack>
       <Typography variant='h4'>
@@ -42,7 +55,10 @@ const MemberProfile = () => {
           {groups.map(({ fields }, idx) => (
             <Fragment key={idx}>
               {fields.map(({ label, name }) => (
-                <Stack direction='row' justifyContent='space-between'>
+                <Stack
+                  direction='row'
+                  justifyContent='space-between'
+                  key={name}>
                   <Typography
                     sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
                     {label}
@@ -59,13 +75,11 @@ const MemberProfile = () => {
               ))}
             </Fragment>
           ))}
-          <Grid
-            item
-            sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}
-            xs={6}>
+          <Stack
+            justifyContent='space-between'
+            direction='row'
+            sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
             Document
-          </Grid>
-          <Grid item xs={6}>
             <div
               style={{
                 height: 100,
@@ -73,36 +87,40 @@ const MemberProfile = () => {
                 background: "url('https://placehold.co/150x100')",
               }}
             />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={historic}
-                  color='primary'
-                  disabled={historic}
-                  value='confirmInfo'
-                />
-              }
-              label='I verify all above information is correct.'
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Link to={`/properties/${propertyId}`}>Property Dashboard</Link>
-          </Grid>
+          </Stack>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color='primary'
+                disabled={historic || !isComplete}
+                value='confirmInfo'
+                checked={verified}
+                onChange={() => {
+                  setVerified(ver => !ver)
+                }}
+              />
+            }
+            label='I verify all above information is correct.'
+          />
+
           {!historic && (
-            <Button disabled variant='contained'>
+            <p>
+              <Link to={`${pathname}/edit`}>Click here</Link> to edit your
+              information.
+            </p>
+          )}
+
+          <Link to={`/properties/${propertyId}`}>Property Dashboard</Link>
+
+          {!historic && (
+            <Button
+              disabled={!isComplete || (isComplete && !verified)}
+              variant='contained'>
               Submit
             </Button>
           )}
         </Stack>
       ))}
-      {!historic && (
-        <p>
-          <Link to={`${pathname}/edit`}>Click here</Link> to edit your
-          information.
-        </p>
-      )}
     </Stack>
   )
 }

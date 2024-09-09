@@ -11,7 +11,7 @@ const propertiesContext = createContext()
 const PropertiesProvider = props => {
   const [showRemovePropertyColumn, setShowRemovePropertyColumn] =
     useState(false)
-  const [showMemberCheckboxColumn, setShowMemberCheckboxColumn] = useState('')
+  const [showMemberCheckboxColumn, setShowMemberCheckboxColumn] = useState()
   const [selectedProperties, setSelectedProperties] = useState([])
   const [selectedMembers, setSelectedMembers] = useState([])
   const [refresh, setRefresh] = useState()
@@ -25,7 +25,7 @@ const PropertiesProvider = props => {
 
   const properties = useData({
     table: 'userproperty',
-    columns: `*, properties(*)`,
+    columns: `*, properties(*, propertyfilings(*))`,
     refresh,
     setRefresh,
   })
@@ -87,7 +87,7 @@ const PropertiesProvider = props => {
   const sessionPropertyUser = allUsersForCurrentProperty.find(
     ({ user_id }) => user_id === userProfile?.id
   )
-
+  console.log(properties)
   return (
     <propertiesContext.Provider
       {...props}

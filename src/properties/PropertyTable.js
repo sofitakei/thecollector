@@ -26,12 +26,17 @@ const PropertyTable = ({ users }) => {
             buildUrl: ({ user_id }) => `users/${user_id}/edit`,
           },
         },
-        { name: 'managerId', label: '' },
+
         {
           name: 'status',
           label: 'Status',
           Renderer: StatusCell,
-          CellProps: { align: 'right' },
+          RendererProps: {
+            getter: ({ first_name, last_name, email }) =>
+              first_name || last_name
+                ? `${emptyIfNull(first_name)} ${emptyIfNull(last_name)}`
+                : `(${email})`,
+          },
         },
       ]}
       data={users}
