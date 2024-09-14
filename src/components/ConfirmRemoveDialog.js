@@ -23,7 +23,6 @@ const ConfirmRemoveDialog = ({
     setOpen(false)
   }
   const handleDelete = async () => {
-    console.log(items)
     const response = await supabase
       .from(table)
       .update({ deleted: new Date().toISOString() })

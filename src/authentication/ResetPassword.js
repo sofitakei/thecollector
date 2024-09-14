@@ -22,6 +22,7 @@ const ResetPassword = () => {
       const { data } = await supabase.auth.refreshSession()
       const { session } = data
       setSession(session)
+      navigate('/')
     }
   }
 
@@ -31,7 +32,6 @@ const ResetPassword = () => {
         Set New Password
       </Typography>
       <Stack spacing={2}>
-        \
         <TextField
           type='password'
           fullWidth

@@ -33,7 +33,7 @@ const PreviouslyFiledMember = () => {
 
     getData()
   }, [])
-  console.log({ filing })
+
   if (!filing) return <div>Loading</div>
 
   return (

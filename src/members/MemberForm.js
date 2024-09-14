@@ -108,12 +108,11 @@ const MemberForm = ({
             )
             .select()
       }
-      console.log({ members })
+
       members.forEach(async ({ email }) => {
         const { data, error } = await supabase.functions.invoke('email', {
           body: { email },
         })
-        console.log({ data, error })
       })
 
       setRefresh(true)

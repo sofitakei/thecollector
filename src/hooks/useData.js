@@ -14,7 +14,6 @@ export const useData = ({
   useEffect(() => {
     const getData = async () => {
       setLoading(true)
-      console.log(rest?.name, 'called for data')
       const { data, error } = await supabaseFn()
       if (error != null) {
         console.log('error with fetching data', { error })
