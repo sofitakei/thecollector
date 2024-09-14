@@ -46,7 +46,7 @@ const App = () => {
           {loading ? (
             <LinearProgress />
           ) : (
-            <AuthProvider session={session}>
+            <AuthProvider setSession={setSession} session={session}>
               {session ? <Routes /> : <Login />}
             </AuthProvider>
           )}

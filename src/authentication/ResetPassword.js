@@ -3,11 +3,13 @@ import { useRef, useState } from 'react'
 
 import { supabase } from '../supabaseClient'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 const ResetPassword = () => {
   const passwordRef = useRef(null)
   const navigate = useNavigate()
   const [success, setSuccess] = useState()
+  const { setSession } = useAuth()
   const handleReset = async () => {
     const { data, error } = await supabase.auth.updateUser({
       password: passwordRef?.current?.value,
@@ -15,13 +17,11 @@ const ResetPassword = () => {
         has_password: true,
       },
     })
-    console.log({ data, error })
+
     if (error === null) {
-      console.log('no error')
-      setSuccess(true)
-      navigate('/properties')
-    } else {
-      console.log('error')
+      const { data } = await supabase.auth.refreshSession()
+      const { session } = data
+      setSession(session)
     }
   }
 
@@ -31,12 +31,7 @@ const ResetPassword = () => {
         Set New Password
       </Typography>
       <Stack spacing={2}>
-        {success && (
-          <Alert severity='info'>
-            Password set! Use this to log in in the future.
-            <Link to='/properties'>Click here</Link> to continue
-          </Alert>
-        )}
+        \
         <TextField
           type='password'
           fullWidth

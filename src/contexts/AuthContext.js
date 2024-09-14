@@ -5,7 +5,7 @@ import { setRef } from '@mui/material'
 
 const AuthContext = createContext({})
 
-const AuthProvider = ({ children, session }) => {
+const AuthProvider = ({ children, session, setSession }) => {
   const [userProfile, setUserProfile] = useState({})
   const logout = () => supabase.auth.signOut()
 
@@ -34,7 +34,14 @@ const AuthProvider = ({ children, session }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user: session?.user, userProfile, logout, session, setRefresh }}>
+      value={{
+        user: session?.user,
+        userProfile,
+        logout,
+        session,
+        setRefresh,
+        setSession,
+      }}>
       {children}
     </AuthContext.Provider>
   )
