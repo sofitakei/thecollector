@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { useData } from '../hooks/useData'
 import { supabase } from '../supabaseClient'
 import { useAuth } from './AuthContext'
-import { setRef } from '@mui/material'
 import { usePropertiesContext } from './PropertiesContext'
 
 const propertyContext = createContext()
@@ -73,6 +72,10 @@ const PropertyProvider = props => {
     setPropertyUsers(groupedUsers)
   }
 
+  const getPropertyData = async () => {
+    return await supabase.from('properties').select('*').eq('id', propertyId)
+  }
+
   const getData = async () => {
     return await supabase
       .from('users_for_property')
@@ -80,8 +83,10 @@ const PropertyProvider = props => {
       .eq('property_id', propertyId)
   }
 
+  const { data: propertyDetails, setRefresh: setPropertyRefresh } = useData({
+    supabaseFn: getPropertyData,
+  })
   const { loading, loaded, setRefresh } = useData({
-    name: 'properties users',
     supabaseFn: getData,
     onSuccess,
   })
@@ -90,6 +95,7 @@ const PropertyProvider = props => {
     if (!userProfile?.id || !propertyId) {
       return
     }
+    setPropertyRefresh(true)
     setRefresh(true)
   }, [propertyId, userProfile?.id])
 
@@ -112,7 +118,7 @@ const PropertyProvider = props => {
       value={{
         allUsersForCurrentProperty,
         currentUser,
-        currentProperty,
+        currentProperty: { ...currentProperty, ...propertyDetails?.[0] },
         propertyUsers,
         showMemberCheckboxColumn,
         sessionPropertyUser,

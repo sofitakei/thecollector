@@ -2,7 +2,6 @@ import { Alert, MenuItem, TextField } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
 import Form from '../components/Form'
-import { usePropertiesContext } from '../contexts/PropertiesContext'
 import { fields } from './config'
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
@@ -10,15 +9,17 @@ import { useAuth } from '../contexts/AuthContext'
 import { getFormFields } from '../utils'
 import CountryDropdown from '../components/CountryDropdown'
 import { useCountries } from '../hooks/useCountries'
+import { usePropertyContext } from '../contexts/PropertyContext'
+import { usePropertiesContext } from '../contexts/PropertiesContext'
 
 const PropertyForm = () => {
   const navigate = useNavigate()
-  const { currentProperty, setRefresh } = usePropertiesContext() || {}
+  const { currentProperty, setRefresh } = usePropertyContext() || {}
+  const { countries, countriesByName } = usePropertiesContext()
   const [errors, setErrors] = useState()
   const {
     userProfile: { id },
   } = useAuth()
-  const { countries, countriesByName } = useCountries()
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -40,7 +41,7 @@ const PropertyForm = () => {
       } else {
         const { data, error } = await supabase
           .from('properties')
-          .update(formFields)
+          .update({ ...formFields, country_jurisdiction_id: country_id })
           .eq('id', currentProperty.id)
       }
       setRefresh(true)
@@ -52,7 +53,7 @@ const PropertyForm = () => {
   const handleFocus = () => {
     setErrors()
   }
-
+  console.log({ fields, currentProperty })
   return (
     <Form onSubmit={handleSubmit}>
       {errors && (
@@ -62,7 +63,13 @@ const PropertyForm = () => {
       )}
       {fields.map(({ name, options, select, ...rest }) =>
         name === 'country_jurisdiction_id' ? (
-          <CountryDropdown name={name} countries={countries} />
+          <CountryDropdown
+            name={name}
+            countries={countries}
+            defaultValue={countries.find(
+              ({ value }) => value === currentProperty?.country_jurisdiction_id
+            )}
+          />
         ) : (
           <TextField
             style={{ marginBottom: 20 }}
