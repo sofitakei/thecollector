@@ -1,20 +1,33 @@
 import { Alert, List, ListItemText, Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
-import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { supabase } from '../supabaseClient'
+import { useEffect, useState } from 'react'
 
 const PreviouslyFilledForms = () => {
-  const { currentProperty } = usePropertiesContext()
-  const { forms = [] } = currentProperty
+  const [forms, setForms] = useState([])
+  const { propertyId } = useParams()
 
-  return forms.length ? (
+  useEffect(() => {
+    const getData = async () => {
+      const { data, error } = await supabase
+        .from('property_filing')
+        .select('*')
+        .eq('property_id', propertyId)
+      setForms(data)
+    }
+
+    getData()
+  }, [])
+
+  return forms?.length ? (
     <>
       <Typography variant='h4'>Form filed on:</Typography>
       <List>
         {forms.map(form => (
           <ListItemText key={form.id}>
             <Link to={`${form.id}`}>
-              {new Date(form.filedDate).toLocaleDateString('en-US')}
+              {new Date(form.created_at).toLocaleDateString('en-US')}
             </Link>
           </ListItemText>
         ))}

@@ -1,5 +1,8 @@
 import {
+  Alert,
+  Button,
   Checkbox,
+  Divider,
   FormControlLabel,
   Grid,
   MenuItem,
@@ -8,10 +11,13 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { Fragment, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import Form from '../components/Form'
-import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { getFormFields } from '../utils'
+import { supabase } from '../supabaseClient'
+import { usePropertyContext } from '../contexts/PropertyContext'
+import { useAuth } from '../contexts/AuthContext'
 
 const fields = [
   { name: 'first_name', label: 'First Name', required: true },
@@ -29,51 +35,136 @@ const fields = [
     ],
   },
 ]
-const MemberForm = ({ count = 1, overrides, FormProps = {} }) => {
-  const { allUsersForCurrentProperty, currentProperty, setRefresh } =
-    usePropertiesContext()
 
-  const { userId } = useParams()
-  const user = allUsersForCurrentProperty.find(({ id }) => id === userId)
-
+const MemberForm = ({
+  count = 1,
+  overrides,
+  allowMultiple = false,
+  handleAddMember,
+}) => {
+  const { setRefresh } = usePropertyContext()
+  const { setRefresh: setRefreshProfile } = useAuth()
+  const { userId, propertyId } = useParams()
+  const [saveDisabled, setSaveDisabled] = useState()
+  const [error, setError] = useState()
+  const navigate = useNavigate()
   const [managerCheckboxEnabled, setManagerCheckboxEnabled] = useState()
+
   const handleChange = ({ target: { value } }) => {
     setManagerCheckboxEnabled(value ? true : false)
   }
 
+  const handleSubmit = async e => {
+    e.preventDefault()
+    if (!saveDisabled) {
+      setError(null)
+      setSaveDisabled(true)
+      const formFields = getFormFields(e.target)
+      const members = [...Array(count).keys()].map((_, idx) => {
+        const memberFields = Object.keys(formFields).filter(key =>
+          key.endsWith('_' + idx)
+        )
+
+        return memberFields.reduce(
+          (acc, curr) => ({
+            ...acc,
+            [curr.replace('_' + idx, '')]: formFields[curr],
+          }),
+          {}
+        )
+      })
+      if (members.some(({ email, first_name }) => !email || !first_name)) {
+        setSaveDisabled(false)
+        setError('Name and email are required')
+        return
+      }
+      //TODO: move this to backend
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert(
+          members.map(m => {
+            const { property_role, is_manager, ...rest } = m
+            return rest
+          })
+        )
+        .select()
+      if (data?.length) {
+        const { data: insertedMembers, error: userPropertyError } =
+          await supabase
+            .from('userproperty')
+            .insert(
+              data.map(mem => {
+                const { id, email } = mem
+                const { property_role, is_manager } = members.find(
+                  m => email === m.email
+                )
+                return {
+                  user_id: id,
+                  property_role,
+                  property_id: propertyId,
+                  is_manager,
+                }
+              })
+            )
+            .select()
+      }
+
+      setRefresh(true)
+      setRefreshProfile(true)
+
+      navigate(`/properties/${propertyId}/payment`)
+    }
+  }
+
   return (
-    <Form buttonLabel='Send' {...FormProps}>
+    <Form buttonLabel='Send' onSubmit={handleSubmit}>
+      {error && <Alert severity='error'>Please fill required fields</Alert>}
       <Stack width='100%' spacing={2}>
-        {[...Array(count).keys()].map(() =>
-          fields.map(({ name, label, checkbox, options, select, required }) => (
-            <Fragment key={name}>
-              {checkbox ? (
-                <FormControlLabel
-                  control={<Checkbox disabled={!managerCheckboxEnabled} />}
-                  label={label}
-                  name={name}
-                />
-              ) : (
-                <TextField
-                  fullWidth
-                  label={label}
-                  name={name}
-                  onChange={name === 'email' ? handleChange : () => {}}
-                  required={required}
-                  select={select}
-                  defaultValue={
-                    name === 'property_role' ? 'unassigned' : user?.[name]
-                  }
-                  {...overrides?.[name]}>
-                  {options?.map(({ label, id }) => (
-                    <MenuItem key={id} value={id}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            </Fragment>
-          ))
+        {[...Array(count).keys()].map((_, idx) => (
+          <Stack spacing={2} key={idx}>
+            {allowMultiple && idx < count && (
+              <Divider>Member {idx + 1}</Divider>
+            )}
+            {fields.map(
+              ({ name, label, checkbox, options, select, required }) => (
+                <Fragment key={name + '_' + idx}>
+                  {checkbox ? (
+                    <FormControlLabel
+                      control={<Checkbox disabled={!managerCheckboxEnabled} />}
+                      label={label}
+                      name={name + '_' + idx}
+                    />
+                  ) : (
+                    <TextField
+                      fullWidth
+                      label={label}
+                      name={name + '_' + idx}
+                      onChange={name === 'email' ? handleChange : () => {}}
+                      required={required}
+                      select={select}
+                      defaultValue={
+                        name === 'property_role' ? 'unassigned' : ''
+                      }
+                      {...overrides?.[name]}>
+                      {options?.map(({ label, id }) => (
+                        <MenuItem key={id} value={id}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                </Fragment>
+              )
+            )}
+          </Stack>
+        ))}
+        {allowMultiple && (
+          <Button
+            color='secondary'
+            onClick={handleAddMember}
+            variant='contained'>
+            Add Member
+          </Button>
         )}
       </Stack>
     </Form>

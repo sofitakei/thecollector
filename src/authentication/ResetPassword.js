@@ -9,26 +9,20 @@ const ResetPassword = () => {
   const navigate = useNavigate()
 
   const handleReset = async () => {
-    const { error } = await supabase.auth.updateUser({
+    const { data, error } = await supabase.auth.updateUser({
       password: passwordRef?.current?.value,
       data: {
         has_password: true,
       },
     })
-    console.log({ error })
-    if (!error) {
-      navigate('/')
+    console.log({ data, error })
+    if (error === null) {
+      navigate('/properties')
     }
   }
 
   return (
-    <Box
-      sx={{
-        marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}>
+    <Box sx={{ alignItems: 'center' }}>
       <Typography component='h1' variant='h5' mb={2}>
         Set New Password
       </Typography>

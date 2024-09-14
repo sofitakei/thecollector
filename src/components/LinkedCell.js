@@ -4,16 +4,17 @@ import { Link } from 'react-router-dom'
 
 import { useAuth } from '../contexts/AuthContext'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { usePropertyContext } from '../contexts/PropertyContext'
 
 const LinkedCell = ({ getter, buildUrl, item, type }) => {
   const { userProfile } = useAuth()
-  const { sessionPropertyUser } = usePropertiesContext()
+  const { sessionPropertyUser } = usePropertyContext() || {}
   const isManager = sessionPropertyUser?.is_manager
 
   const text = getter(item)
   return (
     <TableCell>
-      {isManager || type === 'property' || userProfile?.id === item.id ? (
+      {isManager || type === 'property' || userProfile?.id === item.user_id ? (
         <Link item={item} to={buildUrl(item)} type={type}>
           {text}
         </Link>

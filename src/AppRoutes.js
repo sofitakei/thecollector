@@ -14,6 +14,10 @@ import PreviouslyFilledForms from './properties/PreviouslyFilledForms'
 import Properties, { Property } from './properties/Properties'
 import PropertyForm from './properties/PropertyForm'
 import ResetPassword from './authentication/ResetPassword'
+import AllProfilesForManager from './members/AllProfilesForManager'
+import Payment from './properties/Payment'
+import PreviouslyFiledMember from './members/PreviouslyFiledMember'
+
 const AppRoutes = () => {
   return (
     <Router>
@@ -34,12 +38,13 @@ const AppRoutes = () => {
             element={<AddMember />}
             path='/properties/:propertyId/addMembers'
           />
+          <Route element={<Payment />} path='/properties/:propertyId/payment' />
           <Route
             element={<PreviouslyFilledForms />}
             path='/properties/:propertyId/history'
           />
           <Route
-            element={<MemberProfile />}
+            element={<PreviouslyFiledMember />}
             path='/properties/:propertyId/history/:fileId'
           />
           <Route
@@ -49,6 +54,10 @@ const AppRoutes = () => {
           <Route
             element={<MemberProfileForm />}
             path='/properties/:propertyId/users/:userId/edit'
+          />
+          <Route
+            element={<AllProfilesForManager />}
+            path='/properties/:propertyId/submit'
           />
           <Route element={<Navigate replace to='/properties' />} path='*' />
         </Route>

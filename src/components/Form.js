@@ -1,9 +1,15 @@
 import { Box, Button } from '@mui/material'
 import PropTypes from 'prop-types'
+import { forwardRef } from 'react'
 
-const Form = ({ children, onSubmit, buttonLabel = 'Save' }) => {
+const Form = forwardRef(({ children, onSubmit, buttonLabel = 'Save' }, ref) => {
   return (
-    <Box component='form' noValidate sx={{ mt: 3 }} onSubmit={onSubmit}>
+    <Box
+      component='form'
+      noValidate
+      sx={{ mt: 3 }}
+      onSubmit={onSubmit}
+      ref={ref}>
       {children}
 
       <Button fullWidth sx={{ mt: 3, mb: 2 }} type='submit' variant='contained'>
@@ -11,7 +17,7 @@ const Form = ({ children, onSubmit, buttonLabel = 'Save' }) => {
       </Button>
     </Box>
   )
-}
+})
 
 Form.propTypes = {
   buttonLabel: PropTypes.string,

@@ -9,12 +9,17 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import 'dayjs/locale/de'
 import { ErrorBoundary } from 'react-error-boundary'
+import Wall from './Wall'
+import { LinearProgress } from '@mui/material'
 
 const App = () => {
   const [session, setSession] = useState()
+  const [verified, setVerified] = useState()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
+      setLoading(false)
       setSession(session)
     })
   }, [])
@@ -34,11 +39,19 @@ const App = () => {
 
   return (
     <ErrorBoundary>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <AuthProvider session={session}>
-          {session ? <Routes /> : <Login />}
-        </AuthProvider>
-      </LocalizationProvider>
+      {!verified && !localStorage.getItem('verified') ? (
+        <Wall setVerified={setVerified} />
+      ) : (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          {loading ? (
+            <LinearProgress />
+          ) : (
+            <AuthProvider session={session}>
+              {session ? <Routes /> : <Login />}
+            </AuthProvider>
+          )}
+        </LocalizationProvider>
+      )}
     </ErrorBoundary>
   )
 }

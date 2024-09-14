@@ -8,23 +8,25 @@ import {
 
 import { useAuth } from '../contexts/AuthContext'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { usePropertyContext } from '../contexts/PropertyContext'
 
 const drawerWidth = 240
 const Navigation = props => {
+  const { setShowRemovePropertyColumn } = usePropertiesContext()
   const {
     setSelectedMembers,
-    setShowRemovePropertyColumn,
     setShowMemberCheckboxColumn,
     sessionPropertyUser,
-  } = usePropertiesContext()
+  } = usePropertyContext() || {}
   const { propertyId } = useParams()
   const location = useLocation()
   const { userProfile, logout } = useAuth()
   const isManager = sessionPropertyUser?.is_manager
+
   const handleLogout = async () => {
     try {
-      const { error } = await logout()
-      console.log(error)
+      await logout()
+      localStorage.removeItem('verified')
     } catch (error) {
       console.log(error)
     }
@@ -133,7 +135,7 @@ const Navigation = props => {
         }}
         variant='permanent'>
         <Typography variant='body2'>
-          Hello, {`${userProfile?.first_name || ''} (${userProfile?.email})`}
+          Logged in as {`${userProfile?.email}`}
         </Typography>
         <List>
           {navItems.map(({ path, label, onClick }) => (

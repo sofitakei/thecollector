@@ -8,26 +8,35 @@ import {
 import PropTypes from 'prop-types'
 import { supabase } from '../supabaseClient'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { usePropertyContext } from '../contexts/PropertyContext'
 
 const ConfirmRemoveDialog = ({
+  table = 'properties',
+  idField = 'property_id',
   getter = ({ name }) => name,
   items,
   setOpen,
 }) => {
   const { setRefresh } = usePropertiesContext()
+  const { setRefresh: setPropertyRefresh } = usePropertyContext()
   const handleClose = () => {
     setOpen(false)
   }
   const handleDelete = async () => {
+    console.log(items)
     const response = await supabase
-      .from('properties')
-      .delete()
+      .from(table)
+      .update({ deleted: new Date().toISOString() })
       .in(
         'id',
-        items.map(item => item.id)
+        items.map(item => item[idField])
       )
     setOpen(false)
-    setRefresh(true)
+    if (idField === 'property_id') {
+      setRefresh(true)
+    } else {
+      setPropertyRefresh(true)
+    }
   }
 
   return (

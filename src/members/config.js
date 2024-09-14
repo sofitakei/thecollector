@@ -2,7 +2,7 @@ export const groups = [
   {
     groupLabel: 'Full legal name and date of birth',
     fields: [
-      { name: 'fincenID', label: 'FinCEN ID' },
+      { name: 'fincen_id', label: 'FinCEN ID' },
       {
         name: 'last_name',
         label: "Individual's last name or entity's legal name",

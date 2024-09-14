@@ -13,8 +13,17 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
 import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
-
-const Table = ({ data, columns, showCheckbox, checkboxAction, getter }) => {
+const NoData = () => <div>No data to display</div>
+const Table = ({
+  data,
+  columns,
+  showCheckbox,
+  checkboxAction,
+  getter,
+  table,
+  idField,
+  NoDataMessage = <NoData />,
+}) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState()
   const [selectedData, setSelectedData] = useState([])
   const [updateData, setUpdateData] = useState(false)
@@ -24,12 +33,17 @@ const Table = ({ data, columns, showCheckbox, checkboxAction, getter }) => {
   const handleChange =
     selectedRow =>
     ({ target: { checked } }) => {
+      console.log('fieldid', idField, selectedRow, checked)
+      console.log(
+        selectedData,
+        selectedData.indexOf(data => data[idField] === selectedRow[idField])
+      )
       setSelectedData(selected =>
         checked
-          ? selected.indexOf(data => data.id === selectedRow.id) < 0
+          ? selected.indexOf(data => data[idField] === selectedRow[idField]) < 0
             ? [...selected, selectedRow]
             : selected
-          : selected.filter(({ id }) => id !== selectedRow.id)
+          : selected.filter(item => item[idField] !== selectedRow[idField])
       )
     }
 
@@ -40,7 +54,7 @@ const Table = ({ data, columns, showCheckbox, checkboxAction, getter }) => {
   }, [updateData])
 
   return !data || data.length === 0 ? (
-    <Alert severity='info'>No data to display</Alert>
+    <Alert severity='info'>{NoDataMessage}</Alert>
   ) : (
     <>
       {showDeleteDialog && (
@@ -49,6 +63,8 @@ const Table = ({ data, columns, showCheckbox, checkboxAction, getter }) => {
           items={selectedData}
           setOpen={setShowDeleteDialog}
           setUpdateData={setUpdateData}
+          table={table}
+          idField={idField}
         />
       )}
       <MuiTable size='small'>
@@ -72,14 +88,15 @@ const Table = ({ data, columns, showCheckbox, checkboxAction, getter }) => {
         </TableHead>
         <TableBody>
           {data.map(item => {
-            const { id } = item
             return (
-              <TableRow key={id}>
+              <TableRow key={item[idField]}>
                 {showCheckbox && (
                   <TableCell>
                     <Checkbox
                       checked={
-                        selectedData.findIndex(item => item.id === id) > -1
+                        selectedData.findIndex(
+                          i => i[idField] === item[idField]
+                        ) > -1
                       }
                       onChange={handleChange(item)}
                     />

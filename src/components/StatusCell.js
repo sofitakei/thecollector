@@ -1,7 +1,4 @@
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox'
-import RunCircleIcon from '@mui/icons-material/RunCircle'
-import { Stack, TableCell, Tooltip, Typography } from '@mui/material'
+import { TableCell, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 
 const statusColor = {
@@ -9,9 +6,10 @@ const statusColor = {
   incomplete: 'red',
 }
 const StatusCell = ({ getter, item }) => {
-  const status = getter(item)
+  const cellStatus = getter(item)
+  const status = cellStatus === 'verified' ? 'complete' : 'incomplete'
   return (
-    <TableCell>
+    <TableCell align='right'>
       <Typography sx={{ color: statusColor[status] }}>{status}</Typography>
     </TableCell>
   )

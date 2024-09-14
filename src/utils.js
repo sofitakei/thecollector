@@ -1,9 +1,11 @@
 export const getFormFields = form => {
-  const nonEmptyFields = Array.from(new FormData(form)).filter(function ([
-    k,
-    v,
-  ]) {
-    return v
-  })
-  return Object.fromEntries(nonEmptyFields)
+  const formData = Array.from(new FormData(form)).map(([k, v]) =>
+    v ? [k, v] : [k, null]
+  )
+  return Object.fromEntries(formData)
+}
+
+export const omit = (key, obj) => {
+  const { [key]: omitted, ...rest } = obj
+  return rest
 }

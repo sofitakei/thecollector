@@ -1,4 +1,3 @@
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import {
   Button,
   FormControl,
@@ -9,51 +8,82 @@ import {
   Stack,
   TextField,
 } from '@mui/material'
-import { styled } from '@mui/material/styles'
+
 import { useNavigate, useParams } from 'react-router-dom'
 
 import Form from '../components/Form'
-import { usePropertiesContext } from '../contexts/PropertiesContext'
 import { stakeholders } from '../properties/config'
 import { groups } from './config'
 import { supabase } from '../supabaseClient'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import { getFormFields } from '../utils'
-
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-})
+import isEqual from 'react-fast-compare'
+import { useAuth } from '../contexts/AuthContext'
+import { usePropertyContext } from '../contexts/PropertyContext'
+import CountryDropdown from '../components/CountryDropdown'
+import Upload from '../components/Upload'
+import { usePropertiesContext } from '../contexts/PropertiesContext'
 
 const MemberProfileForm = () => {
   const navigate = useNavigate()
-  const { currentUser, setRefresh } = usePropertiesContext()
+  const { countriesByName } = usePropertiesContext()
+  const { currentUser, setRefresh } = usePropertyContext() || {}
+  const { setRefresh: setProfilesRefresh } = useAuth()
   const { propertyId, userId } = useParams()
+
   const handleSave = async e => {
     e.preventDefault()
-    const { property_role, ...formFields } = getFormFields(e.target)
-    const { data, error } = await supabase
-      .from('profiles')
-      .update(formFields)
-      .eq('id', userId)
-    if (!error) {
-      await supabase
-        .from('userproperty')
-        .update({ property_role })
-        .eq('user_id', userId)
-        .eq('property_id', propertyId)
-      setRefresh(true)
-      navigate(`/properties/${propertyId}/users/${userId}`)
+    const {
+      property_role,
+      country_jurisdiction,
+      document_country_jurisdiction,
+      document_jurisdiction_local_tribal,
+      ...formFields
+    } = getFormFields(e.target)
+
+    const {
+      auth_user_id,
+      id,
+      user_id,
+      userproperty_id,
+      userproperty_filing,
+      is_manager,
+      updated_at,
+      property_role: pr,
+      ...originalUser
+    } = currentUser
+    if (!isEqual(formFields, originalUser)) {
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({
+          ...formFields,
+          document_country_jurisdiction_id:
+            countriesByName?.[document_country_jurisdiction] || null,
+          country_jurisdiction_id:
+            countriesByName?.[country_jurisdiction] || null,
+        })
+        .eq('id', userId)
+      //TODO as trigger?
+      const { error: voidStatusError } = await supabase
+        .from('userproperty_filing')
+        .update({ status: 'void' })
+        .eq('userproperty_id', userproperty_id)
+
+      if (!error) {
+        await supabase
+          .from('userproperty')
+          .update({ property_role })
+          .eq('user_id', userId)
+          .eq('property_id', propertyId)
+        setRefresh(true)
+        setProfilesRefresh(true)
+        navigate(`/properties/${propertyId}/users/${userId}`)
+      } else {
+        console.log({ error })
+      }
     } else {
-      console.log({ error })
+      navigate(`/properties/${propertyId}/users/${userId}`)
     }
   }
 
@@ -94,27 +124,24 @@ const MemberProfileForm = () => {
                 }
                 {...item}
               />
+            ) : item.name.includes('country_jurisdiction') ? (
+              <CountryDropdown
+                defaultValue={currentUser[item.name]}
+                name={item.name}
+              />
             ) : (
               <TextField
                 key={item.name}
                 fullWidth
                 {...item}
                 defaultValue={currentUser[item.name]}
+                disabled={item.name === 'email'}
               />
             )
           )}
         </Stack>
       ))}
-
-      <Button
-        component='label'
-        role={undefined}
-        startIcon={<CloudUploadIcon />}
-        tabIndex={-1}
-        variant='contained'>
-        Upload file
-      </Button>
-      <VisuallyHiddenInput type='file' />
+      <Upload />
     </Form>
   )
 }

@@ -4,10 +4,11 @@ import LinkedCell from '../components/LinkedCell'
 import StatusCell from '../components/StatusCell'
 import Table from '../components/Table'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { usePropertyContext } from '../contexts/PropertyContext'
 
 const emptyIfNull = str => (!str || str === null ? '' : str)
 const PropertyTable = ({ users }) => {
-  const { showMemberCheckboxColumn } = usePropertiesContext()
+  const { showMemberCheckboxColumn } = usePropertyContext()
   const showCheckbox = Boolean(showMemberCheckboxColumn)
 
   return (
@@ -31,17 +32,17 @@ const PropertyTable = ({ users }) => {
           name: 'status',
           label: 'Status',
           Renderer: StatusCell,
+          CellProps: { align: 'right' },
           RendererProps: {
-            getter: ({ first_name, last_name, email }) =>
-              first_name || last_name
-                ? `${emptyIfNull(first_name)} ${emptyIfNull(last_name)}`
-                : `(${email})`,
+            getter: ({ status }) => status,
           },
         },
       ]}
       data={users}
-      getter={({ firstName, lastName }) => `${firstName} ${lastName}`}
+      getter={({ first_name, last_name }) => `${first_name} ${last_name}`}
       showCheckbox={showCheckbox}
+      table='userproperty'
+      idField='userproperty_id'
     />
   )
 }

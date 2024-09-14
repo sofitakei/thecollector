@@ -36,10 +36,12 @@ const InviteMember = () => {
         Complete the following fields to send a link to invite members to the
         property.
       </p>
-      <MemberForm count={membersCount} />
-      <Button color='secondary' onClick={handleAddMember} variant='contained'>
-        Add Member
-      </Button>
+
+      <MemberForm
+        count={membersCount}
+        allowMultiple
+        handleAddMember={handleAddMember}
+      />
     </Stack>
   )
 }

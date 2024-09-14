@@ -3,124 +3,112 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  setRef,
   Stack,
   Typography,
 } from '@mui/material'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { usePropertiesContext } from '../contexts/PropertiesContext'
 import { groups } from './config'
 import { Fragment, useState } from 'react'
+import { supabase } from '../supabaseClient'
+import MemberDetails from './MemberDetails'
+import { usePropertyContext } from '../contexts/PropertyContext'
 
 const MemberProfile = () => {
   const { propertyId, fileId } = useParams()
-  const { currentUser, currentProperty } = usePropertiesContext()
+  const { currentUser, currentProperty, setRefresh } = usePropertyContext()
   const [verified, setVerified] = useState(false)
   const historic = Boolean(fileId)
+  const navigate = useNavigate()
+  const alreadyVerified = currentUser?.userproperty_filing?.some(
+    ({ status }) => status === 'verified'
+  )
 
-  //TODO: when it's a historic form, if you're a manager, you get all the users
-  //probably will be handled on the back end
-  const users = fileId
-    ? currentProperty.forms.find(({ id }) => fileId === `${id}`)?.users
-    : [currentUser]
+  const handleClick = async () => {
+    const {
+      userproperty_id,
+      property_id,
+      auth_user_id,
+      updated_at,
+      is_manager,
+      userproperty_filing,
+      ...rest
+    } = currentUser
+    const { error } = await supabase
+      .from('userproperty_filing')
+      .insert({ userproperty_id, status: 'verified', filingdata: rest })
+
+    if (!error) {
+      setRefresh(true)
+      navigate(`/properties/${propertyId}`)
+    } else {
+      console.log('error verifying', { error })
+    }
+  }
 
   const { pathname } = useLocation()
-  if (!currentProperty || !users) return <div>Loading</div>
-  const isComplete = users.every(user => {
-    const fieldValues = groups.map(({ fields }) => {
-      const emptyFields = fields.reduce(
-        (acc, { name, required }) =>
-          user[name] || !required ? acc : [...acc, name],
-        []
-      )
-      return emptyFields
-    })
-    return fieldValues.flat().length === 0
-  })
+  if (!currentProperty || !currentUser) return <div>Loading</div>
+  const isComplete =
+    groups
+      .map(({ fields }) => {
+        const emptyFields = fields.reduce(
+          (acc, { name, required }) =>
+            currentUser[name] || !required ? acc : [...acc, name],
+          []
+        )
+        return emptyFields
+      })
+      .flat().length === 0
 
   return (
     <Stack>
       <Typography variant='h4'>
         {historic
           ? `Here is your information for ${
-              currentProperty.properties.name
+              currentProperty.name
             } that was filed on ${new Date(
               users[0].filedDate
             ).toLocaleDateString('en-US')}`
-          : `Here is your current information for ${currentProperty.properties.name}`}
+          : `Here is your current information for ${currentProperty.name}`}
       </Typography>
       <br />
-      {users.map(user => (
-        <Stack key={user?.user_id}>
-          {groups.map(({ fields }, idx) => (
-            <Fragment key={idx}>
-              {fields.map(({ label, name }) => (
-                <Stack
-                  direction='row'
-                  justifyContent='space-between'
-                  key={name}>
-                  <Typography
-                    sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
-                    {label}
-                  </Typography>
 
-                  {name === 'photoId' ? (
-                    <img alt="my driver's license" src={user?.photoId} />
-                  ) : (
-                    user?.[name] || (
-                      <Typography color='error'>Missing</Typography>
-                    )
-                  )}
-                </Stack>
-              ))}
-            </Fragment>
-          ))}
-          <Stack
-            justifyContent='space-between'
-            direction='row'
-            sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
-            Document
-            <div
-              style={{
-                height: 100,
-                width: 150,
-                background: "url('https://placehold.co/150x100')",
-              }}
-            />
-          </Stack>
-          <FormControlLabel
-            control={
-              <Checkbox
-                color='primary'
-                disabled={historic || !isComplete}
-                value='confirmInfo'
-                checked={verified}
-                onChange={() => {
-                  setVerified(ver => !ver)
-                }}
-              />
-            }
-            label='I verify all above information is correct.'
+      <MemberDetails user={currentUser} />
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            color='primary'
+            disabled={historic || !isComplete || alreadyVerified}
+            value='confirmInfo'
+            checked={verified}
+            onChange={() => {
+              setVerified(ver => !ver)
+            }}
           />
+        }
+        label='I verify all above information is correct.'
+      />
 
-          {!historic && (
-            <p>
-              <Link to={`${pathname}/edit`}>Click here</Link> to edit your
-              information.
-            </p>
-          )}
+      {!historic && (
+        <p>
+          <Link to={`${pathname}/edit`}>Click here</Link> to edit your
+          information.
+        </p>
+      )}
 
-          <Link to={`/properties/${propertyId}`}>Property Dashboard</Link>
+      <Link to={`/properties/${propertyId}`}>Property Dashboard</Link>
 
-          {!historic && (
-            <Button
-              disabled={!isComplete || (isComplete && !verified)}
-              variant='contained'>
-              Submit
-            </Button>
-          )}
-        </Stack>
-      ))}
+      {!historic && (
+        <Button
+          onClick={handleClick}
+          disabled={!isComplete || (isComplete && !verified)}
+          variant='contained'>
+          Submit
+        </Button>
+      )}
     </Stack>
   )
 }
