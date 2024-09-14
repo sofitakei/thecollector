@@ -44,7 +44,7 @@ const MemberForm = ({
 }) => {
   const { setRefresh } = usePropertyContext()
   const { setRefresh: setRefreshProfile } = useAuth()
-  const { userId, propertyId } = useParams()
+  const { propertyId } = useParams()
   const [saveDisabled, setSaveDisabled] = useState()
   const [error, setError] = useState()
   const navigate = useNavigate()
@@ -108,6 +108,13 @@ const MemberForm = ({
             )
             .select()
       }
+      console.log({ members })
+      members.forEach(async ({ email }) => {
+        const { data, error } = await supabase.functions.invoke('email', {
+          body: { email },
+        })
+        console.log({ data, error })
+      })
 
       setRefresh(true)
       setRefreshProfile(true)

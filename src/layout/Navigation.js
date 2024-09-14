@@ -22,13 +22,15 @@ const Navigation = props => {
   const location = useLocation()
   const { userProfile, logout } = useAuth()
   const isManager = sessionPropertyUser?.is_manager
-
+  const navigate = useNavigate()
   const handleLogout = async () => {
     try {
       await logout()
       localStorage.removeItem('verified')
     } catch (error) {
       console.log(error)
+    } finally {
+      navigate('/')
     }
   }
 
@@ -104,8 +106,6 @@ const Navigation = props => {
     },
   ]
   const navItems = items.filter(item => item.include)
-
-  const navigate = useNavigate()
 
   return (
     <>

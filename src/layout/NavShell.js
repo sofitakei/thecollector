@@ -11,8 +11,8 @@ import {
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-import { usePropertiesContext } from '../contexts/PropertiesContext'
 import Navigation from './Navigation'
+import { usePropertyContext } from '../contexts/PropertyContext'
 
 const drawerWidth = 240
 
@@ -30,7 +30,7 @@ const Copyright = props => (
 const NavShell = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
-  const { currentProperty } = usePropertiesContext()
+  const { currentProperty } = usePropertyContext()
   const handleDrawerClose = () => {
     setIsClosing(true)
     setMobileOpen(false)

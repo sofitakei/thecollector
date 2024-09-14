@@ -37,6 +37,7 @@ const PropertyForm = () => {
           country_jurisdiction_id: country_id,
           created_by: id,
         })
+
         propertyId = data?.[0]?.id
       } else {
         const { data, error } = await supabase
@@ -44,7 +45,7 @@ const PropertyForm = () => {
           .update({ ...formFields, country_jurisdiction_id: country_id })
           .eq('id', currentProperty.id)
       }
-      setRefresh(true)
+      setRefresh?.(true)
       if (propertyId) {
         navigate(`/properties/${propertyId}/invite`)
       }
@@ -53,7 +54,6 @@ const PropertyForm = () => {
   const handleFocus = () => {
     setErrors()
   }
-  console.log({ fields, currentProperty })
   return (
     <Form onSubmit={handleSubmit}>
       {errors && (
