@@ -9,10 +9,11 @@ const wrapProvider = (wrap, Provider, children) =>
   wrap ? <Provider>{children}</Provider> : children
 
 const PrivateRoute = () => {
-  const { user } = useAuth()
+  const { session } = useAuth()
   const { propertyId } = useParams()
-  if (!user) return <Navigate to='/login' />
-  if (!user.user_metadata.has_password) return <Navigate to='/reset' />
+  if (!session?.user) return <Navigate to='/login' />
+  if (!session?.user?.user_metadata.has_password)
+    return <Navigate to='/reset' />
   return (
     <PropertiesProvider>
       {wrapProvider(
