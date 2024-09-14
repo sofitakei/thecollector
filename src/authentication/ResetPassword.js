@@ -17,8 +17,11 @@ const ResetPassword = () => {
     })
     console.log({ data, error })
     if (error === null) {
+      console.log('no error')
       setSuccess(true)
       navigate('/properties')
+    } else {
+      console.log('error')
     }
   }
 

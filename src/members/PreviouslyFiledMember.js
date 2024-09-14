@@ -20,7 +20,7 @@ import { usePropertyContext } from '../contexts/PropertyContext'
 const PreviouslyFiledMember = () => {
   const { propertyId, fileId } = useParams()
   const [filing, setFiling] = useState()
-  const { currentProperty } = usePropertyContext()
+  const { currentProperty } = usePropertyContext() || {}
 
   useEffect(() => {
     const getData = async () => {

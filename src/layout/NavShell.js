@@ -30,7 +30,7 @@ const Copyright = props => (
 const NavShell = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
-  const { currentProperty } = usePropertyContext()
+  const { currentProperty } = usePropertyContext() || {}
   const handleDrawerClose = () => {
     setIsClosing(true)
     setMobileOpen(false)
