@@ -4,7 +4,6 @@ import {
   Box,
   CssBaseline,
   IconButton,
-  Link,
   Toolbar,
   Typography,
 } from '@mui/material'
@@ -13,6 +12,7 @@ import { useState } from 'react'
 
 import Navigation from './Navigation'
 import { usePropertyContext } from '../contexts/PropertyContext'
+import { Link } from 'react-router-dom'
 
 const drawerWidth = 240
 
@@ -48,7 +48,7 @@ const NavShell = ({ children }) => {
 
   return (
     <>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', a: { textDecoration: 'none' } }}>
         <CssBaseline />
         <AppBar
           position='fixed'
@@ -65,7 +65,12 @@ const NavShell = ({ children }) => {
               sx={{ mr: 2, display: { sm: 'none' } }}>
               <MenuIcon />
             </IconButton>
-            {currentProperty?.name} Dashboard
+            <Link to={`/properties/${currentProperty?.id}`}>
+              <Typography variant='h4' sx={{ color: '#fff' }}>
+                {' '}
+                {currentProperty?.name} Dashboard
+              </Typography>
+            </Link>
           </Toolbar>
         </AppBar>
         <Box

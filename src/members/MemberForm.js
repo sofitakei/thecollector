@@ -14,7 +14,7 @@ import { Fragment, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import Form from '../components/Form'
-import { getFormFields } from '../utils'
+import { checkEmailExists, checkForDuplicates, getFormFields } from '../utils'
 import { supabase } from '../supabaseClient'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { useAuth } from '../contexts/AuthContext'
@@ -54,8 +54,28 @@ const MemberForm = ({
     setManagerCheckboxEnabled(value ? true : false)
   }
 
+  const handleBlur = async ({ target: { value } }) => {
+    const emailExists = await checkEmailExists(value)
+    if (emailExists) {
+      setSaveDisabled(true)
+      setError(
+        'The email is already in use: ' +
+          value +
+          '.  Try the search function above to add them'
+      )
+    }
+  }
+
+  const handleFocus = () => {
+    setError(null)
+    setSaveDisabled(false)
+  }
+
   const handleSubmit = async e => {
     e.preventDefault()
+    if (error) {
+      return
+    }
     if (!saveDisabled) {
       setError(null)
       setSaveDisabled(true)
@@ -73,12 +93,22 @@ const MemberForm = ({
           {}
         )
       })
+
+      const hasDuplicateEmails = checkForDuplicates(
+        members.map(({ email }) => email)
+      )
+
+      if (hasDuplicateEmails) {
+        setError('Please check you have no duplicate emails')
+        setSaveDisabled(true)
+        return
+      }
       if (members.some(({ email, first_name }) => !email || !first_name)) {
         setSaveDisabled(false)
         setError('Name and email are required')
         return
       }
-      //TODO: move this to backend
+      // TODO: move this to backend
       const { data, error } = await supabase
         .from('profiles')
         .insert(
@@ -123,8 +153,8 @@ const MemberForm = ({
   }
 
   return (
-    <Form buttonLabel='Send' onSubmit={handleSubmit}>
-      {error && <Alert severity='error'>Please fill required fields</Alert>}
+    <Form buttonLabel='Send' disabled={saveDisabled} onSubmit={handleSubmit}>
+      {error && <Alert severity='error'>{error}</Alert>}
       <Stack width='100%' spacing={2}>
         {[...Array(count).keys()].map((_, idx) => (
           <Stack spacing={2} key={idx}>
@@ -142,9 +172,11 @@ const MemberForm = ({
                     />
                   ) : (
                     <TextField
+                      onFocus={handleFocus}
                       fullWidth
                       label={label}
                       name={name + '_' + idx}
+                      onBlur={name === 'email' ? handleBlur : () => {}}
                       onChange={name === 'email' ? handleChange : () => {}}
                       required={required}
                       select={select}
