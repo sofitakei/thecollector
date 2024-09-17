@@ -14,6 +14,7 @@ import { Fragment, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import MemberDetails from './MemberDetails'
 import { usePropertyContext } from '../contexts/PropertyContext'
+import PropertyDashboardButton from '../components/PropertyDashboardButton'
 
 const MemberProfile = () => {
   const { propertyId, fileId } = useParams()
@@ -21,6 +22,7 @@ const MemberProfile = () => {
   const [verified, setVerified] = useState(false)
   const historic = Boolean(fileId)
   const navigate = useNavigate()
+  const [photoUploaded, setPhotoUploaded] = useState()
   const alreadyVerified = currentUser?.userproperty_filing?.some(
     ({ status }) => status === 'verified'
   )
@@ -59,7 +61,7 @@ const MemberProfile = () => {
         )
         return emptyFields
       })
-      .flat().length === 0
+      .flat().length === 0 && photoUploaded?.data != null
 
   return (
     <Stack>
@@ -74,7 +76,7 @@ const MemberProfile = () => {
       </Typography>
       <br />
 
-      <MemberDetails user={currentUser} />
+      <MemberDetails user={currentUser} setPhotoUploaded={setPhotoUploaded} />
 
       <FormControlLabel
         control={
@@ -98,7 +100,7 @@ const MemberProfile = () => {
         </p>
       )}
 
-      <Link to={`/properties/${propertyId}`}>Property Dashboard</Link>
+      <PropertyDashboardButton />
 
       {!historic && (
         <Button

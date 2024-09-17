@@ -5,6 +5,7 @@ import { supabase } from '../supabaseClient'
 import { useAuth } from './AuthContext'
 import { useData } from '../hooks/useData'
 import { useCountries } from '../hooks/useCountries'
+import { useTribes } from '../hooks/useTribes'
 
 const propertiesContext = createContext()
 
@@ -17,6 +18,7 @@ const PropertiesProvider = props => {
   const [properties, setProperties] = useState()
   const { propertyId } = useParams()
   const { countries, countriesByName } = useCountries()
+  const { tribes, tribesByName } = useTribes()
   const getData = async () => {
     return await supabase
       .from('user_properties_view')
@@ -53,6 +55,8 @@ const PropertiesProvider = props => {
         loading,
         countries,
         countriesByName,
+        tribes,
+        tribesByName,
       }}
     />
   )

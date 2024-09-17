@@ -26,6 +26,8 @@ import Upload from '../components/Upload'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
 import RoleSelect from '../components/RoleSelect'
 import { useEffect, useState } from 'react'
+import DocumentTypeDropdown from '../components/DocumentTypeDropdown'
+import LocalTribalDropdown from '../components/LocalTribalDropdown'
 
 const MemberProfileForm = () => {
   const navigate = useNavigate()
@@ -34,10 +36,12 @@ const MemberProfileForm = () => {
   const { setRefresh: setProfilesRefresh } = useAuth()
   const { propertyId, userId } = useParams()
   const [propertyRole, setPropertyRole] = useState('')
+  const [documentType, setDocumentType] = useState('')
+  const [tribe, setTribe] = useState(null)
   const handlePropertyRoleChange = (_, v) => {
-    console.log({ v })
     setPropertyRole(v)
   }
+
   const handleSave = async e => {
     e.preventDefault()
     const {
@@ -64,6 +68,8 @@ const MemberProfileForm = () => {
         .from('profiles')
         .update({
           ...formFields,
+          document_jurisdiction_local_tribal_id:
+            tribe !== null ? tribe.id : null,
           document_country_jurisdiction_id:
             countriesByName?.[document_country_jurisdiction] || null,
           country_jurisdiction_id:
@@ -92,11 +98,43 @@ const MemberProfileForm = () => {
       navigate(`/properties/${propertyId}/users/${userId}`)
     }
   }
+
+  const handleDocumentChange = (e, v) => {
+    setDocumentType(v.props.value)
+    if (v.props.value !== 38) {
+      setTribe(null)
+    }
+  }
+
+  const handleTribeChange = (e, v) => {
+    setTribe(v)
+  }
   useEffect(() => {
     if (currentUser?.property_role) {
       setPropertyRole(currentUser.property_role)
     }
   }, [currentUser?.property_role])
+
+  useEffect(() => {
+    if (
+      currentUser?.document_type &&
+      currentUser?.document_type !== documentType
+    ) {
+      setDocumentType(currentUser?.document_type)
+    }
+  }, [currentUser?.document_type])
+
+  useEffect(() => {
+    if (
+      currentUser?.document_jurisdiction_local_tribal_id &&
+      currentUser?.document_jurisdiction_local_tribal_id !== tribe
+    ) {
+      setTribe({
+        id: currentUser?.document_jurisdiction_local_tribal_id,
+        value: currentUser?.code,
+      })
+    }
+  }, [currentUser?.document_jurisdiction_local_tribal_id])
 
   if (!currentUser) return <div>Loading...</div>
 
@@ -127,13 +165,32 @@ const MemberProfileForm = () => {
                     defaultValue={currentUser[item.name]}
                     name={item.name}
                   />
+                ) : item.name === 'document_type' ? (
+                  <DocumentTypeDropdown
+                    onChange={handleDocumentChange}
+                    value={documentType}
+                  />
+                ) : item.name === 'document_jurisdiction_local_tribal_id' ? (
+                  <LocalTribalDropdown
+                    value={tribe}
+                    name={item.name}
+                    disabled={documentType !== 38}
+                    onChange={handleTribeChange}
+                  />
+                ) : item.name === 'document_jurisdiction_other_description' ? (
+                  <TextField
+                    key={item.name}
+                    fullWidth
+                    {...item}
+                    disabled={documentType !== 38 || tribe?.id !== 588}
+                    defaultValue={currentUser[item.name]}
+                  />
                 ) : (
                   <TextField
                     key={item.name}
                     fullWidth
                     {...item}
                     defaultValue={currentUser[item.name]}
-                    disabled={item.name === 'email'}
                   />
                 )
               )}
@@ -142,7 +199,7 @@ const MemberProfileForm = () => {
           <Upload />
         </>
       ) : (
-        'No reporting'
+        <TextField fullWidth name='email' defaultValue={currentUser?.email} />
       )}
     </Form>
   )

@@ -1,5 +1,6 @@
 import { Button } from '@mui/material'
 import { Link, useParams } from 'react-router-dom'
+import PropertyDashboardButton from '../components/PropertyDashboardButton'
 
 const Payment = () => {
   const { propertyId } = useParams()
@@ -11,7 +12,7 @@ const Payment = () => {
       <Button variant='outlined'>Pay</Button>
       <br />
       <br />
-      <Link to={`/properties/${propertyId}`}>Property Dashboard</Link>
+      <PropertyDashboardButton />
     </div>
   )
 }

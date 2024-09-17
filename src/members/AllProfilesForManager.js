@@ -15,6 +15,8 @@ import MemberDetails from './MemberDetails'
 import { useState } from 'react'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { useAuth } from '../contexts/AuthContext'
+import PropertyDashboardButton from '../components/PropertyDashboardButton'
+import { fields } from '../properties/config'
 
 const filingStatus = [
   { value: 'initial', label: 'Initial Report' },
@@ -23,13 +25,13 @@ const filingStatus = [
   { value: 'new', label: 'Newly Exempt' },
 ]
 const AllProfilesForManager = () => {
-  const { allUsersForCurrentProperty, currentProperty } = usePropertyContext()
+  const { propertyUsers, currentProperty } = usePropertyContext()
   const { propertyId } = useParams()
   const [status, setStatus] = useState('initial')
   const [verified, setVerified] = useState(false)
   const navigate = useNavigate()
   const { userProfile } = useAuth()
-
+  const { property_role, ...propertyFields } = fields
   //TODO: finish reading the API docs
   const formatFiling = () => {
     const filing = {
@@ -154,21 +156,40 @@ const AllProfilesForManager = () => {
           ))}
         </RadioGroup>
       </FormControl>
-      {allUsersForCurrentProperty.map((user, idx) => {
-        return (
-          <div key={idx}>
-            <Divider sx={{ my: 2 }}>
-              {user.first_name} {user.last_name}
-            </Divider>
-            <MemberDetails user={user} />
-            <Link to={`/properties/${propertyId}/users/${user.user_id}/edit`}>
-              Edit Member
-            </Link>
-          </div>
-        )
-      })}
+      {fields.map(field =>
+        field.name !== 'property_role' ? (
+          <Stack
+            direction='row'
+            justifyContent='space-between'
+            key={field.name}>
+            <Typography
+              sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
+              {field.label}
+            </Typography>
+            <Typography
+              sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
+              {currentProperty?.[field.name]}
+            </Typography>
+          </Stack>
+        ) : null
+      )}
+      {[...propertyUsers.owner, ...propertyUsers.board_member].map(
+        (user, idx) => {
+          return (
+            <div key={idx}>
+              <Divider sx={{ my: 2 }}>
+                {user.first_name} {user.last_name}
+              </Divider>
+              <MemberDetails user={user} />
+              <Link to={`/properties/${propertyId}/users/${user.user_id}/edit`}>
+                Edit Member
+              </Link>
+            </div>
+          )
+        }
+      )}
       <Divider sx={{ my: 3 }}></Divider>
-      <Link to={`/properties/${propertyId}`}>Property Dashboard</Link>
+      <PropertyDashboardButton />
       <FormControlLabel
         control={
           <Checkbox

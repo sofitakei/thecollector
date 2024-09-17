@@ -14,6 +14,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import MemberDetails from './MemberDetails'
 import { usePropertyContext } from '../contexts/PropertyContext'
+import PropertyDashboardButton from '../components/PropertyDashboardButton'
 
 const PreviouslyFiledMember = () => {
   const { propertyId, fileId } = useParams()
@@ -48,7 +49,7 @@ const PreviouslyFiledMember = () => {
         </>
       ))}
 
-      <Link to={`/properties/${propertyId}`}>Property Dashboard</Link>
+      <PropertyDashboardButton />
     </Stack>
   )
 }

@@ -30,6 +30,17 @@ export const fields = [
     label: 'State',
   },
   { name: 'zipcode', label: 'Zip Code' },
+  {
+    name: 'property_role',
+    label: 'Property Role',
+    select: true,
+    required: true,
+    options: [
+      { id: 'board_member', label: 'Board Member' },
+      { id: 'owner', label: 'Owns 25% or More' },
+      { id: 'nonreporting', label: 'Non-reporting' },
+    ],
+  },
 ]
 
 export const stakeholders = [

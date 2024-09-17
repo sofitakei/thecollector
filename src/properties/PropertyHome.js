@@ -40,9 +40,10 @@ const PropertyHome = () => {
     }
   }
 
-  const submittable = allUsersForCurrentProperty.every(
-    ({ status }) => status === 'verified'
-  )
+  const submittable = [
+    ...propertyUsers.owner,
+    ...propertyUsers.board_member,
+  ].every(({ status }) => status === 'verified')
 
   return (
     <Stack>
@@ -81,7 +82,7 @@ const PropertyHome = () => {
         <Typography component='h2' gutterBottom variant='h6'>
           Non Reporting
         </Typography>
-        <PropertyTable users={unassigned} />
+        <PropertyTable users={unassigned} nonReporting />
       </Box>
     </Stack>
   )

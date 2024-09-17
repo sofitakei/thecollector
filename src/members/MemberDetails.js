@@ -2,8 +2,9 @@ import { Stack, Typography } from '@mui/material'
 import { groups } from './config'
 import { Fragment } from 'react'
 import Photo from '../components/Photo'
+import { documentTypes } from '../components/DocumentTypeDropdown'
 
-const MemberDetails = ({ user }) => {
+const MemberDetails = ({ user, setPhotoUploaded }) => {
   return (
     <Stack>
       {groups.map(({ fields }, idx) => (
@@ -14,11 +15,17 @@ const MemberDetails = ({ user }) => {
                 sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
                 {label}
               </Typography>
-
+              {/* TODO clean this up */}
               {name === 'photoId' ? (
-                <img alt="my driver's license" src={user?.photoId} />
+                <Photo />
+              ) : name === 'document_type' ? (
+                documentTypes.find(
+                  ({ value }) => `${value}` === `${user?.[name]}`
+                )?.label || <Typography color='error'>Missing</Typography>
               ) : (
-                user?.[name] ||
+                (name === 'document_jurisdiction_local_tribal_id'
+                  ? user?.code
+                  : user?.[name]) ||
                 (required ? (
                   <Typography color='error'>Missing</Typography>
                 ) : (
@@ -31,7 +38,7 @@ const MemberDetails = ({ user }) => {
       ))}
       <Stack sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
         <p> Document</p>
-        <Photo user={user} />
+        <Photo user={user} onLoad={setPhotoUploaded} />
       </Stack>
     </Stack>
   )

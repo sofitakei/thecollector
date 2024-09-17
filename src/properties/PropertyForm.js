@@ -8,10 +8,8 @@ import { supabase } from '../supabaseClient'
 import { useAuth } from '../contexts/AuthContext'
 import { getFormFields } from '../utils'
 import CountryDropdown from '../components/CountryDropdown'
-import { useCountries } from '../hooks/useCountries'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
-import RoleSelect from '../components/RoleSelect'
 
 const PropertyForm = () => {
   const navigate = useNavigate()
@@ -85,15 +83,14 @@ const PropertyForm = () => {
             defaultValue={currentProperty?.[name] || ''}>
             {select &&
               options?.length &&
-              options.map(({ name, id, value }) => (
+              options.map(({ name, label, id, value }) => (
                 <MenuItem key={id} value={value || id}>
-                  {name}
+                  {name || label}
                 </MenuItem>
               ))}
           </TextField>
         )
       )}
-      <RoleSelect />
     </Form>
   )
 }

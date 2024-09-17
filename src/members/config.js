@@ -68,7 +68,7 @@ export const groups = [
         required: true,
       },
       {
-        name: 'document_jurisdiction_local_tribal',
+        name: 'document_jurisdiction_local_tribal_id',
         label: 'Local/Tribal',
       },
       {

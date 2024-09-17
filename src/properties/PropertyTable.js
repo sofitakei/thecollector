@@ -6,7 +6,7 @@ import Table from '../components/Table'
 import { usePropertyContext } from '../contexts/PropertyContext'
 
 const emptyIfNull = str => (!str || str === null ? '' : str)
-const PropertyTable = ({ users }) => {
+const PropertyTable = ({ nonReporting = false, users }) => {
   const { showMemberCheckboxColumn } = usePropertyContext()
   const showCheckbox = Boolean(showMemberCheckboxColumn)
 
@@ -27,16 +27,18 @@ const PropertyTable = ({ users }) => {
           },
         },
 
-        {
-          name: 'status',
-          label: 'Status',
-          Renderer: StatusCell,
-          CellProps: { align: 'right' },
-          RendererProps: {
-            getter: ({ status }) => status,
-          },
-        },
-      ]}
+        nonReporting
+          ? null
+          : {
+              name: 'status',
+              label: 'Status',
+              Renderer: StatusCell,
+              CellProps: { align: 'right' },
+              RendererProps: {
+                getter: ({ status }) => status,
+              },
+            },
+      ].filter(col => col !== null)}
       data={users}
       getter={({ first_name, last_name }) => `${first_name} ${last_name}`}
       showCheckbox={showCheckbox}
