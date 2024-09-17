@@ -11,6 +11,7 @@ import CountryDropdown from '../components/CountryDropdown'
 import { useCountries } from '../hooks/useCountries'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
+import RoleSelect from '../components/RoleSelect'
 
 const PropertyForm = () => {
   const navigate = useNavigate()
@@ -24,10 +25,12 @@ const PropertyForm = () => {
   const handleSubmit = async e => {
     e.preventDefault()
     const formFields = getFormFields(e.target)
-
+    console.log({ formFields })
     let propertyId = currentProperty?.id
     if (!formFields.name) {
       setErrors('Company field is required')
+    } else if (!formFields.property_role) {
+      setErrors('Property role is required')
     } else {
       //TODO: this should be done in the country dropdown component
       const country_id = countriesByName[formFields.country_jurisdiction_id]
@@ -58,7 +61,7 @@ const PropertyForm = () => {
     <Form onSubmit={handleSubmit}>
       {errors && (
         <Alert severity='error' sx={{ mb: 2 }}>
-          Company Legal Name is required
+          {errors}
         </Alert>
       )}
       {fields.map(({ name, options, select, ...rest }) =>
@@ -90,6 +93,7 @@ const PropertyForm = () => {
           </TextField>
         )
       )}
+      <RoleSelect />
     </Form>
   )
 }

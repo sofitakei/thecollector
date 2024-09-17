@@ -79,7 +79,7 @@ const PropertyHome = () => {
         <PropertyTable users={owner} />
         <br />
         <Typography component='h2' gutterBottom variant='h6'>
-          Unassigned
+          Non Reporting
         </Typography>
         <PropertyTable users={unassigned} />
       </Box>

@@ -12,8 +12,7 @@ const PrivateRoute = () => {
   const { session } = useAuth()
   const { propertyId } = useParams()
   if (!session?.user) return <Navigate to='/login' />
-  if (!session?.user?.user_metadata.has_password)
-    return <Navigate to='/reset' />
+
   return (
     <PropertiesProvider>
       {wrapProvider(

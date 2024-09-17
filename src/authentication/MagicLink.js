@@ -10,7 +10,6 @@ const MagicLink = () => {
     event.preventDefault()
     setLoading(true)
     const { error } = await supabase.auth.signInWithOtp({ email })
-    console.log(email, error)
     if (error) {
       alert(error.error_description || error.message)
     } else {
@@ -32,7 +31,7 @@ const MagicLink = () => {
             value={email}
             required={true}
             fullWidth
-            onChange={e => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value.toLowerCase())}
           />
 
           <Button

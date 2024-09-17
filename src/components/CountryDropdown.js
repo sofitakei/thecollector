@@ -1,6 +1,4 @@
 import { Autocomplete, TextField } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { supabase } from '../supabaseClient'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
 
 //TODO: the autocomplete should return the id as the value

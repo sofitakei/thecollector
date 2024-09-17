@@ -24,6 +24,8 @@ import { usePropertyContext } from '../contexts/PropertyContext'
 import CountryDropdown from '../components/CountryDropdown'
 import Upload from '../components/Upload'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
+import RoleSelect from '../components/RoleSelect'
+import { useEffect, useState } from 'react'
 
 const MemberProfileForm = () => {
   const navigate = useNavigate()
@@ -31,7 +33,11 @@ const MemberProfileForm = () => {
   const { currentUser, setRefresh } = usePropertyContext() || {}
   const { setRefresh: setProfilesRefresh } = useAuth()
   const { propertyId, userId } = useParams()
-
+  const [propertyRole, setPropertyRole] = useState('')
+  const handlePropertyRoleChange = (_, v) => {
+    console.log({ v })
+    setPropertyRole(v)
+  }
   const handleSave = async e => {
     e.preventDefault()
     const {
@@ -86,62 +92,58 @@ const MemberProfileForm = () => {
       navigate(`/properties/${propertyId}/users/${userId}`)
     }
   }
+  useEffect(() => {
+    if (currentUser?.property_role) {
+      setPropertyRole(currentUser.property_role)
+    }
+  }, [currentUser?.property_role])
 
   if (!currentUser) return <div>Loading...</div>
 
   return (
     <Form onSubmit={handleSave}>
-      <FormControl>
-        <FormLabel id='demo-radio-buttons-group-label'>Stake</FormLabel>
-        <RadioGroup
-          row
-          aria-labelledby='demo-radio-buttons-group-label'
-          defaultValue={currentUser?.property_role}
-          name='property_role'>
-          {stakeholders.map(({ name, label }) => (
-            <FormControlLabel
-              control={<Radio />}
-              key={name}
-              value={name}
-              label={label}
-            />
-          ))}
-        </RadioGroup>
-      </FormControl>
+      <RoleSelect value={propertyRole} onChange={handlePropertyRoleChange} />
       <br />
       <h3>Edit Information</h3>
+      {propertyRole !== 'nonreporting' ? (
+        <>
+          {groups.map(({ fields, groupLabel }) => (
+            <Stack key={groupLabel} spacing={2} width='100%' mb={5}>
+              <h4>{groupLabel}</h4>
 
-      {groups.map(({ fields, groupLabel }) => (
-        <Stack key={groupLabel} spacing={2} width='100%' mb={5}>
-          <h4>{groupLabel}</h4>
-
-          {fields.map(item =>
-            item.control === 'date' ? (
-              <DatePicker
-                key={item.name}
-                defaultValue={
-                  currentUser[item.name] ? dayjs(currentUser[item.name]) : null
-                }
-                {...item}
-              />
-            ) : item.name.includes('country_jurisdiction') ? (
-              <CountryDropdown
-                defaultValue={currentUser[item.name]}
-                name={item.name}
-              />
-            ) : (
-              <TextField
-                key={item.name}
-                fullWidth
-                {...item}
-                defaultValue={currentUser[item.name]}
-                disabled={item.name === 'email'}
-              />
-            )
-          )}
-        </Stack>
-      ))}
-      <Upload />
+              {fields.map(item =>
+                item.control === 'date' ? (
+                  <DatePicker
+                    key={item.name}
+                    defaultValue={
+                      currentUser[item.name]
+                        ? dayjs(currentUser[item.name])
+                        : null
+                    }
+                    {...item}
+                  />
+                ) : item.name.includes('country_jurisdiction') ? (
+                  <CountryDropdown
+                    defaultValue={currentUser[item.name]}
+                    name={item.name}
+                  />
+                ) : (
+                  <TextField
+                    key={item.name}
+                    fullWidth
+                    {...item}
+                    defaultValue={currentUser[item.name]}
+                    disabled={item.name === 'email'}
+                  />
+                )
+              )}
+            </Stack>
+          ))}{' '}
+          <Upload />
+        </>
+      ) : (
+        'No reporting'
+      )}
     </Form>
   )
 }

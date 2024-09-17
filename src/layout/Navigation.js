@@ -13,11 +13,7 @@ import { usePropertyContext } from '../contexts/PropertyContext'
 const drawerWidth = 240
 const Navigation = props => {
   const { setShowRemovePropertyColumn } = usePropertiesContext()
-  const {
-    setSelectedMembers,
-    setShowMemberCheckboxColumn,
-    sessionPropertyUser,
-  } = usePropertyContext() || {}
+  const { currentProperty, sessionPropertyUser } = usePropertyContext() || {}
   const { propertyId } = useParams()
   const location = useLocation()
   const { userProfile, logout } = useAuth()
@@ -41,6 +37,12 @@ const Navigation = props => {
   const items = [
     { label: 'Home', path: '/properties', include: true },
     {
+      label: `${currentProperty?.name} Dashboard`,
+      path: `/properties/${propertyId}`,
+      include:
+        propertyId !== 'new' && propertyId !== undefined && propertyId !== '',
+    },
+    {
       label: 'Edit Property',
       path: `/properties/${propertyId}/edit`,
       include: isPropertyHome && isManager,
@@ -55,22 +57,22 @@ const Navigation = props => {
       path: `/properties/${propertyId}/addMembers`,
       include: isPropertyHome && isManager,
     },
-    {
-      label: 'Remove Members',
-      showForProperty: true,
-      onClick: () => {
-        setShowMemberCheckboxColumn('remove')
-      },
-      include: isPropertyHome && isManager,
-    },
-    {
-      label: 'Add/Remove Managers',
-      showForProperty: true,
-      onClick: () => {
-        setShowMemberCheckboxColumn('manager')
-      },
-      include: isPropertyHome && isManager,
-    },
+    // {
+    //   label: 'Remove Members',
+    //   showForProperty: true,
+    //   onClick: () => {
+    //     setShowMemberCheckboxColumn('remove')
+    //   },
+    //   include: isPropertyHome && isManager,
+    // },
+    // {
+    //   label: 'Add/Remove Managers',
+    //   showForProperty: true,
+    //   onClick: () => {
+    //     setShowMemberCheckboxColumn('manager')
+    //   },
+    //   include: isPropertyHome && isManager,
+    // },
     {
       label: 'Make Payment',
       path: `/properties/${propertyId}/payment`,
@@ -81,15 +83,15 @@ const Navigation = props => {
       path: `/properties/${propertyId}/history`,
       include: isPropertyHome,
     },
-    {
-      label: 'Send Reminder',
-      showForProperty: true,
-      onClick: () => {
-        setSelectedMembers([])
-        setShowMemberCheckboxColumn('notify')
-      },
-      include: isPropertyHome && isManager,
-    },
+    // {
+    //   label: 'Send Reminder',
+    //   showForProperty: true,
+    //   onClick: () => {
+    //     setSelectedMembers([])
+    //     setShowMemberCheckboxColumn('notify')
+    //   },
+    //   include: isPropertyHome && isManager,
+    // },
     {
       label: 'SUBMIT FORM',
       path: `/properties/${propertyId}/submit`,

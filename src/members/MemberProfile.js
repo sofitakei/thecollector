@@ -9,7 +9,6 @@ import {
 } from '@mui/material'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { usePropertiesContext } from '../contexts/PropertiesContext'
 import { groups } from './config'
 import { Fragment, useState } from 'react'
 import { supabase } from '../supabaseClient'

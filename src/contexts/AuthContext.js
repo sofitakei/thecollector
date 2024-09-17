@@ -18,7 +18,7 @@ const AuthProvider = ({ children, session, setSession }) => {
   }
 
   const onSuccess = data => {
-    setUserProfile(data[0])
+    setUserProfile({ ...data[0], email: session?.user?.email })
   }
 
   const { refresh, setRefresh } = useData({

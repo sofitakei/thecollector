@@ -8,10 +8,8 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
-import { usePropertiesContext } from '../contexts/PropertiesContext'
-import { groups } from './config'
 import { Fragment, useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import MemberDetails from './MemberDetails'

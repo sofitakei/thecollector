@@ -13,6 +13,7 @@ import { useState } from 'react'
 import Navigation from './Navigation'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { Link } from 'react-router-dom'
+import { AccountCircle } from '@mui/icons-material'
 
 const drawerWidth = 240
 
@@ -56,7 +57,7 @@ const NavShell = ({ children }) => {
             width: { sm: `calc(100% - ${drawerWidth}px)` },
             ml: { sm: `${drawerWidth}px` },
           }}>
-          <Toolbar>
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
             <IconButton
               aria-label='open drawer'
               color='inherit'
@@ -70,6 +71,11 @@ const NavShell = ({ children }) => {
                 {' '}
                 {currentProperty?.name} Dashboard
               </Typography>
+            </Link>
+            <Link to='/profile'>
+              <IconButton sx={{ color: '#fff' }}>
+                <AccountCircle />
+              </IconButton>
             </Link>
           </Toolbar>
         </AppBar>

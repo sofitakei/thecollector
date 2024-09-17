@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import LinkedCell from '../components/LinkedCell'
 import StatusCell from '../components/StatusCell'
 import Table from '../components/Table'
-import { usePropertiesContext } from '../contexts/PropertiesContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
 
 const emptyIfNull = str => (!str || str === null ? '' : str)

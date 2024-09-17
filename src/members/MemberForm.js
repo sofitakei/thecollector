@@ -4,7 +4,7 @@ import {
   Checkbox,
   Divider,
   FormControlLabel,
-  Grid,
+  IconButton,
   MenuItem,
   Stack,
   TextField,
@@ -18,6 +18,7 @@ import { checkEmailExists, checkForDuplicates, getFormFields } from '../utils'
 import { supabase } from '../supabaseClient'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { useAuth } from '../contexts/AuthContext'
+import CloseIcon from '@mui/icons-material/Close'
 
 const fields = [
   { name: 'first_name', label: 'First Name', required: true },
@@ -28,10 +29,11 @@ const fields = [
     name: 'property_role',
     label: 'Property Role',
     select: true,
+    required: true,
     options: [
       { id: 'board_member', label: 'Board Member' },
       { id: 'owner', label: 'Owns 25% or More' },
-      { id: 'unassigned', label: 'Unassigned' },
+      { id: 'nonreporting', label: 'Non-reporting' },
     ],
   },
 ]
@@ -41,6 +43,7 @@ const MemberForm = ({
   overrides,
   allowMultiple = false,
   handleAddMember,
+  handleRemoveMember,
 }) => {
   const { setRefresh } = usePropertyContext()
   const { setRefresh: setRefreshProfile } = useAuth()
@@ -97,24 +100,30 @@ const MemberForm = ({
       const hasDuplicateEmails = checkForDuplicates(
         members.map(({ email }) => email)
       )
+      if (
+        members.some(
+          ({ email, first_name, property_role }) =>
+            !email || !first_name || !property_role
+        )
+      ) {
+        setSaveDisabled(false)
+        setError('First name, email, and role are required')
+        return
+      }
 
       if (hasDuplicateEmails) {
         setError('Please check you have no duplicate emails')
         setSaveDisabled(true)
         return
       }
-      if (members.some(({ email, first_name }) => !email || !first_name)) {
-        setSaveDisabled(false)
-        setError('Name and email are required')
-        return
-      }
+
       // TODO: move this to backend
       const { data, error } = await supabase
         .from('profiles')
         .insert(
           members.map(m => {
-            const { property_role, is_manager, ...rest } = m
-            return rest
+            const { property_role, is_manager, email, ...rest } = m
+            return { ...rest, email: email.toLowerCase() }
           })
         )
         .select()
@@ -159,7 +168,14 @@ const MemberForm = ({
         {[...Array(count).keys()].map((_, idx) => (
           <Stack spacing={2} key={idx}>
             {allowMultiple && idx < count && (
-              <Divider>Member {idx + 1}</Divider>
+              <Divider>
+                Member {idx + 1}{' '}
+                {idx > 0 && (
+                  <IconButton onClick={handleRemoveMember(idx)}>
+                    <CloseIcon />
+                  </IconButton>
+                )}
+              </Divider>
             )}
             {fields.map(
               ({ name, label, checkbox, options, select, required }) => (
@@ -180,9 +196,7 @@ const MemberForm = ({
                       onChange={name === 'email' ? handleChange : () => {}}
                       required={required}
                       select={select}
-                      defaultValue={
-                        name === 'property_role' ? 'unassigned' : ''
-                      }
+                      defaultValue=''
                       {...overrides?.[name]}>
                       {options?.map(({ label, id }) => (
                         <MenuItem key={id} value={id}>

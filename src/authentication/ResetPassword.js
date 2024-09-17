@@ -13,9 +13,6 @@ const ResetPassword = () => {
   const handleReset = async () => {
     const { data, error } = await supabase.auth.updateUser({
       password: passwordRef?.current?.value,
-      data: {
-        has_password: true,
-      },
     })
 
     if (error === null) {

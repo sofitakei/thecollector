@@ -27,6 +27,9 @@ const InviteMember = () => {
   const handleAddMember = () => {
     setMembersCount(count => count + 1)
   }
+  const handleRemoveMember = idx => () => {
+    setMembersCount(count => count - 1)
+  }
   return (
     <Stack sx={{ img: { maxHeight: 200 } }}>
       {/* TODO: generate QR code links */}
@@ -41,6 +44,7 @@ const InviteMember = () => {
         count={membersCount}
         allowMultiple
         handleAddMember={handleAddMember}
+        handleRemoveMember={handleRemoveMember}
       />
     </Stack>
   )

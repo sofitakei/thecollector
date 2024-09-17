@@ -35,5 +35,5 @@ export const fields = [
 export const stakeholders = [
   { name: 'board_member', label: 'Board Members' },
   { name: 'owner', label: ' Owners of 25% or More' },
-  { name: 'unassigned', label: 'Unassigned' },
+  { name: 'nonreporting', label: 'Non Reporting' },
 ]

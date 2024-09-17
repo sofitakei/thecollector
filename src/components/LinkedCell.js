@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import { useAuth } from '../contexts/AuthContext'
-import { usePropertiesContext } from '../contexts/PropertiesContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
 
 const LinkedCell = ({ getter, buildUrl, item, type }) => {
@@ -14,7 +13,7 @@ const LinkedCell = ({ getter, buildUrl, item, type }) => {
   const text = getter(item)
   return (
     <TableCell>
-      {isManager || type === 'property' || userProfile?.id === item.user_id ? (
+      {type === 'property' || isManager || userProfile?.id === item.user_id ? (
         <Link item={item} to={buildUrl(item)} type={type}>
           {text}
         </Link>
