@@ -18,6 +18,7 @@ import AllProfilesForManager from './members/AllProfilesForManager'
 import Payment from './properties/Payment'
 import PreviouslyFiledMember from './members/PreviouslyFiledMember'
 import Profile from './Profile'
+import Settings from './Settings'
 
 const AppRoutes = () => {
   return (
@@ -26,7 +27,7 @@ const AppRoutes = () => {
         <Route element={<ResetPassword />} path='/reset' />
         <Route element={<PrivateRoute />}>
           <Route element={<Profile />} exact path='/profile' />
-
+          <Route element={<Settings />} exact path='/account' />
           <Route element={<Properties />} exact path='/properties' />
           <Route element={<Property />} path='/properties/:propertyId' />
           <Route

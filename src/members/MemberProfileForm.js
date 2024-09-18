@@ -29,19 +29,26 @@ import { useEffect, useState } from 'react'
 import DocumentTypeDropdown from '../components/DocumentTypeDropdown'
 import LocalTribalDropdown from '../components/LocalTribalDropdown'
 
-const MemberProfileForm = () => {
+const MemberProfileForm = ({ newMember = false }) => {
   const navigate = useNavigate()
   const { countriesByName } = usePropertiesContext()
-  const { currentUser, setRefresh } = usePropertyContext() || {}
+  const { currentUser = {}, setRefresh } = usePropertyContext() || {}
   const { setRefresh: setProfilesRefresh } = useAuth()
-  const { propertyId, userId } = useParams()
+  const { propertyId, userId, ...rest } = useParams()
   const [propertyRole, setPropertyRole] = useState('')
   const [documentType, setDocumentType] = useState('')
   const [tribe, setTribe] = useState(null)
   const handlePropertyRoleChange = (_, v) => {
     setPropertyRole(v)
   }
+  const insertSave = async fields => {
+    console.log('insert called')
+    return await supabase.from('profiles').insert(fields).select()
+  }
 
+  const updateSave = async (fields, id) => {
+    return await supabase.from('profiles').update(fields).eq('id', id)
+  }
   const handleSave = async e => {
     e.preventDefault()
     const {
@@ -63,39 +70,43 @@ const MemberProfileForm = () => {
       property_role: pr,
       ...originalUser
     } = currentUser
-    if (!isEqual(formFields, originalUser)) {
-      const { data, error } = await supabase
+    const fieldsToSave = {
+      ...formFields,
+      document_jurisdiction_local_tribal_id: tribe !== null ? tribe.id : null,
+      document_country_jurisdiction_id:
+        countriesByName?.[document_country_jurisdiction] || null,
+      country_jurisdiction_id: countriesByName?.[country_jurisdiction] || null,
+      ...(userId ? { id: userId } : {}),
+    }
+    if (isEqual(formFields, originalUser)) {
+      //nothing to save
+    } else {
+      const { error, data } = await supabase
         .from('profiles')
-        .update({
-          ...formFields,
-          document_jurisdiction_local_tribal_id:
-            tribe !== null ? tribe.id : null,
-          document_country_jurisdiction_id:
-            countriesByName?.[document_country_jurisdiction] || null,
-          country_jurisdiction_id:
-            countriesByName?.[country_jurisdiction] || null,
-        })
-        .eq('id', userId)
+        .upsert(fieldsToSave)
+        .select()
+      console.log({ data, error })
       //TODO as trigger?
-      const { error: voidStatusError } = await supabase
-        .from('userproperty_filing')
-        .update({ status: 'void' })
-        .eq('userproperty_id', userproperty_id)
-
+      if (!newMember) {
+        const { error: voidStatusError } = await supabase
+          .from('userproperty_filing')
+          .update({ status: 'void' })
+          .eq('userproperty_id', userproperty_id)
+      }
       if (!error) {
+        console.log({ data })
+        const editedUserId = userId || data?.[0]?.id
         await supabase
           .from('userproperty')
           .update({ property_role })
-          .eq('user_id', userId)
+          .eq('user_id', editedUserId)
           .eq('property_id', propertyId)
         setRefresh(true)
         setProfilesRefresh(true)
-        navigate(`/properties/${propertyId}/users/${userId}`)
+        navigate(`/properties/${propertyId}/users/${editedUserId}`)
       } else {
         console.log({ error })
       }
-    } else {
-      navigate(`/properties/${propertyId}/users/${userId}`)
     }
   }
 
@@ -135,8 +146,8 @@ const MemberProfileForm = () => {
       })
     }
   }, [currentUser?.document_jurisdiction_local_tribal_id])
-
-  if (!currentUser) return <div>Loading...</div>
+  console.log({ currentUser })
+  if (!currentUser?.user_id && !newMember) return <div>Loading...</div>
 
   return (
     <Form onSubmit={handleSave}>

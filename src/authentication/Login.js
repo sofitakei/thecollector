@@ -37,10 +37,12 @@ const Login = () => {
   return (
     <Box
       sx={{
-        marginTop: 8,
+        px: 5,
+        my: 5,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        maxWidth: '100vw',
       }}>
       {errorMsg && (
         <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible>
@@ -50,7 +52,7 @@ const Login = () => {
       <Typography component='h1' variant='h5' mb={2}>
         Sign in
       </Typography>
-      <Stack spacing={2}>
+      <Stack width='100%' spacing={2}>
         <Stack spacing={2} component='form' onSubmit={handleLogin}>
           <TextField label='email' inputRef={emailRef}></TextField>
           <TextField

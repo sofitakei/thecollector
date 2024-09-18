@@ -12,23 +12,12 @@ import { usePropertyContext } from '../contexts/PropertyContext'
 
 const drawerWidth = 240
 const Navigation = props => {
-  const { setShowRemovePropertyColumn } = usePropertiesContext()
   const { currentProperty, sessionPropertyUser } = usePropertyContext() || {}
   const { propertyId } = useParams()
   const location = useLocation()
-  const { userProfile, logout } = useAuth()
+  const { userProfile } = useAuth()
   const isManager = sessionPropertyUser?.is_manager
   const navigate = useNavigate()
-  const handleLogout = async () => {
-    try {
-      await logout()
-      localStorage.removeItem('verified')
-    } catch (error) {
-      console.log(error)
-    } finally {
-      navigate('/')
-    }
-  }
 
   const isPropertyHome =
     matchPath('/properties/:propertyId', location.pathname) &&
@@ -99,16 +88,9 @@ const Navigation = props => {
     },
 
     { label: 'Add Property', path: '/properties/new', include: !propertyId },
-    {
-      label: 'Remove Property',
-      onClick: () => {
-        setShowRemovePropertyColumn(true)
-      },
-      include: !propertyId,
-    },
   ]
   const navItems = items.filter(item => item.include)
-
+  const { onClose } = props
   return (
     <>
       <Drawer {...props}>
@@ -121,6 +103,7 @@ const Navigation = props => {
                   onClick()
                   return
                 } else if (path) {
+                  onClose()
                   navigate(path)
                 }
               }}>
@@ -148,13 +131,13 @@ const Navigation = props => {
                   onClick()
                   return
                 } else if (path) {
+                  onclose()
                   navigate(path)
                 }
               }}>
               {label}
             </ListItemButton>
           ))}
-          <ListItemButton onClick={handleLogout}>Logout</ListItemButton>
         </List>
       </Drawer>
     </>

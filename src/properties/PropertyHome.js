@@ -5,20 +5,54 @@ import PropertyTable from './PropertyTable'
 import { supabase } from '../supabaseClient'
 import { useNavigate, useParams } from 'react-router-dom'
 import { usePropertyContext } from '../contexts/PropertyContext'
+import { useState } from 'react'
+import CheckboxActions from './CheckboxActions'
 
+import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
+import ConfirmManagerAddRemoveDialog from '../components/ConfirmManagerAddRemoveDialog'
+import ConfirmSendNotificationsDialog from '../components/ConfirmSendNotificationsDialog'
+import { emptyIfNull } from '../utils'
+
+const actionDialog = {
+  send: ConfirmSendNotificationsDialog,
+  remove: ConfirmRemoveDialog,
+  managerAdd: props => (
+    <ConfirmManagerAddRemoveDialog addAsManager {...props} />
+  ),
+  managerRemove: ConfirmManagerAddRemoveDialog,
+}
+
+const initialState = {
+  owner: [],
+  board: [],
+  nonreporting: [],
+}
 const PropertyHome = () => {
   const {
-    allUsersForCurrentProperty,
     propertyUsers,
     sessionPropertyUser,
     setRefresh,
+    selectedMembers: selectedItems,
   } = usePropertyContext() || {}
   const { userProfile } = useAuth()
   const { propertyId } = useParams()
   const { board_member, owner, unassigned } = propertyUsers
   const isManager = sessionPropertyUser?.is_manager
   const navigate = useNavigate()
+  const [allSelected, setAllSelected] = useState(initialState)
+  const [action, setAction] = useState()
 
+  const handleDelete = () => {
+    setAction('remove')
+  }
+
+  const handleSend = () => {
+    setAction('send')
+  }
+
+  const handleManager = add => () => {
+    setAction(add ? 'managerAdd' : 'managerRemove')
+  }
   const handleClick = () => {
     if (!isManager) {
       console.log('TODO: send request access')
@@ -26,20 +60,12 @@ const PropertyHome = () => {
       navigate(`/properties/${propertyId}/submit`)
     }
   }
-  const handleManagerChange = async () => {
-    const { error } = await supabase
-      .from('userproperty')
-      .update({ is_manager: !isManager })
-      .eq('user_id', userProfile?.id)
-      .eq('property_id', propertyId)
-      .select()
-    if (!error) {
-      setRefresh(true)
-    } else {
-      console.log('change manager status failed', { error })
-    }
+
+  const handleSelected = role => selected => {
+    setAllSelected(old => ({ ...old, [role]: selected }))
   }
 
+  const ConfirmRenderer = actionDialog[action]
   const submittable = [
     ...propertyUsers.owner,
     ...propertyUsers.board_member,
@@ -47,21 +73,6 @@ const PropertyHome = () => {
 
   return (
     <Stack>
-      {/* <Alert severity='info'>TODO: you have some outstanding tasks.</Alert>
-      <Alert severity='warning'>
-        Missing manager. Click here to add a manager.
-      </Alert>
-      <Alert severity='error'>
-        Missing payment. Click here to make a payment.
-      </Alert> */}
-
-      <Alert severity='warning' sx={{ my: 2, width: 400 }}>
-        DEV ONLY - toggle between manager and not
-        <br />
-        <Button variant='outlined' size='small' onClick={handleManagerChange}>
-          {isManager ? 'demote me' : 'promote me to manager'}
-        </Button>
-      </Alert>
       <Button
         variant='outlined'
         disabled={isManager ? !submittable : false}
@@ -72,18 +83,63 @@ const PropertyHome = () => {
         <Typography component='h2' gutterBottom variant='h6'>
           Board Members
         </Typography>
-        <PropertyTable users={board_member} />
+        <PropertyTable
+          onSelected={handleSelected('board')}
+          users={board_member}
+          showCheckbox={isManager}
+        />
         <br />
         <Typography component='h2' gutterBottom variant='h6'>
           Owners of 25% or More
         </Typography>
-        <PropertyTable users={owner} />
+        <PropertyTable
+          onSelected={handleSelected('owner')}
+          users={owner}
+          showCheckbox={isManager}
+        />
         <br />
         <Typography component='h2' gutterBottom variant='h6'>
           Non Reporting
         </Typography>
-        <PropertyTable users={unassigned} nonReporting />
+        <PropertyTable
+          onSelected={handleSelected('nonreporting')}
+          users={unassigned}
+          nonReporting
+          showCheckbox={isManager}
+        />
       </Box>
+      {action && (
+        <ConfirmRenderer
+          getter={({ first_name, last_name, email }) =>
+            `${emptyIfNull(first_name)} ${emptyIfNull(
+              last_name
+            )} (${emptyIfNull(email)})`
+          }
+          items={selectedItems}
+          setSelectedData={() => {
+            setAllSelected(initialState)
+          }}
+          setOpen={setAction}
+          setRefresh={setRefresh}
+        />
+      )}
+      {isManager && (
+        <CheckboxActions
+          onNotify={handleSend}
+          onAddManager={handleManager(true)}
+          onRemoveManager={handleManager()}
+          onDelete={handleDelete}
+          deleteDisabled={selectedItems?.length === 0}
+          managerRemoveDisabled={
+            selectedItems?.length === 0 ||
+            !selectedItems?.every(({ is_manager }) => is_manager)
+          }
+          managerAddDisabled={
+            selectedItems?.length === 0 ||
+            selectedItems?.some(({ is_manager }) => is_manager)
+          }
+        />
+      )}
     </Stack>
   )
 }

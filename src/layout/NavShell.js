@@ -4,6 +4,7 @@ import {
   Box,
   CssBaseline,
   IconButton,
+  Stack,
   Toolbar,
   Typography,
 } from '@mui/material'
@@ -13,7 +14,7 @@ import { useState } from 'react'
 import Navigation from './Navigation'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { Link } from 'react-router-dom'
-import { AccountCircle } from '@mui/icons-material'
+import AccountMenu from './AccountMenu'
 
 const drawerWidth = 240
 
@@ -21,7 +22,7 @@ const Copyright = props => (
   <Typography align='center' color='text.secondary' variant='body2' {...props}>
     {'Copyright © '}
     <Link color='inherit' href='https://mui.com/'>
-      CondoBOI
+      FileHOABOI
     </Link>{' '}
     {new Date().getFullYear()}
     {'.'}
@@ -49,7 +50,10 @@ const NavShell = ({ children }) => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', a: { textDecoration: 'none' } }}>
+      <Stack
+        direction={{ sm: 'row', xs: 'column' }}
+        alignItems='center'
+        sx={{ a: { textDecoration: 'none' } }}>
         <CssBaseline />
         <AppBar
           position='fixed'
@@ -72,11 +76,7 @@ const NavShell = ({ children }) => {
                 {currentProperty?.name} Dashboard
               </Typography>
             </Link>
-            <Link to='/profile'>
-              <IconButton sx={{ color: '#fff' }}>
-                <AccountCircle />
-              </IconButton>
-            </Link>
+            <AccountMenu />
           </Toolbar>
         </AppBar>
         <Box
@@ -96,13 +96,14 @@ const NavShell = ({ children }) => {
           component='main'
           sx={{
             flexGrow: 1,
-            p: 3,
-            pt: 10,
+            pt: { xs: 12, sm: 10 },
+            px: 2,
+
             width: { sm: `calc(100% - ${drawerWidth}px)` },
           }}>
           {children}
         </Box>
-      </Box>
+      </Stack>
 
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </>

@@ -1,6 +1,6 @@
 import { Divider } from '@mui/material'
-import MemberForm from './MemberForm'
 import SearchMember from './SearchMember'
+import MemberProfileForm from './MemberProfileForm'
 
 const AddMember = () => {
   return (
@@ -8,7 +8,7 @@ const AddMember = () => {
       <SearchMember />
       <Divider>OR</Divider>
       <h2>Add New Member</h2>
-      <MemberForm />
+      <MemberProfileForm newMember />
     </>
   )
 }

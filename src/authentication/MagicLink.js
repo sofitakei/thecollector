@@ -24,7 +24,7 @@ const MagicLink = () => {
         An email will be sent to the address you provide below to sign in
       </Typography>
       <form onSubmit={handleLogin}>
-        <Stack spacing={2} minWidth={500}>
+        <Stack spacing={2}>
           <TextField
             type='email'
             placeholder='Your email'

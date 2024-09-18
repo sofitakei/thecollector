@@ -6,8 +6,20 @@ import Table from '../components/Table'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
 import PropertyForm from './PropertyForm'
 import PropertyHome from './PropertyHome'
-import { Box, Typography } from '@mui/material'
+import {
+  Box,
+  Fab,
+  IconButton,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
 import { useAuth } from '../contexts/AuthContext'
+import PaymentCell from '../components/PaymentCell'
+import DeleteIcon from '@mui/icons-material/Delete'
+import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
+import { useState } from 'react'
 
 const NoData = () => {
   return (
@@ -19,17 +31,63 @@ const NoData = () => {
   )
 }
 
+const CheckboxActions = ({ disabled, onClick }) => {
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.down('sm'))
+
+  return matches ? (
+    <Fab
+      onClick={onClick}
+      sx={{ position: 'absolute', bottom: 16, right: 16 }}
+      color='primary'
+      aria-label='add'
+      disabled={disabled}>
+      <DeleteIcon />
+    </Fab>
+  ) : (
+    <Stack direction='row'>
+      <IconButton
+        onClick={onDelete}
+        disabled={disabled}
+        size='small'
+        variant='outlined'>
+        <DeleteIcon />
+      </IconButton>
+    </Stack>
+  )
+}
+const getIsManager = ({ is_manager }) => is_manager
+
 const Properties = () => {
-  const { properties, showRemovePropertyColumn, loaded } =
-    usePropertiesContext()
+  const {
+    properties,
+    loaded,
+    selectedProperties,
+    setSelectedProperties,
+    setRefresh,
+  } = usePropertiesContext()
   const {
     userProfile: { first_name, email },
   } = useAuth()
 
+  const showCheckbox = properties?.some(getIsManager)
+  const [showDialog, setShowDialog] = useState()
+
+  const handleShowDialog = () => {
+    setShowDialog(true)
+  }
+
   return properties ? (
     <>
       <Typography variant='h4'>Welcome, {first_name || email}</Typography>
+      {/* TODO: use DataGrid? */}
+      <CheckboxActions
+        disabled={selectedProperties?.length === 0}
+        onClick={handleShowDialog}
+      />
       <Table
+        getCheckboxEnabled={getIsManager}
+        showCheckbox={showCheckbox}
         checkboxAction='remove'
         columns={[
           {
@@ -42,7 +100,13 @@ const Properties = () => {
               buildUrl: ({ property_id }) => `/properties/${property_id}`,
             },
           },
-          { name: 'paid', label: '', defaultValue: 'Not Paid' },
+          {
+            name: 'paid',
+            RendererProps: { paid: false },
+
+            defaultValue: false,
+            Renderer: PaymentCell,
+          },
           {
             name: 'status',
             label: 'Status',
@@ -53,11 +117,20 @@ const Properties = () => {
             },
           },
         ]}
+        idField='property_id'
         data={properties}
-        getter={({ name }) => name}
-        showCheckbox={showRemovePropertyColumn}
         NoDataMessage={<NoData />}
       />
+      {showDialog && (
+        <ConfirmRemoveDialog
+          setSelectedData={setSelectedProperties}
+          items={selectedProperties}
+          idField='property_id'
+          setOpen={setShowDialog}
+          table='properties'
+          setRefresh={setRefresh}
+        />
+      )}
     </>
   ) : (
     <div>{loaded ? 'no data' : 'Loading...'}</div>

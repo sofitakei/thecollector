@@ -3,16 +3,22 @@ import PropTypes from 'prop-types'
 import LinkedCell from '../components/LinkedCell'
 import StatusCell from '../components/StatusCell'
 import Table from '../components/Table'
-import { usePropertyContext } from '../contexts/PropertyContext'
+import CheckboxActions from './CheckboxActions'
 
 const emptyIfNull = str => (!str || str === null ? '' : str)
-const PropertyTable = ({ nonReporting = false, users }) => {
-  const { showMemberCheckboxColumn } = usePropertyContext()
-  const showCheckbox = Boolean(showMemberCheckboxColumn)
 
+const getCheckboxEnabled = () => true
+
+const PropertyTable = ({
+  onSelected,
+  nonReporting = false,
+  users,
+  showCheckbox,
+}) => {
   return (
     <Table
-      checkboxAction={showMemberCheckboxColumn}
+      getCheckboxEnabled={getCheckboxEnabled}
+      onSelected={onSelected}
       columns={[
         {
           name: 'name',

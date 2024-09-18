@@ -11,74 +11,63 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import { usePropertyContext } from '../contexts/PropertyContext'
+import { usePropertiesContext } from '../contexts/PropertiesContext'
 
-import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
 const NoData = () => <div>No data to display</div>
+
 const Table = ({
   data,
   columns,
   showCheckbox,
-  checkboxAction,
-  getter,
+  getCheckboxEnabled,
   table,
   idField,
+
   NoDataMessage = <NoData />,
 }) => {
-  const [showDeleteDialog, setShowDeleteDialog] = useState()
   const [selectedData, setSelectedData] = useState([])
   const [updateData, setUpdateData] = useState(false)
-  const handleDelete = () => {
-    setShowDeleteDialog(true)
-  }
+  const { selectedMembers, setSelectedMembers } = usePropertyContext() || {}
+  const { selectedProperties, setSelectedProperties } =
+    usePropertiesContext() || {}
+  const selectedItems =
+    idField == 'userproperty_id' ? selectedMembers : selectedProperties
   const handleChange =
     selectedRow =>
     ({ target: { checked } }) => {
-      console.log('fieldid', idField, selectedRow, checked)
-      console.log(
-        selectedData,
-        selectedData.indexOf(data => data[idField] === selectedRow[idField])
-      )
-      setSelectedData(selected =>
-        checked
-          ? selected.indexOf(data => data[idField] === selectedRow[idField]) < 0
-            ? [...selected, selectedRow]
-            : selected
-          : selected.filter(item => item[idField] !== selectedRow[idField])
-      )
+      if (idField == 'userproperty_id') {
+        setSelectedMembers(selected =>
+          checked
+            ? selected.indexOf(
+                data => data?.userproperty_id === selectedRow.userproperty_id
+              ) < 0
+              ? [...selected, selectedRow]
+              : selected
+            : selected.filter(
+                item => item.userproperty_id !== selectedRow.userproperty_id
+              )
+        )
+      } else {
+        setSelectedProperties(selected =>
+          checked
+            ? selected.indexOf(data => data[idField] === selectedRow[idField]) <
+              0
+              ? [...selected, selectedRow]
+              : selected
+            : selected.filter(item => item[idField] !== selectedRow[idField])
+        )
+      }
     }
-
-  useEffect(() => {
-    if (updateData) {
-      console.log('refresh the data here')
-    }
-  }, [updateData])
 
   return !data || data.length === 0 ? (
     <Alert severity='info'>{NoDataMessage}</Alert>
   ) : (
     <>
-      {showDeleteDialog && (
-        <ConfirmRemoveDialog
-          getter={getter}
-          items={selectedData}
-          setOpen={setShowDeleteDialog}
-          setUpdateData={setUpdateData}
-          table={table}
-          idField={idField}
-        />
-      )}
       <MuiTable size='small'>
         <TableHead>
           <TableRow>
-            {showCheckbox && (
-              <TableCell>
-                {selectedData.length && checkboxAction === 'remove' ? (
-                  <IconButton onClick={handleDelete}>
-                    <DeleteIcon />
-                  </IconButton>
-                ) : null}
-              </TableCell>
-            )}
+            {showCheckbox && <TableCell></TableCell>}
             {columns.map(({ user_id, name, label, CellProps }) => (
               <TableCell key={user_id || name} {...CellProps}>
                 {label}
@@ -93,8 +82,9 @@ const Table = ({
                 {showCheckbox && (
                   <TableCell>
                     <Checkbox
+                      disabled={!getCheckboxEnabled(item)}
                       checked={
-                        selectedData.findIndex(
+                        selectedItems.findIndex(
                           i => i[idField] === item[idField]
                         ) > -1
                       }
@@ -133,10 +123,8 @@ const Table = ({
 }
 
 Table.propTypes = {
-  checkboxAction: PropTypes.oneOf(['remove', 'manager', 'notify']),
   columns: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
-  getter: PropTypes.func.isRequired,
   showCheckbox: PropTypes.bool,
 }
 export default Table
