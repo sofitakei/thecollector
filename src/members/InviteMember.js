@@ -1,16 +1,29 @@
-import { Button, Link, Stack } from '@mui/material'
+import { Stack } from '@mui/material'
 import { useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import MemberForm from './MemberForm'
+import { qrcode, drawingSVG } from 'bwip-js'
 
 const InviteMember = () => {
-  const location = useLocation()
   const [copied, setCopiedState] = useState()
   const [membersCount, setMembersCount] = useState(1)
-
+  const { propertyId } = useParams()
+  const encoded = btoa(JSON.stringify({ propertyId }))
+  const link = location?.host + '?' + encoded
+  let svg = qrcode(
+    {
+      bcid: 'code128', // Barcode type
+      text: link, // Text to encode
+      height: 12, // Bar height, in millimeters
+      includetext: true, // Show human-readable text
+      textxalign: 'center', // Always good to set this
+      textcolor: 'ff0000', // Red text
+    },
+    drawingSVG()
+  )
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(location?.pathname).then(
+    navigator.clipboard.writeText(link).then(
       () => {
         setCopiedState(true)
         setTimeout(() => {
@@ -31,10 +44,13 @@ const InviteMember = () => {
     setMembersCount(count => count - 1)
   }
   return (
-    <Stack sx={{ img: { maxHeight: 200 } }}>
-      {/* TODO: generate QR code links */}
-      {/* <Link onClick={handleCopyLink}>Copy Link</Link>
-      {copied && <span> Copied!</span>} */}
+    <Stack
+      sx={{
+        '.qrcode': { alignSelf: 'center', height: 100, width: 100 },
+      }}>
+      <div className='qrcode' dangerouslySetInnerHTML={{ __html: svg }} />
+      <Link onClick={handleCopyLink}>Copy Link</Link>
+      {copied && <span> Copied!</span>}
       <p>
         Complete the following fields to send a link to invite members to the
         property.

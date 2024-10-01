@@ -41,14 +41,7 @@ const MemberProfileForm = ({ newMember = false }) => {
   const handlePropertyRoleChange = (_, v) => {
     setPropertyRole(v)
   }
-  const insertSave = async fields => {
-    console.log('insert called')
-    return await supabase.from('profiles').insert(fields).select()
-  }
 
-  const updateSave = async (fields, id) => {
-    return await supabase.from('profiles').update(fields).eq('id', id)
-  }
   const handleSave = async e => {
     e.preventDefault()
     const {
@@ -146,7 +139,7 @@ const MemberProfileForm = ({ newMember = false }) => {
       })
     }
   }, [currentUser?.document_jurisdiction_local_tribal_id])
-  console.log({ currentUser })
+
   if (!currentUser?.user_id && !newMember) return <div>Loading...</div>
 
   return (

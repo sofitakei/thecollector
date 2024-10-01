@@ -5,11 +5,13 @@ import { Button, Stack, TextField, Typography } from '@mui/material'
 const MagicLink = () => {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
-
+  const search = atob(location?.search?.substring(1)) || '{}'
+  //TODO: add user to property if defined
   const handleLogin = async event => {
     event.preventDefault()
     setLoading(true)
-    const { error } = await supabase.auth.signInWithOtp({ email })
+    const { data, error } = await supabase.auth.signInWithOtp({ email })
+
     if (error) {
       alert(error.error_description || error.message)
     } else {
