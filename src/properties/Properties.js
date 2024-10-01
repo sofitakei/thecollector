@@ -47,7 +47,7 @@ const CheckboxActions = ({ disabled, onClick }) => {
   ) : (
     <Stack direction='row'>
       <IconButton
-        onClick={onDelete}
+        onClick={onClick}
         disabled={disabled}
         size='small'
         variant='outlined'>

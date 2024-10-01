@@ -131,7 +131,7 @@ const Navigation = props => {
                   onClick()
                   return
                 } else if (path) {
-                  onclose()
+                  onClose()
                   navigate(path)
                 }
               }}>

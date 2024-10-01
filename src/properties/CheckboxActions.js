@@ -1,4 +1,4 @@
-import { Fab, Stack, useMediaQuery, useTheme } from '@mui/material'
+import { Fab, IconButton, Stack, useMediaQuery, useTheme } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SendIcon from '@mui/icons-material/Send'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
@@ -55,13 +55,37 @@ const CheckboxActions = ({
       </Fab>
     </>
   ) : (
-    <Stack direction='row'>
+    <Stack direction='row' mt={2}>
       <IconButton
         onClick={onDelete}
-        disabled={disabled}
+        disabled={deleteDisabled}
         size='small'
-        variant='outlined'>
+        color='primary'>
         <DeleteIcon />
+      </IconButton>
+      <IconButton
+        onClick={onNotify}
+        disabled={deleteDisabled}
+        size='small'
+        color='secondary'
+        variant='outlined'>
+        <SendIcon />
+      </IconButton>
+      <IconButton
+        onClick={onAddManager}
+        disabled={managerAddDisabled}
+        size='small'
+        color='tertiary'
+        variant='outlined'>
+        <GroupAddIcon />
+      </IconButton>
+      <IconButton
+        onClick={onRemoveManager}
+        disabled={managerRemoveDisabled}
+        size='small'
+        color='tertiary'
+        variant='outlined'>
+        <GroupRemoveIcon />
       </IconButton>
     </Stack>
   )

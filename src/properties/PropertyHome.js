@@ -79,6 +79,23 @@ const PropertyHome = () => {
         onClick={handleClick}>
         {isManager ? 'SUBMIT FORM' : 'Request manager access'}
       </Button>
+      {isManager && (
+        <CheckboxActions
+          onNotify={handleSend}
+          onAddManager={handleManager(true)}
+          onRemoveManager={handleManager()}
+          onDelete={handleDelete}
+          deleteDisabled={selectedItems?.length === 0}
+          managerRemoveDisabled={
+            selectedItems?.length === 0 ||
+            !selectedItems?.every(({ is_manager }) => is_manager)
+          }
+          managerAddDisabled={
+            selectedItems?.length === 0 ||
+            selectedItems?.some(({ is_manager }) => is_manager)
+          }
+        />
+      )}
       <Box mb={5} mt={2}>
         <Typography component='h2' gutterBottom variant='h6'>
           Board Members
@@ -121,23 +138,6 @@ const PropertyHome = () => {
           }}
           setOpen={setAction}
           setRefresh={setRefresh}
-        />
-      )}
-      {isManager && (
-        <CheckboxActions
-          onNotify={handleSend}
-          onAddManager={handleManager(true)}
-          onRemoveManager={handleManager()}
-          onDelete={handleDelete}
-          deleteDisabled={selectedItems?.length === 0}
-          managerRemoveDisabled={
-            selectedItems?.length === 0 ||
-            !selectedItems?.every(({ is_manager }) => is_manager)
-          }
-          managerAddDisabled={
-            selectedItems?.length === 0 ||
-            selectedItems?.some(({ is_manager }) => is_manager)
-          }
         />
       )}
     </Stack>
