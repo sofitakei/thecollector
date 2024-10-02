@@ -11,6 +11,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { useAuth } from '../contexts/AuthContext'
 import { useEffect, useState } from 'react'
 import Photo from './Photo'
+import { usePropertyContext } from '../contexts/PropertyContext'
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -27,14 +28,18 @@ const VisuallyHiddenInput = styled('input')({
 const Upload = () => {
   const { userProfile } = useAuth()
   const [refresh, setRefresh] = useState()
-
+  const { currentUser } = usePropertyContext()
   const handleUpload = async event => {
     const idFile = event.target.files[0]
     const { data, error } = await supabase.storage
       .from('documents')
-      .upload(`${userProfile?.auth_user_id}/photo`, idFile, {
-        upsert: true,
-      })
+      .upload(
+        `${userProfile?.auth_user_id}/photo/${currentUser?.user_id}`,
+        idFile,
+        {
+          upsert: true,
+        }
+      )
     if (!error) {
       setRefresh(true)
     } else {
@@ -44,7 +49,7 @@ const Upload = () => {
 
   return (
     <Stack alignItems='center'>
-      <Photo refresh={refresh} />
+      <Photo refresh={refresh} user={currentUser} />
       <Button
         component='label'
         role={undefined}

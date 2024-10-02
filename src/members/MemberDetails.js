@@ -3,9 +3,10 @@ import { groups } from './config'
 import { Fragment } from 'react'
 import Photo from '../components/Photo'
 import { documentTypes } from '../components/DocumentTypeDropdown'
+import LoadingBackdrop from '../components/LoadingBackdrop'
 
 const MemberDetails = ({ user, setPhotoUploaded }) => {
-  return (
+  return user ? (
     <Stack>
       {groups.map(({ fields }, idx) => (
         <Fragment key={idx}>
@@ -41,6 +42,8 @@ const MemberDetails = ({ user, setPhotoUploaded }) => {
         <Photo user={user} onLoad={setPhotoUploaded} />
       </Stack>
     </Stack>
+  ) : (
+    <LoadingBackdrop />
   )
 }
 

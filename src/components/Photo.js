@@ -8,10 +8,15 @@ const Photo = ({ refresh, user, onLoad = () => {} }) => {
   const [photo, setPhoto] = useState()
   const [loading, setLoading] = useState()
   const photoUser = user || userProfile
+
   const getPhoto = async () => {
     const { data, error } = await supabase.storage
       .from('documents')
-      .download(`${photoUser?.auth_user_id}/photo?t=${new Date()}`)
+      .download(
+        `${userProfile?.auth_user_id}/photo/${
+          photoUser?.user_id || photoUser?.id
+        }?t=${new Date()}`
+      )
     setPhoto(data)
     onLoad({ data, error })
     setLoading(false)
@@ -19,6 +24,7 @@ const Photo = ({ refresh, user, onLoad = () => {} }) => {
 
   useEffect(() => {
     if (userProfile?.id) {
+      setLoading(true)
       getPhoto()
     }
   }, [refresh])
