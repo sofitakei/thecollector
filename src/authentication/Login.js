@@ -1,14 +1,4 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Link,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'
 import { useRef, useState } from 'react'
 
 import MagicLink from './MagicLink'

@@ -1,13 +1,4 @@
-import {
-  Button,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  RadioGroup,
-  Radio,
-  Stack,
-  TextField,
-} from '@mui/material'
+import { Stack, TextField, Alert } from '@mui/material'
 
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -38,12 +29,14 @@ const MemberProfileForm = ({ newMember = false }) => {
   const [propertyRole, setPropertyRole] = useState('')
   const [documentType, setDocumentType] = useState('')
   const [tribe, setTribe] = useState(null)
+  const [error, setError] = useState()
   const handlePropertyRoleChange = (_, v) => {
     setPropertyRole(v)
   }
 
   const handleSave = async e => {
     e.preventDefault()
+    setError(null)
     const {
       property_role,
       country_jurisdiction,
@@ -51,7 +44,11 @@ const MemberProfileForm = ({ newMember = false }) => {
       document_jurisdiction_local_tribal,
       ...formFields
     } = getFormFields(e.target)
-
+    if (!propertyRole) {
+      setError('Property role is required')
+      window.scrollTo(0, 0)
+      return
+    }
     const {
       auth_user_id,
       id,
@@ -78,22 +75,28 @@ const MemberProfileForm = ({ newMember = false }) => {
         .from('profiles')
         .upsert(fieldsToSave)
         .select()
-      console.log({ data, error })
+
       //TODO as trigger?
+      const editedUserId = userId || data?.[0]?.id
       if (!newMember) {
         const { error: voidStatusError } = await supabase
           .from('userproperty_filing')
           .update({ status: 'void' })
           .eq('userproperty_id', userproperty_id)
+      } else {
+        await supabase.from('userproperty').insert({
+          user_id: editedUserId,
+          property_id: propertyId,
+          property_role,
+        })
       }
-      if (!error) {
-        console.log({ data })
-        const editedUserId = userId || data?.[0]?.id
-        await supabase
+      if (error === null) {
+        const { error: upError, data: upData } = await supabase
           .from('userproperty')
           .update({ property_role })
           .eq('user_id', editedUserId)
           .eq('property_id', propertyId)
+        console.log({ upError })
         setRefresh(true)
         setProfilesRefresh(true)
         navigate(`/properties/${propertyId}/users/${editedUserId}`)
@@ -144,6 +147,7 @@ const MemberProfileForm = ({ newMember = false }) => {
 
   return (
     <Form onSubmit={handleSave}>
+      {error && <Alert severity='error'>{error}</Alert>}
       <RoleSelect value={propertyRole} onChange={handlePropertyRoleChange} />
       <br />
       <h3>Edit Information</h3>

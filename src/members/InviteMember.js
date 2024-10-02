@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 import MemberForm from './MemberForm'
@@ -43,6 +43,11 @@ const InviteMember = () => {
   const handleRemoveMember = idx => () => {
     setMembersCount(count => count - 1)
   }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <Stack
       sx={{

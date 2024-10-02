@@ -23,11 +23,12 @@ const PropertyForm = () => {
   const handleSubmit = async e => {
     e.preventDefault()
     const formFields = getFormFields(e.target)
-    console.log({ formFields })
     let propertyId = currentProperty?.id
     if (!formFields.name) {
       setErrors('Company field is required')
+      window.scrollTo(0, 0)
     } else if (!formFields.property_role) {
+      window.scrollTo(0, 0)
       setErrors('Property role is required')
     } else {
       //TODO: this should be done in the country dropdown component

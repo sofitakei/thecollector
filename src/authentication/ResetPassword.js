@@ -1,8 +1,8 @@
-import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 import { useRef, useState } from 'react'
 
 import { supabase } from '../supabaseClient'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 const ResetPassword = () => {

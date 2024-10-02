@@ -22,7 +22,12 @@ const CheckboxActions = ({
     <>
       <Fab
         onClick={onDelete}
-        sx={{ position: 'absolute', bottom: 16, right: start }}
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          right: start,
+          '&.Mui-disabled': { backgroundColor: '#ccc' },
+        }}
         color='primary'
         aria-label='remove member'
         disabled={deleteDisabled}>
@@ -30,7 +35,12 @@ const CheckboxActions = ({
       </Fab>
       <Fab
         onClick={onNotify}
-        sx={{ position: 'absolute', bottom: 16, right: start + spacing }}
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          '&.Mui-disabled': { backgroundColor: '#ccc' },
+          right: start + spacing,
+        }}
         color='secondary'
         aria-label='send notification'
         disabled={deleteDisabled}>
@@ -38,7 +48,12 @@ const CheckboxActions = ({
       </Fab>
       <Fab
         onClick={onAddManager}
-        sx={{ position: 'absolute', bottom: 16, right: start + spacing * 2 }}
+        sx={{
+          position: 'fixed',
+          '&.Mui-disabled': { backgroundColor: '#ccc' },
+          bottom: 16,
+          right: start + spacing * 2,
+        }}
         color='success'
         aria-label='add managers'
         disabled={managerAddDisabled}>
@@ -47,7 +62,12 @@ const CheckboxActions = ({
 
       <Fab
         onClick={onRemoveManager}
-        sx={{ position: 'absolute', bottom: 16, right: start + spacing * 3 }}
+        sx={{
+          position: 'fixed',
+          '&.Mui-disabled': { backgroundColor: '#ccc' },
+          bottom: 16,
+          right: start + spacing * 3,
+        }}
         color='tertiary'
         aria-label='remove managers'
         disabled={managerRemoveDisabled}>
