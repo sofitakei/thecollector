@@ -125,6 +125,7 @@ const PropertyProvider = props => {
         setShowMemberCheckboxColumn,
         selectedMembers,
         setSelectedMembers,
+        setPropertyRefresh,
         setRefresh,
         loading,
         loaded,

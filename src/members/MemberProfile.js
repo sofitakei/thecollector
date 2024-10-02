@@ -26,7 +26,7 @@ const MemberProfile = () => {
   const alreadyVerified = currentUser?.userproperty_filing?.some(
     ({ status }) => status === 'verified'
   )
-  console.log({ photoUploaded, currentUser })
+
   const handleClick = async () => {
     const {
       userproperty_id,

@@ -16,7 +16,8 @@ import { useState } from 'react'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { useAuth } from '../contexts/AuthContext'
 import PropertyDashboardButton from '../components/PropertyDashboardButton'
-import { fields } from '../properties/config'
+import { fields, taxIdTypes } from '../properties/config'
+import { useCountries } from '../hooks/useCountries'
 
 const filingStatus = [
   { value: 'initial', label: 'Initial Report' },
@@ -29,6 +30,7 @@ const AllProfilesForManager = () => {
   const { propertyId } = useParams()
   const [status, setStatus] = useState('initial')
   const [verified, setVerified] = useState(false)
+  const { countries } = useCountries()
   const navigate = useNavigate()
   const { userProfile } = useAuth()
   const { property_role, ...propertyFields } = fields
@@ -132,7 +134,7 @@ const AllProfilesForManager = () => {
     })
     navigate('/')
   }
-
+  console.log({ currentProperty })
   return (
     <Stack>
       <Typography variant='h4'>
@@ -168,7 +170,16 @@ const AllProfilesForManager = () => {
             </Typography>
             <Typography
               sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
-              {currentProperty?.[field.name]}
+              {field.name === 'country_jurisdiction_id'
+                ? countries.find(
+                    ({ value }) =>
+                      value === currentProperty.country_jurisdiction_id
+                  )?.label
+                : field.name === 'tax_id_type'
+                ? taxIdTypes.find(
+                    ({ value }) => `${value}` === currentProperty.tax_id_type
+                  )?.name
+                : currentProperty?.[field.name]}
             </Typography>
           </Stack>
         ) : null
