@@ -22,7 +22,7 @@ const PropertyForm = () => {
     userProfile: { id },
   } = useAuth()
 
-  const { propertyId } = useParams()
+  const { propertyId: idParam } = useParams()
   console.log({ currentProperty })
   const handleSubmit = async e => {
     e.preventDefault()
@@ -31,7 +31,7 @@ const PropertyForm = () => {
     if (!formFields.name) {
       setErrors('Company field is required')
       window.scrollTo(0, 0)
-    } else if (propertyId === 'new' && !property_role) {
+    } else if (idParam === 'new' && !property_role) {
       window.scrollTo(0, 0)
       setErrors('Property role is required')
     } else {
@@ -63,7 +63,7 @@ const PropertyForm = () => {
     setErrors()
   }
   //TODO:checking this field to see if we loaded the details
-  return currentProperty?.created_at || propertyId === 'new' ? (
+  return currentProperty?.created_at || idParam === 'new' ? (
     <Form onSubmit={handleSubmit}>
       {errors && (
         <Alert severity='error' sx={{ mb: 2 }}>
@@ -79,7 +79,7 @@ const PropertyForm = () => {
               ({ value }) => value === currentProperty?.country_jurisdiction_id
             )}
           />
-        ) : name === 'property_role' && propertyId !== 'new' ? null : (
+        ) : name === 'property_role' && idParam !== 'new' ? null : (
           <TextField
             style={{ marginBottom: 20 }}
             fullWidth
