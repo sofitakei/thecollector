@@ -64,6 +64,7 @@ export default [
         'error',
         { vars: 'all', args: 'after-used', ignoreRestSiblings: false },
       ],
+      'multiline-ternary': ['error', 'always-multiline'],
       'react/self-closing-comp': [
         'error',
         {
