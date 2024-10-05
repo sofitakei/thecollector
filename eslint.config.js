@@ -26,6 +26,7 @@ export default [
       'react-refresh': reactRefresh,
       'prefer-arrow-functions': preferArrowFunctions,
       'simple-import-sort': simpleImportSort,
+      'unused-imports': unusedImports,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -58,6 +59,11 @@ export default [
       'import/newline-after-import': 'error',
       'import/no-duplicates': 'error',
       'prefer-template': 'error',
+      'unused-imports/no-unused-imports': 'error',
+      'no-unused-vars': [
+        'error',
+        { vars: 'all', args: 'after-used', ignoreRestSiblings: false },
+      ],
       'react/self-closing-comp': [
         'error',
         {

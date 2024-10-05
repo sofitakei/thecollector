@@ -144,7 +144,7 @@ const MemberProfileForm = ({ newMember = false }) => {
   }, [currentUser?.document_jurisdiction_local_tribal_id])
 
   if (!currentUser?.user_id && !newMember) return <div>Loading...</div>
-
+  console.log({ currentUser })
   return (
     <Form onSubmit={handleSave}>
       {error && <Alert severity='error'>{error}</Alert>}
@@ -207,7 +207,19 @@ const MemberProfileForm = ({ newMember = false }) => {
           <Upload />
         </>
       ) : (
-        <TextField fullWidth name='email' defaultValue={currentUser?.email} />
+        <Stack spacing={2}>
+          <TextField fullWidth name='email' defaultValue={currentUser?.email} />
+          <TextField
+            fullWidth
+            name='first_name'
+            defaultValue={currentUser?.first_name}
+          />
+          <TextField
+            fullWidth
+            name='last_name'
+            defaultValue={currentUser?.last_name}
+          />
+        </Stack>
       )}
     </Form>
   )

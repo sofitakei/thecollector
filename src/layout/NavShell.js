@@ -71,9 +71,12 @@ const NavShell = ({ children }) => {
               <MenuIcon />
             </IconButton>
             <Link to={`/properties/${currentProperty?.id}`}>
-              <Typography variant='h4' sx={{ color: '#fff' }}>
-                {' '}
-                {currentProperty?.name} Dashboard
+              <Typography
+                sx={{
+                  color: '#fff',
+                  typography: { sm: 'h4', xs: 'h5' },
+                }}>
+                {currentProperty?.name}
               </Typography>
             </Link>
             <AccountMenu />
