@@ -1,17 +1,10 @@
-import {
-  Avatar,
-  Badge,
-  Chip,
-  IconButton,
-  TableCell,
-  Tooltip,
-} from '@mui/material'
+import { Chip, IconButton, TableCell, Tooltip } from '@mui/material'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount'
 import { useAuth } from '../contexts/AuthContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
-
+import FaceIcon from '@mui/icons-material/Face'
 const LinkedCell = ({ getter, buildUrl, item, type }) => {
   const { userProfile } = useAuth()
   const { sessionPropertyUser } = usePropertyContext() || {}
@@ -27,12 +20,16 @@ const LinkedCell = ({ getter, buildUrl, item, type }) => {
       ) : (
         text
       )}
+
       {item.is_manager && (
         <Tooltip enterTouchDelay={0} title='Manager'>
           <IconButton>
             <SupervisorAccountIcon fontSize='12' />
           </IconButton>
         </Tooltip>
+      )}
+      {userProfile?.id === item.user_id && (
+        <Chip size='small' icon={<FaceIcon />} label='Me' variant='outlined' />
       )}
     </TableCell>
   )

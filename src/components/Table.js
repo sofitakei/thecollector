@@ -61,7 +61,7 @@ const Table = ({
       <MuiTable size='small'>
         <TableHead>
           <TableRow>
-            {showCheckbox && <TableCell></TableCell>}
+            {showCheckbox && <TableCell sx={{ width: '1%' }}></TableCell>}
             {columns.map(({ user_id, name, label, CellProps }) => (
               <TableCell key={user_id || name} {...CellProps}>
                 {label}
