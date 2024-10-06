@@ -208,14 +208,21 @@ const MemberProfileForm = ({ newMember = false }) => {
         </>
       ) : (
         <Stack spacing={2}>
-          <TextField fullWidth name='email' defaultValue={currentUser?.email} />
+          <TextField
+            fullWidth
+            name='email'
+            label='Email'
+            defaultValue={currentUser?.email}
+          />
           <TextField
             fullWidth
             name='first_name'
+            label='First Name'
             defaultValue={currentUser?.first_name}
           />
           <TextField
             fullWidth
+            label='Last Name'
             name='last_name'
             defaultValue={currentUser?.last_name}
           />

@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import MemberForm from './MemberForm'
 import { qrcode, drawingSVG } from 'bwip-js'
+import PropertyDashboardButton from '../components/PropertyDashboardButton'
 
 const InviteMember = () => {
   const [copied, setCopiedState] = useState()
@@ -67,6 +68,7 @@ const InviteMember = () => {
         handleAddMember={handleAddMember}
         handleRemoveMember={handleRemoveMember}
       />
+      <PropertyDashboardButton />
     </Stack>
   )
 }

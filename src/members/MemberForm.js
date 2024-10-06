@@ -51,11 +51,6 @@ const MemberForm = ({
   const [saveDisabled, setSaveDisabled] = useState()
   const [error, setError] = useState()
   const navigate = useNavigate()
-  const [managerCheckboxEnabled, setManagerCheckboxEnabled] = useState()
-
-  const handleChange = ({ target: { value } }) => {
-    setManagerCheckboxEnabled(value ? true : false)
-  }
 
   const handleBlur = async ({ target: { value } }) => {
     const emailExists = await checkEmailExists(value)
@@ -91,7 +86,11 @@ const MemberForm = ({
         return memberFields.reduce(
           (acc, curr) => ({
             ...acc,
-            [curr.replace('_' + idx, '')]: formFields[curr],
+            [curr.replace('_' + idx, '')]: curr.includes('is_manager')
+              ? formFields[curr] === 'on'
+                ? true
+                : false
+              : formFields[curr],
           }),
           {}
         )
@@ -116,39 +115,16 @@ const MemberForm = ({
         setSaveDisabled(true)
         return
       }
+      const membersToMail = members.filter(
+        async ({ email }) => await !checkEmailExists(email)
+      )
 
-      // TODO: move this to backend
-      const { data, error } = await supabase
-        .from('profiles')
-        .insert(
-          members.map(m => {
-            const { property_role, is_manager, email, ...rest } = m
-            return { ...rest, email: email.toLowerCase() }
-          })
-        )
-        .select()
-      if (data?.length) {
-        const { data: insertedMembers, error: userPropertyError } =
-          await supabase
-            .from('userproperty')
-            .insert(
-              data.map(mem => {
-                const { id, email } = mem
-                const { property_role, is_manager } = members.find(
-                  m => email === m.email
-                )
-                return {
-                  user_id: id,
-                  property_role,
-                  property_id: propertyId,
-                  is_manager,
-                }
-              })
-            )
-            .select()
-      }
+      await supabase.rpc('invite_members_to_property', {
+        members,
+        propertyid: parseInt(propertyId),
+      })
 
-      members.forEach(async ({ email }) => {
+      membersToMail.forEach(async ({ email }) => {
         const { data, error } = await supabase.functions.invoke('email', {
           body: { email },
         })
@@ -182,9 +158,10 @@ const MemberForm = ({
                 <Fragment key={name + '_' + idx}>
                   {checkbox ? (
                     <FormControlLabel
-                      control={<Checkbox disabled={!managerCheckboxEnabled} />}
+                      control={<Checkbox />}
                       label={label}
                       name={name + '_' + idx}
+                      default
                     />
                   ) : (
                     <TextField
@@ -192,8 +169,6 @@ const MemberForm = ({
                       fullWidth
                       label={label}
                       name={name + '_' + idx}
-                      onBlur={name === 'email' ? handleBlur : () => {}}
-                      onChange={name === 'email' ? handleChange : () => {}}
                       required={required}
                       select={select}
                       defaultValue=''

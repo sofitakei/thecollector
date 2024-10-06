@@ -7,7 +7,6 @@ import {
 } from 'react-router-dom'
 
 import { useAuth } from '../contexts/AuthContext'
-import { usePropertiesContext } from '../contexts/PropertiesContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
 
 const drawerWidth = 240
@@ -46,22 +45,7 @@ const Navigation = props => {
       path: `/properties/${propertyId}/addMembers`,
       include: isPropertyHome && isManager,
     },
-    // {
-    //   label: 'Remove Members',
-    //   showForProperty: true,
-    //   onClick: () => {
-    //     setShowMemberCheckboxColumn('remove')
-    //   },
-    //   include: isPropertyHome && isManager,
-    // },
-    // {
-    //   label: 'Add/Remove Managers',
-    //   showForProperty: true,
-    //   onClick: () => {
-    //     setShowMemberCheckboxColumn('manager')
-    //   },
-    //   include: isPropertyHome && isManager,
-    // },
+
     {
       label: 'Make Payment',
       path: `/properties/${propertyId}/payment`,
@@ -72,15 +56,7 @@ const Navigation = props => {
       path: `/properties/${propertyId}/history`,
       include: isPropertyHome,
     },
-    // {
-    //   label: 'Send Reminder',
-    //   showForProperty: true,
-    //   onClick: () => {
-    //     setSelectedMembers([])
-    //     setShowMemberCheckboxColumn('notify')
-    //   },
-    //   include: isPropertyHome && isManager,
-    // },
+
     {
       label: 'SUBMIT FORM',
       path: `/properties/${propertyId}/submit`,
