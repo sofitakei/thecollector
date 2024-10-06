@@ -13,7 +13,11 @@ const MemberDetails = ({ user, setPhotoUploaded }) => {
           {fields.map(({ label, name, required }) => (
             <Stack direction='row' justifyContent='space-between' key={name}>
               <Typography
-                sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
+                sx={{
+                  textTransform: 'capitalize',
+                  fontWeight: 'bold',
+                  textAlign: 'left',
+                }}>
                 {label}
               </Typography>
               {/* TODO clean this up */}
