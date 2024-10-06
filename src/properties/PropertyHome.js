@@ -34,7 +34,7 @@ const PropertyHome = () => {
     setRefresh,
     selectedMembers: selectedItems,
   } = usePropertyContext() || {}
-  const { userProfile } = useAuth()
+
   const { propertyId } = useParams()
   const { board_member, owner, unassigned } = propertyUsers
   const isManager = sessionPropertyUser?.is_manager
@@ -128,6 +128,8 @@ const PropertyHome = () => {
       </Box>
       {action && (
         <ConfirmRenderer
+          table='userproperty'
+          idField='userproperty_id'
           getter={({ first_name, last_name, email }) =>
             `${emptyIfNull(first_name)} ${emptyIfNull(
               last_name
