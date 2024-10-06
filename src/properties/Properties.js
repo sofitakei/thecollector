@@ -20,6 +20,10 @@ import PaymentCell from '../components/PaymentCell'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
 import { useState } from 'react'
+import {
+  FabButtonWithTooltip,
+  IconButtonWithTooltip,
+} from '../components/ButtonWithTooltip'
 
 const NoData = () => {
   return (
@@ -36,23 +40,25 @@ const CheckboxActions = ({ disabled, onClick }) => {
   const matches = useMediaQuery(theme.breakpoints.down('sm'))
 
   return matches ? (
-    <Fab
+    <FabButtonWithTooltip
+      message='remove property'
       onClick={onClick}
-      sx={{ position: 'absolute', bottom: 16, right: 16 }}
+      sxProps={{ position: 'absolute', bottom: 16, right: 16 }}
       color='primary'
-      aria-label='add'
+      aria-label='remove property'
       disabled={disabled}>
       <DeleteIcon />
-    </Fab>
+    </FabButtonWithTooltip>
   ) : (
     <Stack direction='row'>
-      <IconButton
+      <IconButtonWithTooltip
         onClick={onClick}
         disabled={disabled}
+        message='remove property'
         size='small'
         variant='outlined'>
         <DeleteIcon />
-      </IconButton>
+      </IconButtonWithTooltip>
     </Stack>
   )
 }

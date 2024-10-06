@@ -1,8 +1,6 @@
-import DeleteIcon from '@mui/icons-material/Delete'
 import {
   Alert,
   Checkbox,
-  IconButton,
   Table as MuiTable,
   TableBody,
   TableCell,
@@ -10,7 +8,6 @@ import {
   TableRow,
 } from '@mui/material'
 import PropTypes from 'prop-types'
-import { useEffect, useState } from 'react'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
 
@@ -21,13 +18,10 @@ const Table = ({
   columns,
   showCheckbox,
   getCheckboxEnabled,
-  table,
   idField,
 
   NoDataMessage = <NoData />,
 }) => {
-  const [selectedData, setSelectedData] = useState([])
-  const [updateData, setUpdateData] = useState(false)
   const { selectedMembers, setSelectedMembers } = usePropertyContext() || {}
   const { selectedProperties, setSelectedProperties } =
     usePropertiesContext() || {}

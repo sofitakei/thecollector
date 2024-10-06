@@ -43,6 +43,7 @@ const PropertyHome = () => {
   const [action, setAction] = useState()
 
   const handleDelete = () => {
+    if (selectedItems?.length === 0) return
     setAction('remove')
   }
 

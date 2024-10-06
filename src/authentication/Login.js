@@ -1,14 +1,25 @@
-import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'
+import {
+  Alert,
+  Box,
+  Button,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
 import { useRef, useState } from 'react'
 
 import MagicLink from './MagicLink'
 import { supabase } from '../supabaseClient'
+import ForgotPassword from './ForgotPassword'
+
+const [LOGIN, RESET] = ['login', 'reset']
 
 const Login = () => {
   const emailRef = useRef(null)
   const passwordRef = useRef(null)
   const [errorMsg, setErrorMsg] = useState('')
-
+  const [pageState, setPageState] = useState(LOGIN)
   const handleLogin = async e => {
     e.preventDefault()
     if (!passwordRef?.current?.value || !emailRef?.current?.value) {
@@ -24,7 +35,7 @@ const Login = () => {
     }
   }
 
-  return (
+  return pageState === LOGIN ? (
     <Box
       sx={{
         px: 5,
@@ -52,11 +63,14 @@ const Login = () => {
           <Button type='submit' variant='outlined'>
             Login
           </Button>
+          <Link onClick={() => setPageState('forgot')}>Forgot password?</Link>
         </Stack>
         <Typography>OR</Typography>
         <MagicLink />
       </Stack>
     </Box>
+  ) : (
+    <ForgotPassword />
   )
 }
 

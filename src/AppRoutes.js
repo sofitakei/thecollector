@@ -24,8 +24,9 @@ const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        <Route element={<ResetPassword />} path='/reset' />
         <Route element={<PrivateRoute />}>
+          <Route element={<ResetPassword />} path='/reset' />
+
           <Route element={<Profile />} exact path='/profile' />
           <Route element={<Settings />} exact path='/account' />
           <Route element={<Properties />} exact path='/properties' />

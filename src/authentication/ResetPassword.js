@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField, Typography } from '@mui/material'
+import { Alert, Button, Stack, TextField, Typography } from '@mui/material'
 import { useRef, useState } from 'react'
 
 import { supabase } from '../supabaseClient'
@@ -7,10 +7,20 @@ import { useAuth } from '../contexts/AuthContext'
 
 const ResetPassword = () => {
   const passwordRef = useRef(null)
+  const confirmPasswordRef = useRef(null)
   const navigate = useNavigate()
-  const [success, setSuccess] = useState()
+  const [error, setError] = useState()
   const { setSession } = useAuth()
   const handleReset = async () => {
+    setError(null)
+    if (passwordRef?.current?.value !== confirmPasswordRef?.current?.value) {
+      alert('Passwords must match')
+      return
+    }
+    if (!passwordRef?.current?.value) {
+      alert('Please provide a password')
+      return
+    }
     const { error } = await supabase.auth.updateUser({
       password: passwordRef?.current?.value,
     })
@@ -20,25 +30,29 @@ const ResetPassword = () => {
       const { session } = data
       setSession(session)
       navigate('/')
+    } else {
+      setError(error?.message)
     }
   }
 
   return (
-    <Box sx={{ alignItems: 'center' }}>
+    <Stack spacing={2} alignItems='center' justifyContent='center'>
+      {error && <Alert severity='error'>{error}</Alert>}
       <Typography component='h1' variant='h5' mb={2}>
         Set New Password
       </Typography>
-      <Stack spacing={2}>
-        <TextField
-          type='password'
-          fullWidth
-          label='password'
-          inputRef={passwordRef}></TextField>
-        <Button variant='contained' onClick={handleReset}>
-          Save Password
-        </Button>
-      </Stack>
-    </Box>
+      <TextField
+        type='password'
+        label='Password'
+        inputRef={passwordRef}></TextField>
+      <TextField
+        type='password'
+        label='Confirm Password'
+        inputRef={confirmPasswordRef}></TextField>
+      <Button variant='contained' onClick={handleReset}>
+        Save Password
+      </Button>
+    </Stack>
   )
 }
 

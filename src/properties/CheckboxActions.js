@@ -1,11 +1,23 @@
-import { Fab, IconButton, Stack, useMediaQuery, useTheme } from '@mui/material'
+import {
+  Fab,
+  IconButton,
+  Stack,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SendIcon from '@mui/icons-material/Send'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
 import GroupRemoveIcon from '@mui/icons-material/GroupRemove'
+import ButtonWithTooltip, {
+  FabButtonWithTooltip,
+  IconButtonWithTooltip,
+} from '../components/ButtonWithTooltip'
 
 const start = 16
 const spacing = 80
+
 const CheckboxActions = ({
   deleteDisabled,
   managerAddDisabled,
@@ -20,93 +32,86 @@ const CheckboxActions = ({
 
   return matches ? (
     <>
-      <Fab
-        onClick={onDelete}
-        sx={{
-          position: 'fixed',
-          bottom: 16,
-          right: start,
-          '&.Mui-disabled': { backgroundColor: '#ccc' },
-        }}
+      <FabButtonWithTooltip
+        disabled={deleteDisabled}
+        aria-label='remove-member'
         color='primary'
-        aria-label='remove member'
-        disabled={deleteDisabled}>
+        message='Remove Member'
+        sxProps={{ right: start }}>
         <DeleteIcon />
-      </Fab>
-      <Fab
+      </FabButtonWithTooltip>
+
+      <FabButtonWithTooltip
+        message='Send notification'
         onClick={onNotify}
-        sx={{
-          position: 'fixed',
-          bottom: 16,
-          '&.Mui-disabled': { backgroundColor: '#ccc' },
+        sxProps={{
           right: start + spacing,
         }}
         color='secondary'
         aria-label='send notification'
         disabled={deleteDisabled}>
         <SendIcon />
-      </Fab>
-      <Fab
+      </FabButtonWithTooltip>
+      <FabButtonWithTooltip
+        message='Add Managers'
         onClick={onAddManager}
-        sx={{
-          position: 'fixed',
-          '&.Mui-disabled': { backgroundColor: '#ccc' },
-          bottom: 16,
+        sxProps={{
           right: start + spacing * 2,
         }}
         color='success'
         aria-label='add managers'
         disabled={managerAddDisabled}>
         <GroupAddIcon />
-      </Fab>
+      </FabButtonWithTooltip>
 
-      <Fab
+      <FabButtonWithTooltip
+        message='Remove managers'
         onClick={onRemoveManager}
-        sx={{
-          position: 'fixed',
-          '&.Mui-disabled': { backgroundColor: '#ccc' },
-          bottom: 16,
+        sxProps={{
           right: start + spacing * 3,
         }}
         color='tertiary'
         aria-label='remove managers'
         disabled={managerRemoveDisabled}>
         <GroupRemoveIcon />
-      </Fab>
+      </FabButtonWithTooltip>
     </>
   ) : (
     <Stack direction='row' mt={2}>
-      <IconButton
+      <IconButtonWithTooltip
+        message='Remove member'
         onClick={onDelete}
         disabled={deleteDisabled}
         size='small'
         color='primary'>
         <DeleteIcon />
-      </IconButton>
-      <IconButton
+      </IconButtonWithTooltip>
+      <IconButtonWithTooltip
+        message='Send reminder'
         onClick={onNotify}
         disabled={deleteDisabled}
         size='small'
-        color='secondary'
-        variant='outlined'>
+        color='secondary'>
         <SendIcon />
-      </IconButton>
-      <IconButton
+      </IconButtonWithTooltip>
+      <IconButtonWithTooltip
+        message='Add as manager'
         onClick={onAddManager}
         disabled={managerAddDisabled}
         size='small'
         color='tertiary'
         variant='outlined'>
         <GroupAddIcon />
-      </IconButton>
-      <IconButton
+      </IconButtonWithTooltip>
+      <IconButtonWithTooltip
+        message='Remove as manager'
         onClick={onRemoveManager}
         disabled={managerRemoveDisabled}
         size='small'
         color='tertiary'
         variant='outlined'>
         <GroupRemoveIcon />
-      </IconButton>
+      </IconButtonWithTooltip>
     </Stack>
   )
 }
