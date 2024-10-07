@@ -134,7 +134,7 @@ const AllProfilesForManager = () => {
     })
     navigate('/')
   }
-  console.log({ currentProperty })
+
   return (
     <Stack>
       <Typography variant='h4'>

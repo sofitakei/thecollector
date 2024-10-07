@@ -18,7 +18,7 @@ const ConfirmEmptyFieldsDialog = ({
   }
   const handleConfirmAction = async () => {
     setOpen(false)
-    const { data, error } = await onConfirmAction()
+    await onConfirmAction()
     //TODO: error handling
   }
 

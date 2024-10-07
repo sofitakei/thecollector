@@ -17,7 +17,7 @@ const Photo = ({ refresh, user, photoPath, onLoad = () => {} }) => {
   const getPhoto = async () => {
     const { data, error } = await supabase.storage
       .from('documents')
-      .download(`${location}?t=${new Date()}`)
+      .download(`${location}?t=${Date.now()}`)
     setPhoto(data)
     onLoad({ data, error })
     setLoading(false)

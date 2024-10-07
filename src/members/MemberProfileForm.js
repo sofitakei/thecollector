@@ -116,7 +116,6 @@ const MemberProfileForm = ({ newMember = false }) => {
   }
 
   const handleUploadComplete = data => {
-    console.log('completed', data)
     setPhotoPath(data?.fullPath)
   }
   const handleSave = async e => {
@@ -126,6 +125,11 @@ const MemberProfileForm = ({ newMember = false }) => {
 
     if (!propertyRole) {
       setError('Property role is required')
+      window.scrollTo(0, 0)
+      return
+    }
+    if (!allFields.last_name) {
+      setError('Last name is required')
       window.scrollTo(0, 0)
       return
     }
@@ -183,7 +187,7 @@ const MemberProfileForm = ({ newMember = false }) => {
   }, [currentUser?.document_jurisdiction_local_tribal_id])
 
   if (!currentUser?.user_id && !newMember) return <div>Loading...</div>
-  console.log({ currentUser, photoPath })
+
   return (
     <>
       <Form onSubmit={handleSave}>
@@ -272,7 +276,7 @@ const MemberProfileForm = ({ newMember = false }) => {
               </Stack>
             ))}
             <Upload
-              savedPhotoPath={currentUser?.identification_url}
+              savedPhotoPath={currentUser?.identification_url || photoPath}
               onUploadComplete={handleUploadComplete}
             />
           </>

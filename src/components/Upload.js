@@ -25,14 +25,15 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 })
 
-const Upload = ({ onUploadComplete, savedPhotoPath }) => {
+const Upload = ({ onUploadComplete, savedPhotoPath, disabled }) => {
   const { userProfile } = useAuth()
   const [refresh, setRefresh] = useState()
-  const { currentUser } = usePropertyContext()
+  const { allUsersForCurrentProperty, currentUser, currentProperty } =
+    usePropertyContext()
   const photoPath =
     savedPhotoPath ||
-    `${userProfile?.auth_user_id}/photo/${currentUser?.user_id}`
-  console.log({ savedPhotoPath })
+    `${userProfile?.auth_user_id}/photo/${currentUser?.user_id || Date.now()}`
+
   const handleUpload = async event => {
     const idFile = event.target.files[0]
     const { data, error } = await supabase.storage
@@ -52,13 +53,18 @@ const Upload = ({ onUploadComplete, savedPhotoPath }) => {
     <Stack alignItems='center'>
       <Photo refresh={refresh} user={currentUser} photoPath={photoPath} />
       <Button
+        disabled={disabled}
         component='label'
         role={undefined}
         startIcon={<CloudUploadIcon />}
         tabIndex={-1}
         variant='contained'>
         Upload file
-        <VisuallyHiddenInput onChange={handleUpload} type='file' />
+        <VisuallyHiddenInput
+          onChange={handleUpload}
+          disabled={disabled}
+          type='file'
+        />
       </Button>
     </Stack>
   )

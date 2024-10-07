@@ -33,6 +33,7 @@ const CheckboxActions = ({
   return matches ? (
     <>
       <FabButtonWithTooltip
+        onClick={onDelete}
         disabled={deleteDisabled}
         aria-label='remove-member'
         color='primary'
