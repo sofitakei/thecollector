@@ -23,7 +23,7 @@ const PropertyForm = () => {
   } = useAuth()
 
   const { propertyId: idParam } = useParams()
-  console.log({ currentProperty })
+
   const handleSubmit = async e => {
     e.preventDefault()
     const { property_role, ...formFields } = getFormFields(e.target)
@@ -52,7 +52,7 @@ const PropertyForm = () => {
           .update({ ...formFields, country_jurisdiction_id: country_id })
           .eq('id', currentProperty.id)
       }
-      console.log('refresh here')
+
       setPropertyRefresh?.(true)
       if (propertyId) {
         navigate(`/properties/${propertyId}/invite`)
