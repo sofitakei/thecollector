@@ -16,7 +16,7 @@ const InviteMember = () => {
     {
       bcid: 'code128', // Barcode type
       text: link, // Text to encode
-      height: 12, // Bar height, in millimeters
+      height: 24, // Bar height, in millimeters
       includetext: true, // Show human-readable text
       textxalign: 'center', // Always good to set this
       textcolor: 'ff0000', // Red text
