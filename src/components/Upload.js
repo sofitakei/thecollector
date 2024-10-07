@@ -25,22 +25,23 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 })
 
-const Upload = () => {
+const Upload = ({ onUploadComplete, savedPhotoPath }) => {
   const { userProfile } = useAuth()
   const [refresh, setRefresh] = useState()
   const { currentUser } = usePropertyContext()
+  const photoPath =
+    savedPhotoPath ||
+    `${userProfile?.auth_user_id}/photo/${currentUser?.user_id}`
+  console.log({ savedPhotoPath })
   const handleUpload = async event => {
     const idFile = event.target.files[0]
     const { data, error } = await supabase.storage
       .from('documents')
-      .upload(
-        `${userProfile?.auth_user_id}/photo/${currentUser?.user_id}`,
-        idFile,
-        {
-          upsert: true,
-        }
-      )
+      .upload(photoPath, idFile, {
+        upsert: true,
+      })
     if (!error) {
+      onUploadComplete(data)
       setRefresh(true)
     } else {
       console.log('There was an error uploading your photo', { error })
@@ -49,7 +50,7 @@ const Upload = () => {
 
   return (
     <Stack alignItems='center'>
-      <Photo refresh={refresh} user={currentUser} />
+      <Photo refresh={refresh} user={currentUser} photoPath={photoPath} />
       <Button
         component='label'
         role={undefined}

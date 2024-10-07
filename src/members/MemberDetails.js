@@ -21,29 +21,29 @@ const MemberDetails = ({ user, setPhotoUploaded }) => {
                 {label}
               </Typography>
               {/* TODO clean this up */}
-              {name === 'photoId' ? (
-                <Photo />
-              ) : name === 'document_type' ? (
-                documentTypes.find(
-                  ({ value }) => `${value}` === `${user?.[name]}`
-                )?.label || <Typography color='error'>Missing</Typography>
-              ) : (
-                (name === 'document_jurisdiction_local_tribal_id'
-                  ? user?.code
-                  : user?.[name]) ||
-                (required ? (
-                  <Typography color='error'>Missing</Typography>
-                ) : (
-                  '---'
-                ))
-              )}
+              {name === 'document_type'
+                ? documentTypes.find(
+                    ({ value }) => `${value}` === `${user?.[name]}`
+                  )?.label || <Typography color='error'>Missing</Typography>
+                : (name === 'document_jurisdiction_local_tribal_id'
+                    ? user?.code
+                    : user?.[name]) ||
+                  (required ? (
+                    <Typography color='error'>Missing</Typography>
+                  ) : (
+                    '---'
+                  ))}
             </Stack>
           ))}
         </Fragment>
       ))}
       <Stack sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
         <p> Document</p>
-        <Photo user={user} onLoad={setPhotoUploaded} />
+        <Photo
+          user={user}
+          photoPath={user.identification_url}
+          onLoad={setPhotoUploaded}
+        />
       </Stack>
     </Stack>
   ) : (

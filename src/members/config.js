@@ -11,7 +11,12 @@ export const groups = [
       { name: 'first_name', label: 'First Name', required: true },
       { name: 'middle_name', label: 'Middle Name' },
       { name: 'suffix', label: 'Suffix' },
-      { name: 'birth_date', label: 'Date of Birth', control: 'date' },
+      {
+        name: 'birth_date',
+        label: 'Date of Birth',
+        control: 'date',
+        required: true,
+      },
       { name: 'email', label: 'Email' },
     ],
   },
@@ -63,17 +68,23 @@ export const groups = [
 
       {
         name: 'document_country_jurisdiction',
-        label: 'Country/Jurisdiction',
+        label: 'Identification Country/Jurisdiction',
         helperText: 'Identifying document issuing jurisdiction',
         required: true,
       },
       {
         name: 'document_jurisdiction_local_tribal_id',
-        label: 'Local/Tribal',
+        label: 'Identification Local/Tribal',
       },
       {
         name: 'document_jurisdiction_other_description',
-        label: 'Other local/tribal desciption',
+        label: 'Identification Other local/tribal desciption',
+      },
+      {
+        name: 'document_expiration',
+        label: 'Identification Expiration Date',
+        required: true,
+        control: 'date',
       },
     ],
   },

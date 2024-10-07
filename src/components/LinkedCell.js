@@ -28,7 +28,7 @@ const LinkedCell = ({ getter, buildUrl, item, type }) => {
           </IconButton>
         </Tooltip>
       )}
-      {userProfile?.id === item.user_id && (
+      {userProfile?.id === item.user_id && type !== 'property' && (
         <Chip size='small' icon={<FaceIcon />} label='Me' variant='outlined' />
       )}
     </TableCell>

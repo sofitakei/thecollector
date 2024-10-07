@@ -10,7 +10,7 @@ import { stakeholders } from '../properties/config'
 const RoleSelect = props => {
   return (
     <FormControl>
-      <FormLabel id='role-radio-buttons-group-label'>Role</FormLabel>
+      <FormLabel id='role-radio-buttons-group-label'>Role*</FormLabel>
       <RadioGroup
         row
         aria-labelledby='role-radio-buttons-group-label'
