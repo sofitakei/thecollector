@@ -26,7 +26,8 @@ const filingStatus = [
   { value: 'new', label: 'Newly Exempt' },
 ]
 const AllProfilesForManager = () => {
-  const { propertyUsers, currentProperty } = usePropertyContext()
+  const { allUsersForCurrentProperty, propertyUsers, currentProperty } =
+    usePropertyContext()
   const { propertyId } = useParams()
   const [status, setStatus] = useState('initial')
   const [verified, setVerified] = useState(false)
@@ -125,13 +126,14 @@ const AllProfilesForManager = () => {
     return filing
   }
   const handleSubmit = async e => {
-    const { error } = await supabase.from('property_filing').insert({
+    const { data, error } = await supabase.from('property_filing').insert({
       property_id: propertyId,
       status: 'verified',
       filing: allUsersForCurrentProperty.map(
         ({ filingdata }) => filingdata?.filingdata || filingdata
       ),
     })
+    console.log({ data, error })
     navigate('/')
   }
 

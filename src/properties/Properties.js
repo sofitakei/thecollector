@@ -67,6 +67,7 @@ const getIsManager = ({ is_manager }) => is_manager
 const Properties = () => {
   const {
     properties,
+    propertiesStatus,
     loaded,
     selectedProperties,
     setSelectedProperties,
@@ -119,12 +120,29 @@ const Properties = () => {
             Renderer: StatusCell,
             CellProps: { align: 'right' },
             RendererProps: {
-              getter: ({ status }) => status,
+              getter: ({ total_filers, verified_filers, status }) => {
+                if (status === 'verified') {
+                  return status
+                } else if (
+                  total_filers === verified_filers &&
+                  status === null
+                ) {
+                  return 'ready'
+                } else {
+                  return 'incomplete'
+                }
+              },
             },
           },
         ]}
         idField='property_id'
-        data={properties}
+        data={properties.map(property => {
+          const merged = propertiesStatus?.find(
+            ({ rproperty_id }) => rproperty_id === property.property_id
+          )
+          console.log({ merged, property })
+          return { ...property, ...merged }
+        })}
         NoDataMessage={<NoData />}
       />
       {showDialog && (

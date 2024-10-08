@@ -11,7 +11,7 @@ const Photo = ({ refresh, user, photoPath, onLoad = () => {} }) => {
 
   const location =
     photoPath?.replace('documents', '') ||
-    `${userProfile?.auth_user_id}/photo/${photoUser?.user_id || photoUser?.id}}`
+    `${userProfile?.auth_user_id}/photo/${photoUser?.user_id || photoUser?.id}`
 
   //TODO: save path structure for future uploads
   const getPhoto = async () => {
@@ -32,7 +32,7 @@ const Photo = ({ refresh, user, photoPath, onLoad = () => {} }) => {
 
   return (
     <Stack alignItems='center'>
-      {loading ? (
+      {loading || !userProfile?.auth_user_id ? (
         <CircularProgress />
       ) : photo && photo != null ? (
         <Box component='img' width='50%' src={URL.createObjectURL(photo)} />

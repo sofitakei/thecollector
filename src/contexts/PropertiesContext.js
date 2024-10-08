@@ -19,11 +19,19 @@ const PropertiesProvider = props => {
   const { propertyId } = useParams()
   const { countries, countriesByName } = useCountries()
   const { tribes, tribesByName } = useTribes()
+  const [propertiesStatus, setPropertiesStatus] = useState()
+
   const getData = async () => {
     return await supabase
       .from('user_properties_view')
       .select('*')
       .eq('user_id', userProfile.id)
+  }
+
+  const getStatusData = async () => {
+    return await supabase.rpc('get_properties_with_status_for_user', {
+      _user_id: userProfile?.id,
+    })
   }
 
   const { loading, loaded, setRefresh } = useData({
@@ -34,10 +42,19 @@ const PropertiesProvider = props => {
     },
   })
 
+  const { setRefresh: setRefreshStatus } = useData({
+    name: 'properties status',
+    supabaseFn: getStatusData,
+    onSuccess: data => {
+      setPropertiesStatus(data)
+    },
+  })
+
   useEffect(() => {
     if (!userProfile?.id) {
       return
     }
+    setRefreshStatus(true)
     setRefresh(true)
   }, [userProfile?.id, propertyId])
 
@@ -46,6 +63,7 @@ const PropertiesProvider = props => {
       {...props}
       value={{
         properties,
+        propertiesStatus,
         showRemovePropertyColumn,
         setShowRemovePropertyColumn,
         selectedProperties,
