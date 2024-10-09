@@ -10,7 +10,7 @@ const ForgotPassword = () => {
     e.preventDefault()
     const { error } = await supabase.auth.resetPasswordForEmail(
       emailRef?.current?.value,
-      { redirectTo: location.origin + '/reset' }
+      { redirectTo: `${location.origin  }/reset` }
     )
 
     if (error) {
@@ -26,7 +26,7 @@ const ForgotPassword = () => {
         Enter the email you used for your login:
       </Typography>
       <Stack spacing={2}>
-        <TextField fullWidth label='email' inputRef={emailRef}></TextField>
+        <TextField fullWidth label='email' inputRef={emailRef} />
         <Button variant='contained' onClick={handleReset}>
           Send Reset Link
         </Button>

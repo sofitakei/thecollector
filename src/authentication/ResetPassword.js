@@ -1,9 +1,9 @@
 import { Alert, Button, Stack, TextField, Typography } from '@mui/material'
 import { useRef, useState } from 'react'
-
-import { supabase } from '../supabaseClient'
 import { useNavigate } from 'react-router-dom'
+
 import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../supabaseClient'
 
 const ResetPassword = () => {
   const passwordRef = useRef(null)
@@ -44,11 +44,11 @@ const ResetPassword = () => {
       <TextField
         type='password'
         label='Password'
-        inputRef={passwordRef}></TextField>
+        inputRef={passwordRef} />
       <TextField
         type='password'
         label='Confirm Password'
-        inputRef={confirmPasswordRef}></TextField>
+        inputRef={confirmPasswordRef} />
       <Button variant='contained' onClick={handleReset}>
         Save Password
       </Button>

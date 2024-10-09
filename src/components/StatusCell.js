@@ -29,5 +29,7 @@ const StatusCell = ({ getter, item }) => {
 
 StatusCell.propTypes = {
   status: PropTypes.string,
+  getter: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired, //TODO actual item shape
 }
 export default StatusCell

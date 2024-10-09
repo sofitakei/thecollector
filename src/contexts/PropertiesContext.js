@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
+import { useCountries } from '../hooks/useCountries'
+import { useData } from '../hooks/useData'
+import { useTribes } from '../hooks/useTribes'
 import { supabase } from '../supabaseClient'
 import { useAuth } from './AuthContext'
-import { useData } from '../hooks/useData'
-import { useCountries } from '../hooks/useCountries'
-import { useTribes } from '../hooks/useTribes'
 
 const propertiesContext = createContext()
 
@@ -21,18 +21,16 @@ const PropertiesProvider = props => {
   const { tribes, tribesByName } = useTribes()
   const [propertiesStatus, setPropertiesStatus] = useState()
 
-  const getData = async () => {
-    return await supabase
+  const getData = async () =>
+    await supabase
       .from('user_properties_view')
       .select('*')
       .eq('user_id', userProfile.id)
-  }
 
-  const getStatusData = async () => {
-    return await supabase.rpc('get_properties_with_status_for_user', {
+  const getStatusData = async () =>
+    await supabase.rpc('get_properties_with_status_for_user', {
       _user_id: userProfile?.id,
     })
-  }
 
   const { loading, loaded, setRefresh } = useData({
     name: 'properties users',
@@ -56,7 +54,7 @@ const PropertiesProvider = props => {
     }
     setRefreshStatus(true)
     setRefresh(true)
-  }, [userProfile?.id, propertyId])
+  }, [userProfile?.id, propertyId, setRefreshStatus, setRefresh])
 
   return (
     <propertiesContext.Provider

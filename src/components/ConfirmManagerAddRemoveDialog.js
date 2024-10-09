@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
-import { usePropertyContext } from '../contexts/PropertyContext'
-import ConfirmActionDialog from './ConfirmActionDialog'
-import { supabase } from '../supabaseClient'
 import { useParams } from 'react-router-dom'
+
+import { usePropertyContext } from '../contexts/PropertyContext'
+import { supabase } from '../supabaseClient'
+import ConfirmActionDialog from './ConfirmActionDialog'
 
 const ConfirmManagerAddRemoveDialog = ({
   addAsManager = false,
@@ -12,8 +13,8 @@ const ConfirmManagerAddRemoveDialog = ({
   const { setRefresh } = usePropertyContext() || {}
   const { propertyId } = useParams()
 
-  const handleManagerChange = async () => {
-    return await supabase
+  const handleManagerChange = async () =>
+    await supabase
       .from('userproperty')
       .update({ is_manager: addAsManager })
       .in(
@@ -22,7 +23,6 @@ const ConfirmManagerAddRemoveDialog = ({
       )
       .eq('property_id', propertyId)
       .select()
-  }
 
   const title = addAsManager
     ? 'Add the following as managers'
@@ -41,6 +41,7 @@ const ConfirmManagerAddRemoveDialog = ({
 }
 
 ConfirmManagerAddRemoveDialog.propTypes = {
+  addAsManager: PropTypes.bool,
   getter: PropTypes.func,
   items: PropTypes.array.isRequired,
   setOpen: PropTypes.func.isRequired,

@@ -1,7 +1,8 @@
+import { Alert, Button, Stack, TextField, Typography } from '@mui/material'
+import PropTypes from 'prop-types'
 import { useRef, useState } from 'react'
 
 import { supabase } from './supabaseClient'
-import { Alert, Button, Stack, TextField, Typography } from '@mui/material'
 
 //TODO: this is not secure but will eventually be removed
 const Wall = ({ setVerified }) => {
@@ -32,6 +33,10 @@ const Wall = ({ setVerified }) => {
       </Button>
     </Stack>
   )
+}
+
+Wall.propTypes = {
+  setVerified: PropTypes.func.isRequired,
 }
 
 export default Wall

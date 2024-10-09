@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { supabase } from '../supabaseClient'
+
 import { usePropertyContext } from '../contexts/PropertyContext'
 import ConfirmActionDialog from './ConfirmActionDialog'
 

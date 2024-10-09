@@ -1,24 +1,23 @@
-import { Stack, TextField, Alert } from '@mui/material'
-
-import { useNavigate, useParams } from 'react-router-dom'
-
-import Form from '../components/Form'
-
-import { groups } from './config'
-import { supabase } from '../supabaseClient'
+import { Alert, Stack, TextField } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
-import { getFormFields } from '../utils'
-import isEqual from 'react-fast-compare'
-import { useAuth } from '../contexts/AuthContext'
-import { usePropertyContext } from '../contexts/PropertyContext'
-import CountryDropdown from '../components/CountryDropdown'
-import Upload from '../components/Upload'
-import { usePropertiesContext } from '../contexts/PropertiesContext'
-import RoleSelect from '../components/RoleSelect'
+import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import isEqual from 'react-fast-compare'
+import { useNavigate, useParams } from 'react-router-dom'
+
+import CountryDropdown from '../components/CountryDropdown'
 import DocumentTypeDropdown from '../components/DocumentTypeDropdown'
+import Form from '../components/Form'
 import LocalTribalDropdown from '../components/LocalTribalDropdown'
+import RoleSelect from '../components/RoleSelect'
+import Upload from '../components/Upload'
+import { useAuth } from '../contexts/AuthContext'
+import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { usePropertyContext } from '../contexts/PropertyContext'
+import { supabase } from '../supabaseClient'
+import { getFormFields } from '../utils'
+import { groups } from './config'
 import ConfirmEmptyFieldsDialog from './ConfirmEmptyFieldsDialog'
 
 const MemberProfileForm = ({ newMember = false }) => {
@@ -26,7 +25,7 @@ const MemberProfileForm = ({ newMember = false }) => {
   const { countriesByName } = usePropertiesContext()
   const { currentUser = {}, setRefresh } = usePropertyContext() || {}
   const { setRefresh: setProfilesRefresh } = useAuth()
-  const { propertyId, userId, ...rest } = useParams()
+  const { propertyId, userId } = useParams()
   const [propertyRole, setPropertyRole] = useState('')
   const [documentType, setDocumentType] = useState('')
   const [tribe, setTribe] = useState(null)
@@ -39,7 +38,7 @@ const MemberProfileForm = ({ newMember = false }) => {
   const handlePropertyRoleChange = (_, v) => {
     setPropertyRole(v)
   }
-  const handleBlur = item => (e, val) => {
+  const handleBlur = item => e => {
     if (item.required) {
       setEmptyRequiredFields(prev => ({
         ...prev,
@@ -88,7 +87,7 @@ const MemberProfileForm = ({ newMember = false }) => {
       //TODO as trigger?
       const editedUserId = userId || data?.[0]?.id
       if (!newMember) {
-        const { error: voidStatusError } = await supabase
+        await supabase
           .from('userproperty_filing')
           .update({ status: 'void' })
           .eq('userproperty_id', userproperty_id)
@@ -100,7 +99,7 @@ const MemberProfileForm = ({ newMember = false }) => {
         })
       }
       if (error === null) {
-        const { error: upError, data: upData } = await supabase
+        const { error: upError } = await supabase
           .from('userproperty')
           .update({ property_role })
           .eq('user_id', editedUserId)
@@ -172,7 +171,7 @@ const MemberProfileForm = ({ newMember = false }) => {
     ) {
       setDocumentType(currentUser?.document_type)
     }
-  }, [currentUser?.document_type])
+  }, [currentUser?.document_type, documentType])
 
   useEffect(() => {
     if (
@@ -184,7 +183,11 @@ const MemberProfileForm = ({ newMember = false }) => {
         value: currentUser?.code,
       })
     }
-  }, [currentUser?.document_jurisdiction_local_tribal_id])
+  }, [
+    currentUser?.code,
+    currentUser?.document_jurisdiction_local_tribal_id,
+    tribe,
+  ])
 
   if (!currentUser?.user_id && !newMember) return <div>Loading...</div>
 
@@ -195,7 +198,8 @@ const MemberProfileForm = ({ newMember = false }) => {
         <RoleSelect value={propertyRole} onChange={handlePropertyRoleChange} />
         <br />
         <h3>Edit Information</h3>
-        {propertyRole !== 'nonreporting' ? (
+        {propertyRole !== 'nonreporting'
+? (
           <>
             {groups.map(({ fields, groupLabel }) => (
               <Stack
@@ -207,7 +211,8 @@ const MemberProfileForm = ({ newMember = false }) => {
                 <h4>{groupLabel}</h4>
 
                 {fields.map(item =>
-                  item.control === 'date' ? (
+                  item.control === 'date'
+? (
                     <DatePicker
                       sx={{
                         label: {
@@ -230,25 +235,33 @@ const MemberProfileForm = ({ newMember = false }) => {
                         },
                       }}
                     />
-                  ) : item.name.includes('country_jurisdiction') ? (
+                  )
+: item.name.includes('country_jurisdiction')
+? (
                     <CountryDropdown
                       defaultValue={currentUser[item.name]}
                       name={item.name}
                     />
-                  ) : item.name === 'document_type' ? (
+                  )
+: item.name === 'document_type'
+? (
                     <DocumentTypeDropdown
                       onChange={handleDocumentChange}
                       value={documentType}
                     />
-                  ) : item.name === 'document_jurisdiction_local_tribal_id' ? (
+                  )
+: item.name === 'document_jurisdiction_local_tribal_id'
+? (
                     <LocalTribalDropdown
                       value={tribe}
                       name={item.name}
                       disabled={documentType !== 38}
                       onChange={handleTribeChange}
                     />
-                  ) : item.name ===
-                    'document_jurisdiction_other_description' ? (
+                  )
+: item.name ===
+                    'document_jurisdiction_other_description'
+? (
                     <TextField
                       key={item.name}
                       fullWidth
@@ -256,7 +269,8 @@ const MemberProfileForm = ({ newMember = false }) => {
                       disabled={documentType !== 38 || tribe?.id !== 588}
                       defaultValue={currentUser[item.name]}
                     />
-                  ) : (
+                  )
+: (
                     <TextField
                       key={item.name}
                       fullWidth
@@ -280,7 +294,8 @@ const MemberProfileForm = ({ newMember = false }) => {
               onUploadComplete={handleUploadComplete}
             />
           </>
-        ) : (
+        )
+: (
           <Stack spacing={2}>
             <TextField
               fullWidth
@@ -307,9 +322,12 @@ const MemberProfileForm = ({ newMember = false }) => {
         items={dialogItems}
         onConfirmAction={saveItems}
         setOpen={setConfirmOpen}
-        open={confirmOpen}></ConfirmEmptyFieldsDialog>
+        open={confirmOpen}
+      />
     </>
   )
 }
-
+MemberProfileForm.propTypes = {
+  newMember: PropTypes.bool,
+}
 export default MemberProfileForm

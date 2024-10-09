@@ -9,14 +9,7 @@ export const getFormFields = form => {
   return Object.fromEntries(formData)
 }
 
-export const omit = (key, obj) => {
-  const { [key]: omitted, ...rest } = obj
-  return rest
-}
-
-export const checkForDuplicates = arr => {
-  return new Set(arr).size !== arr.length
-}
+export const checkForDuplicates = arr => new Set(arr).size !== arr.length
 
 export const checkEmailExists = async email => {
   const { data } = await supabase

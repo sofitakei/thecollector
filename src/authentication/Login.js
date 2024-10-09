@@ -9,11 +9,11 @@ import {
 } from '@mui/material'
 import { useRef, useState } from 'react'
 
-import MagicLink from './MagicLink'
 import { supabase } from '../supabaseClient'
 import ForgotPassword from './ForgotPassword'
+import MagicLink from './MagicLink'
 
-const [LOGIN, RESET] = ['login', 'reset']
+const LOGIN = 'login'
 
 const Login = () => {
   const emailRef = useRef(null)
@@ -25,7 +25,7 @@ const Login = () => {
     if (!passwordRef?.current?.value || !emailRef?.current?.value) {
       setErrorMsg('Please enter a username and password')
     } else {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: emailRef.current.value,
         password: passwordRef.current.value,
       })
@@ -35,7 +35,8 @@ const Login = () => {
     }
   }
 
-  return pageState === LOGIN ? (
+  return pageState === LOGIN
+? (
     <Box
       sx={{
         px: 5,
@@ -55,11 +56,8 @@ const Login = () => {
       </Typography>
       <Stack width='100%' spacing={2}>
         <Stack spacing={2} component='form' onSubmit={handleLogin}>
-          <TextField label='email' inputRef={emailRef}></TextField>
-          <TextField
-            label='password'
-            type='password'
-            inputRef={passwordRef}></TextField>
+          <TextField label='email' inputRef={emailRef} />
+          <TextField label='password' type='password' inputRef={passwordRef} />
           <Button type='submit' variant='outlined'>
             Login
           </Button>
@@ -69,7 +67,8 @@ const Login = () => {
         <MagicLink />
       </Stack>
     </Box>
-  ) : (
+  )
+: (
     <ForgotPassword />
   )
 }

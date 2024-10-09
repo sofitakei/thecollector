@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import { supabase } from '../supabaseClient'
 
 export const useTribes = () => {
@@ -6,7 +7,7 @@ export const useTribes = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const { data, error } = await supabase.from('local_tribal').select('*')
+      const { data } = await supabase.from('local_tribal').select('*')
       setTribes(
         data.map(({ id, code }) => ({
           id,
@@ -18,7 +19,7 @@ export const useTribes = () => {
     if (!tribes.length) {
       getData()
     }
-  }, [])
+  }, [tribes.length])
 
   const tribesByName = tribes?.reduce(
     (acc, curr) => ((acc[curr.label] = curr.value), acc),

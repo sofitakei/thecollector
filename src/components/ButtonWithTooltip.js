@@ -1,4 +1,5 @@
 import { Button, Fab, IconButton, Tooltip } from '@mui/material'
+import PropTypes from 'prop-types'
 
 const ButtonWithTooltip = ({
   disabled,
@@ -29,30 +30,42 @@ const ButtonWithTooltip = ({
           ...sxProps,
         }}
         {...rest}
-        onClick={handleClick}></ButtonComponent>
+        onClick={handleClick}
+      />
     </Tooltip>
   )
 }
-
-const IconButtonWithTooltip = ({ sxProps, ...rest }) => {
-  return (
-    <ButtonWithTooltip
-      ButtonComponent={IconButton}
-      sxProps={{ backgroundColor: 'none', ...sxProps }}
-      {...rest}
-    />
-  )
+ButtonWithTooltip.propTypes = {
+  disabled: PropTypes.bool.isRequired,
+  message: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  sxProps: PropTypes.object,
+  ButtonComponent: PropTypes.element,
 }
 
-const FabButtonWithTooltip = ({ sxProps, ...rest }) => {
-  return (
-    <ButtonWithTooltip
-      ButtonComponent={Fab}
-      sxProps={{ position: 'fixed', bottom: 16, right: 0, ...sxProps }}
-      {...rest}
-    />
-  )
+const IconButtonWithTooltip = ({ sxProps, ...rest }) => (
+  <ButtonWithTooltip
+    ButtonComponent={IconButton}
+    sxProps={{ backgroundColor: 'none', ...sxProps }}
+    {...rest}
+  />
+)
+
+IconButtonWithTooltip.propTypes = {
+  sxProps: PropTypes.object,
 }
 
-export { IconButtonWithTooltip, FabButtonWithTooltip }
+const FabButtonWithTooltip = ({ sxProps, ...rest }) => (
+  <ButtonWithTooltip
+    ButtonComponent={Fab}
+    sxProps={{ position: 'fixed', bottom: 16, right: 0, ...sxProps }}
+    {...rest}
+  />
+)
+
+FabButtonWithTooltip.propTypes = {
+  sxProps: PropTypes.object,
+}
+
+export { FabButtonWithTooltip, IconButtonWithTooltip }
 export default ButtonWithTooltip

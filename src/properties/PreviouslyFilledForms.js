@@ -1,8 +1,8 @@
 import { Alert, List, ListItemText, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 import { supabase } from '../supabaseClient'
-import { useEffect, useState } from 'react'
 
 const PreviouslyFilledForms = () => {
   const [forms, setForms] = useState([])
@@ -10,7 +10,7 @@ const PreviouslyFilledForms = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('property_filing')
         .select('*')
         .eq('property_id', propertyId)
@@ -18,9 +18,10 @@ const PreviouslyFilledForms = () => {
     }
 
     getData()
-  }, [])
+  }, [propertyId])
 
-  return forms?.length ? (
+  return forms?.length
+? (
     <>
       <Typography variant='h4'>Form filed on:</Typography>
       <List>
@@ -33,7 +34,8 @@ const PreviouslyFilledForms = () => {
         ))}
       </List>
     </>
-  ) : (
+  )
+: (
     <Alert severity='info'>No forms previously filed</Alert>
   )
 }

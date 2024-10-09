@@ -1,17 +1,13 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  LinearProgress,
-  Stack,
-} from '@mui/material'
-import { supabase } from '../supabaseClient'
-import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { Button, Stack } from '@mui/material'
+import { styled } from '@mui/material/styles'
+import PropTypes from 'prop-types'
+import { useState } from 'react'
+
 import { useAuth } from '../contexts/AuthContext'
-import { useEffect, useState } from 'react'
-import Photo from './Photo'
 import { usePropertyContext } from '../contexts/PropertyContext'
+import { supabase } from '../supabaseClient'
+import Photo from './Photo'
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -28,8 +24,7 @@ const VisuallyHiddenInput = styled('input')({
 const Upload = ({ onUploadComplete, savedPhotoPath, disabled }) => {
   const { userProfile } = useAuth()
   const [refresh, setRefresh] = useState()
-  const { allUsersForCurrentProperty, currentUser, currentProperty } =
-    usePropertyContext()
+  const { currentUser } = usePropertyContext()
   const photoPath =
     savedPhotoPath ||
     `${userProfile?.auth_user_id}/photo/${currentUser?.user_id || Date.now()}`
@@ -68,6 +63,12 @@ const Upload = ({ onUploadComplete, savedPhotoPath, disabled }) => {
       </Button>
     </Stack>
   )
+}
+
+Upload.propTypes = {
+  onUploadComplete: PropTypes.func,
+  savedPhotoPath: PropTypes.string,
+  disabled: PropTypes.bool,
 }
 
 export default Upload

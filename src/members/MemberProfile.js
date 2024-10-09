@@ -1,20 +1,18 @@
 import {
-  Box,
   Button,
   Checkbox,
   FormControlLabel,
-  setRef,
   Stack,
   Typography,
 } from '@mui/material'
+import { useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { groups } from './config'
-import { useState } from 'react'
-import { supabase } from '../supabaseClient'
-import MemberDetails from './MemberDetails'
-import { usePropertyContext } from '../contexts/PropertyContext'
 import PropertyDashboardButton from '../components/PropertyDashboardButton'
+import { usePropertyContext } from '../contexts/PropertyContext'
+import { supabase } from '../supabaseClient'
+import { groups } from './config'
+import MemberDetails from './MemberDetails'
 
 const MemberProfile = () => {
   const { propertyId, fileId } = useParams()
@@ -66,13 +64,7 @@ const MemberProfile = () => {
   return (
     <Stack>
       <Typography variant='h4'>
-        {historic
-          ? `Here is your information for ${
-              currentProperty.name
-            } that was filed on ${new Date(
-              users[0].filedDate
-            ).toLocaleDateString('en-US')}`
-          : `Here is your current information for ${currentProperty.name}`}
+        Here is your current information for {currentProperty.name}
       </Typography>
       <br />
 

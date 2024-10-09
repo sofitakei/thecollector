@@ -1,4 +1,5 @@
 import { Drawer, List, ListItemButton, Typography } from '@mui/material'
+import PropTypes from 'prop-types'
 import {
   matchPath,
   useLocation,
@@ -118,5 +119,9 @@ const Navigation = props => {
       </Drawer>
     </>
   )
+}
+
+Navigation.propTypes = {
+  onClose: PropTypes.func.isRequired,
 }
 export default Navigation

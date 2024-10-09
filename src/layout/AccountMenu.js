@@ -1,18 +1,19 @@
+import { AccountCircle } from '@mui/icons-material'
+import Logout from '@mui/icons-material/Logout'
+import Settings from '@mui/icons-material/Settings'
 import Box from '@mui/material/Box'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
-import Settings from '@mui/icons-material/Settings'
-import Logout from '@mui/icons-material/Logout'
-import { AccountCircle } from '@mui/icons-material'
 import { useState } from 'react'
-import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
-export default function AccountMenu() {
+import { useAuth } from '../contexts/AuthContext'
+
+const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const { logout } = useAuth()
@@ -110,3 +111,5 @@ export default function AccountMenu() {
     </>
   )
 }
+
+export default AccountMenu

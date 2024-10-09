@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
-import { supabase } from '../supabaseClient'
+
 import { usePropertiesContext } from '../contexts/PropertiesContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
+import { supabase } from '../supabaseClient'
 import ConfirmActionDialog from './ConfirmActionDialog'
 
 const ConfirmRemoveDialog = ({
@@ -13,15 +14,14 @@ const ConfirmRemoveDialog = ({
   const { setRefresh } = usePropertiesContext() || {}
   const { setRefresh: setPropertyRefresh } = usePropertyContext() || {}
 
-  const handleDelete = async () => {
-    return await supabase
+  const handleDelete = async () =>
+    await supabase
       .from(table)
       .update({ deleted: new Date().toISOString() })
       .in(
         'id',
         items.map(item => item[idField])
       )
-  }
 
   return (
     <ConfirmActionDialog
@@ -37,8 +37,10 @@ const ConfirmRemoveDialog = ({
 
 ConfirmRemoveDialog.propTypes = {
   getter: PropTypes.func,
+  idField: PropTypes.string,
   items: PropTypes.array.isRequired,
   setOpen: PropTypes.func.isRequired,
+  table: PropTypes.string,
 }
 
 export default ConfirmRemoveDialog

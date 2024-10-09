@@ -30,15 +30,7 @@ const PropertyProvider = props => {
     const groupedUsers = data?.reduce(
       (
         acc,
-        {
-          id,
-          property_role,
-          profiles,
-          is_manager,
-          user_id,
-          userproperty_filing,
-          ...rest
-        }
+        { id, property_role, is_manager, user_id, userproperty_filing, ...rest }
       ) => {
         if (!acc[property_role]) {
           acc.unassigned = [
@@ -72,16 +64,14 @@ const PropertyProvider = props => {
     setPropertyUsers(groupedUsers)
   }
 
-  const getPropertyData = async () => {
-    return await supabase.from('properties').select('*').eq('id', propertyId)
-  }
+  const getPropertyData = async () =>
+    await supabase.from('properties').select('*').eq('id', propertyId)
 
-  const getData = async () => {
-    return await supabase
+  const getData = async () =>
+    await supabase
       .from('users_for_property')
       .select('*')
       .eq('property_id', propertyId)
-  }
 
   const { data: propertyDetails, setRefresh: setPropertyRefresh } = useData({
     supabaseFn: getPropertyData,
@@ -97,7 +87,7 @@ const PropertyProvider = props => {
     }
     setPropertyRefresh(true)
     setRefresh(true)
-  }, [propertyId, userProfile?.id])
+  }, [propertyId, setPropertyRefresh, setRefresh, userProfile?.id])
 
   const allUsersForCurrentProperty = [
     ...propertyUsers.owner,

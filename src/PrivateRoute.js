@@ -2,8 +2,8 @@ import { Navigate, Outlet, useParams } from 'react-router-dom'
 
 import { useAuth } from './contexts/AuthContext'
 import PropertiesProvider from './contexts/PropertiesContext'
-import NavShell from './layout/NavShell'
 import PropertyProvider from './contexts/PropertyContext'
+import NavShell from './layout/NavShell'
 
 const wrapProvider = (wrap, Provider, children) =>
   wrap ? <Provider>{children}</Provider> : children

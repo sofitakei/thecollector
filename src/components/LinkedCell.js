@@ -1,10 +1,12 @@
+import FaceIcon from '@mui/icons-material/Face'
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount'
 import { Chip, IconButton, TableCell, Tooltip } from '@mui/material'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount'
+
 import { useAuth } from '../contexts/AuthContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
-import FaceIcon from '@mui/icons-material/Face'
+
 const LinkedCell = ({ getter, buildUrl, item, type }) => {
   const { userProfile } = useAuth()
   const { sessionPropertyUser } = usePropertyContext() || {}
@@ -13,11 +15,13 @@ const LinkedCell = ({ getter, buildUrl, item, type }) => {
   const text = getter(item)
   return (
     <TableCell>
-      {type === 'property' || isManager || userProfile?.id === item.user_id ? (
+      {type === 'property' || isManager || userProfile?.id === item.user_id
+? (
         <Link item={item} to={buildUrl(item)} type={type}>
           {text}
         </Link>
-      ) : (
+      )
+: (
         text
       )}
 
@@ -38,5 +42,6 @@ LinkedCell.propTypes = {
   getter: PropTypes.func,
   buildUrl: PropTypes.func,
   item: PropTypes.object.isRequired,
+  type: PropTypes.oneOf(['property', 'user']).isRequired,
 }
 export default LinkedCell

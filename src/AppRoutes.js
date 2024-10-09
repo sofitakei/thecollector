@@ -4,25 +4,23 @@ import {
   Route,
   Routes,
 } from 'react-router-dom'
-import AuthProvider from './contexts/AuthContext'
-import PrivateRoute from './PrivateRoute'
+
+import ResetPassword from './authentication/ResetPassword'
 import AddMember from './members/AddMember'
+import AllProfilesForManager from './members/AllProfilesForManager'
 import InviteMember from './members/InviteMember'
 import MemberProfile from './members/MemberProfile'
 import MemberProfileForm from './members/MemberProfileForm'
+import PreviouslyFiledMember from './members/PreviouslyFiledMember'
+import PrivateRoute from './PrivateRoute'
+import Profile from './Profile'
+import Payment from './properties/Payment'
 import PreviouslyFilledForms from './properties/PreviouslyFilledForms'
 import Properties, { Property } from './properties/Properties'
 import PropertyForm from './properties/PropertyForm'
-import ResetPassword from './authentication/ResetPassword'
-import AllProfilesForManager from './members/AllProfilesForManager'
-import Payment from './properties/Payment'
-import PreviouslyFiledMember from './members/PreviouslyFiledMember'
-import Profile from './Profile'
 import Settings from './Settings'
 
-const AppRoutes = () => {
-  return (
-    <Router>
+const AppRoutes = () => <Router>
       <Routes>
         <Route element={<PrivateRoute />}>
           <Route element={<ResetPassword />} path='/reset' />
@@ -68,7 +66,5 @@ const AppRoutes = () => {
         </Route>
       </Routes>
     </Router>
-  )
-}
 
 export default AppRoutes

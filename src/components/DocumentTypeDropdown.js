@@ -6,16 +6,12 @@ export const documentTypes = [
   { value: 39, label: 'U.S. passport' },
   { value: 40, label: 'Foreign passport' },
 ]
-const DocumentTypeDropdown = props => {
-  return (
-    <TextField select name='document_type' {...props}>
+const DocumentTypeDropdown = (props) => <TextField select name='document_type' {...props}>
       {documentTypes.map(({ value, label }) => (
         <MenuItem key={value} value={value}>
           {label}
         </MenuItem>
       ))}
     </TextField>
-  )
-}
 
 export default DocumentTypeDropdown

@@ -1,3 +1,4 @@
+import CloseIcon from '@mui/icons-material/Close'
 import {
   Alert,
   Button,
@@ -14,11 +15,10 @@ import { Fragment, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import Form from '../components/Form'
-import { checkEmailExists, checkForDuplicates, getFormFields } from '../utils'
-import { supabase } from '../supabaseClient'
-import { usePropertyContext } from '../contexts/PropertyContext'
 import { useAuth } from '../contexts/AuthContext'
-import CloseIcon from '@mui/icons-material/Close'
+import { usePropertyContext } from '../contexts/PropertyContext'
+import { supabase } from '../supabaseClient'
+import { checkEmailExists, checkForDuplicates, getFormFields } from '../utils'
 
 const fields = [
   { name: 'first_name', label: 'First Name', required: true },
@@ -52,17 +52,15 @@ const MemberForm = ({
   const [error, setError] = useState()
   const navigate = useNavigate()
 
-  const handleBlur = async ({ target: { value } }) => {
-    const emailExists = await checkEmailExists(value)
-    if (emailExists) {
-      setSaveDisabled(true)
-      setError(
-        'The email is already in use: ' +
-          value +
-          '.  Try the search function above to add them'
-      )
-    }
-  }
+  // const handleBlur = async ({ target: { value } }) => {
+  //   const emailExists = await checkEmailExists(value)
+  //   if (emailExists) {
+  //     setSaveDisabled(true)
+  //     setError(
+  //       `The email is already in use: ${value}.  Try the search function above to add them`
+  //     )
+  //   }
+  // }
 
   const handleFocus = () => {
     setError(null)
@@ -80,13 +78,13 @@ const MemberForm = ({
       const formFields = getFormFields(e.target)
       const members = [...Array(count).keys()].map((_, idx) => {
         const memberFields = Object.keys(formFields).filter(key =>
-          key.endsWith('_' + idx)
+          key.endsWith(`_${idx}`)
         )
 
         return memberFields.reduce(
           (acc, curr) => ({
             ...acc,
-            [curr.replace('_' + idx, '')]: curr.includes('is_manager')
+            [curr.replace(`_${idx}`, '')]: curr.includes('is_manager')
               ? formFields[curr] === 'on'
                 ? true
                 : false
@@ -125,7 +123,7 @@ const MemberForm = ({
       })
 
       membersToMail.forEach(async ({ email }) => {
-        const { data, error } = await supabase.functions.invoke('email', {
+        await supabase.functions.invoke('email', {
           body: { email },
         })
       })
@@ -147,7 +145,7 @@ const MemberForm = ({
               <Divider>
                 Member {idx + 1}{' '}
                 {idx > 0 && (
-                  <IconButton onClick={handleRemoveMember(idx)}>
+                  <IconButton onClick={handleRemoveMember}>
                     <CloseIcon />
                   </IconButton>
                 )}
@@ -155,20 +153,22 @@ const MemberForm = ({
             )}
             {fields.map(
               ({ name, label, checkbox, options, select, required }) => (
-                <Fragment key={name + '_' + idx}>
-                  {checkbox ? (
+                <Fragment key={`${name}_${idx}`}>
+                  {checkbox
+? (
                     <FormControlLabel
                       control={<Checkbox />}
                       label={label}
-                      name={name + '_' + idx}
+                      name={`${name}_${idx}`}
                       default
                     />
-                  ) : (
+                  )
+: (
                     <TextField
                       onFocus={handleFocus}
                       fullWidth
                       label={label}
-                      name={name + '_' + idx}
+                      name={`${name}_${idx}`}
                       required={required}
                       select={select}
                       defaultValue=''
@@ -201,5 +201,8 @@ MemberForm.propTypes = {
   count: PropTypes.number,
   overrides: PropTypes.object,
   FormProps: PropTypes.object,
+  allowMultiple: PropTypes.bool,
+  handleAddMember: PropTypes.func,
+  handleRemoveMember: PropTypes.func,
 }
 export default MemberForm

@@ -10,11 +10,11 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-
-import Navigation from './Navigation'
-import { usePropertyContext } from '../contexts/PropertyContext'
 import { Link } from 'react-router-dom'
+
+import { usePropertyContext } from '../contexts/PropertyContext'
 import AccountMenu from './AccountMenu'
+import Navigation from './Navigation'
 
 const drawerWidth = 240
 
@@ -25,7 +25,7 @@ const Copyright = props => (
       FileHOABOI
     </Link>{' '}
     {new Date().getFullYear()}
-    {'.'}
+    .
   </Typography>
 )
 

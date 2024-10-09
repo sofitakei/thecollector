@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import { supabase } from '../supabaseClient'
 
 const UNITED_STATES = 236
@@ -8,7 +9,7 @@ export const useCountries = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const { data, error } = await supabase.from('countries').select('*')
+      const { data } = await supabase.from('countries').select('*')
       setCountries(
         data
           .map(({ id, english_short_name }) => ({
@@ -23,7 +24,7 @@ export const useCountries = () => {
     if (!countries.length) {
       getData()
     }
-  }, [])
+  }, [countries?.length])
 
   const countriesByName = countries?.reduce(
     (acc, curr) => ((acc[curr.label] = curr.value), acc),

@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../supabaseClient'
+
 import { useData } from '../hooks/useData'
-import { setRef } from '@mui/material'
+import { supabase } from '../supabaseClient'
 
 const AuthContext = createContext({})
 
@@ -9,13 +10,11 @@ const AuthProvider = ({ children, session, setSession }) => {
   const [userProfile, setUserProfile] = useState({})
   const logout = () => supabase.auth.signOut()
 
-  const getUserData = async () => {
-    return await supabase
+  const getUserData = async () =>
+    await supabase
       .from('profiles')
       .select()
       .eq('auth_user_id', session?.user?.id)
-    //TODO: if we don't find a user profile?
-  }
 
   const onSuccess = data => {
     setUserProfile({ ...data[0], email: session?.user?.email })
@@ -30,7 +29,7 @@ const AuthProvider = ({ children, session, setSession }) => {
     if (session?.user?.id) {
       setRefresh(true)
     }
-  }, [session?.user?.id, refresh])
+  }, [session?.user?.id, refresh, setRefresh])
 
   return (
     <AuthContext.Provider
@@ -47,6 +46,16 @@ const AuthProvider = ({ children, session, setSession }) => {
   )
 }
 
+AuthProvider.propTypes = {
+  children: PropTypes.object,
+  session: PropTypes.shape({
+    user: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      email: PropTypes.string,
+    }),
+  }),
+  setSession: PropTypes.func,
+}
 export const useAuth = () => useContext(AuthContext)
 
 export default AuthProvider

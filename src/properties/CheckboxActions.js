@@ -1,16 +1,11 @@
-import {
-  Fab,
-  IconButton,
-  Stack,
-  Tooltip,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import SendIcon from '@mui/icons-material/Send'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
 import GroupRemoveIcon from '@mui/icons-material/GroupRemove'
-import ButtonWithTooltip, {
+import SendIcon from '@mui/icons-material/Send'
+import { Stack, useMediaQuery, useTheme } from '@mui/material'
+import PropTypes from 'prop-types'
+
+import {
   FabButtonWithTooltip,
   IconButtonWithTooltip,
 } from '../components/ButtonWithTooltip'
@@ -30,7 +25,8 @@ const CheckboxActions = ({
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.down('sm'))
 
-  return matches ? (
+  return matches
+? (
     <>
       <FabButtonWithTooltip
         onClick={onDelete}
@@ -53,6 +49,7 @@ const CheckboxActions = ({
         disabled={deleteDisabled}>
         <SendIcon />
       </FabButtonWithTooltip>
+
       <FabButtonWithTooltip
         message='Add Managers'
         onClick={onAddManager}
@@ -77,7 +74,8 @@ const CheckboxActions = ({
         <GroupRemoveIcon />
       </FabButtonWithTooltip>
     </>
-  ) : (
+  )
+: (
     <Stack direction='row' mt={2}>
       <IconButtonWithTooltip
         message='Remove member'
@@ -115,6 +113,16 @@ const CheckboxActions = ({
       </IconButtonWithTooltip>
     </Stack>
   )
+}
+
+CheckboxActions.propTypes = {
+  deleteDisabled: PropTypes.bool,
+  managerAddDisabled: PropTypes.bool,
+  managerRemoveDisabled: PropTypes.bool,
+  onDelete: PropTypes.func,
+  onNotify: PropTypes.func,
+  onRemoveManager: PropTypes.func,
+  onAddManager: PropTypes.func,
 }
 
 export default CheckboxActions

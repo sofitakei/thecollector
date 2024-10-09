@@ -8,8 +8,9 @@ import {
   TableRow,
 } from '@mui/material'
 import PropTypes from 'prop-types'
-import { usePropertyContext } from '../contexts/PropertyContext'
+
 import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { usePropertyContext } from '../contexts/PropertyContext'
 
 const NoData = () => <div>No data to display</div>
 
@@ -19,7 +20,6 @@ const Table = ({
   showCheckbox,
   getCheckboxEnabled,
   idField,
-
   NoDataMessage = <NoData />,
 }) => {
   const { selectedMembers, setSelectedMembers } = usePropertyContext() || {}
@@ -54,65 +54,58 @@ const Table = ({
       }
     }
 
-  return !data || data.length === 0 ? (
+  return !data || data.length === 0
+? (
     <Alert severity='info'>{NoDataMessage}</Alert>
-  ) : (
-    <>
-      <MuiTable size='small'>
-        <TableHead>
-          <TableRow>
-            {showCheckbox && <TableCell sx={{ width: '1%' }}></TableCell>}
-            {columns.map(({ user_id, name, label, CellProps }) => (
-              <TableCell key={user_id || name} {...CellProps}>
-                {label}
+  )
+: (
+    <MuiTable size='small'>
+      <TableHead>
+        <TableRow>
+          {showCheckbox && <TableCell sx={{ width: '1%' }} />}
+          {columns.map(({ user_id, name, label, CellProps }) => (
+            <TableCell key={user_id || name} {...CellProps}>
+              {label}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.map(item => (
+          <TableRow key={item[idField]}>
+            {showCheckbox && (
+              <TableCell>
+                <Checkbox
+                  disabled={!getCheckboxEnabled(item)}
+                  checked={
+                    selectedItems.findIndex(i => i[idField] === item[idField]) >
+                    -1
+                  }
+                  onChange={handleChange(item)}
+                />
               </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map(item => {
-            return (
-              <TableRow key={item[idField]}>
-                {showCheckbox && (
-                  <TableCell>
-                    <Checkbox
-                      disabled={!getCheckboxEnabled(item)}
-                      checked={
-                        selectedItems.findIndex(
-                          i => i[idField] === item[idField]
-                        ) > -1
-                      }
-                      onChange={handleChange(item)}
-                    />
+            )}
+            {columns.map(
+              ({ defaultValue, name, CellProps, Renderer, RendererProps }) =>
+                Renderer
+? (
+                  <Renderer
+                    item={item}
+                    key={name}
+                    {...CellProps}
+                    {...RendererProps}
+                  />
+                )
+: (
+                  <TableCell key={name} {...CellProps}>
+                    {item?.[name] || defaultValue}
                   </TableCell>
-                )}
-                {columns.map(
-                  ({
-                    defaultValue,
-                    name,
-                    CellProps,
-                    Renderer,
-                    RendererProps,
-                  }) =>
-                    Renderer ? (
-                      <Renderer
-                        item={item}
-                        key={name}
-                        {...CellProps}
-                        {...RendererProps}
-                      />
-                    ) : (
-                      <TableCell key={name} {...CellProps}>
-                        {item?.[name] || defaultValue}
-                      </TableCell>
-                    )
-                )}
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </MuiTable>
-    </>
+                )
+            )}
+          </TableRow>
+        ))}
+      </TableBody>
+    </MuiTable>
   )
 }
 
@@ -120,5 +113,8 @@ Table.propTypes = {
   columns: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
   showCheckbox: PropTypes.bool,
+  NoDataMessage: PropTypes.element,
+  idField: PropTypes.string,
+  getCheckboxEnabled: PropTypes.func,
 }
 export default Table

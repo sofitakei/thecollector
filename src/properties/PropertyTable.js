@@ -8,52 +8,46 @@ const emptyIfNull = str => (!str || str === null ? '' : str)
 
 const getCheckboxEnabled = () => true
 
-const PropertyTable = ({
-  onSelected,
-  nonReporting = false,
-  users,
-  showCheckbox,
-}) => {
-  return (
-    <Table
-      getCheckboxEnabled={getCheckboxEnabled}
-      onSelected={onSelected}
-      columns={[
-        {
-          name: 'name',
-          label: 'Name',
-          Renderer: LinkedCell,
-          RendererProps: {
-            getter: ({ first_name, last_name, email }) =>
-              first_name || last_name
-                ? `${emptyIfNull(first_name)} ${emptyIfNull(last_name)}`
-                : `(${email})`,
-            buildUrl: ({ user_id }) => `users/${user_id}/edit`,
-          },
+const PropertyTable = ({ nonReporting = false, users, showCheckbox }) => (
+  <Table
+    getCheckboxEnabled={getCheckboxEnabled}
+    columns={[
+      {
+        name: 'name',
+        label: 'Name',
+        Renderer: LinkedCell,
+        RendererProps: {
+          getter: ({ first_name, last_name, email }) =>
+            first_name || last_name
+              ? `${emptyIfNull(first_name)} ${emptyIfNull(last_name)}`
+              : `(${email})`,
+          buildUrl: ({ user_id }) => `users/${user_id}/edit`,
         },
+      },
 
-        nonReporting
-          ? null
-          : {
-              name: 'status',
-              label: 'Status',
-              Renderer: StatusCell,
-              CellProps: { align: 'right' },
-              RendererProps: {
-                getter: ({ status }) => status,
-              },
+      nonReporting
+        ? null
+        : {
+            name: 'status',
+            label: 'Status',
+            Renderer: StatusCell,
+            CellProps: { align: 'right' },
+            RendererProps: {
+              getter: ({ status }) => status,
             },
-      ].filter(col => col !== null)}
-      data={users}
-      getter={({ first_name, last_name }) => `${first_name} ${last_name}`}
-      showCheckbox={showCheckbox}
-      table='userproperty'
-      idField='userproperty_id'
-    />
-  )
-}
+          },
+    ].filter(col => col !== null)}
+    data={users}
+    getter={({ first_name, last_name }) => `${first_name} ${last_name}`}
+    showCheckbox={showCheckbox}
+    table='userproperty'
+    idField='userproperty_id'
+  />
+)
 
 PropertyTable.propTypes = {
+  nonReporting: PropTypes.bool,
+  showCheckbox: PropTypes.bool,
   users: PropTypes.array.isRequired,
 }
 export default PropertyTable

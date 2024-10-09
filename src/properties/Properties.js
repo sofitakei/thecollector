@@ -1,39 +1,30 @@
+import DeleteIcon from '@mui/icons-material/Delete'
+import { Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
+import PropTypes from 'prop-types'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-import LinkedCell from '../components/LinkedCell'
-import StatusCell from '../components/StatusCell'
-import Table from '../components/Table'
-import { usePropertiesContext } from '../contexts/PropertiesContext'
-import PropertyForm from './PropertyForm'
-import PropertyHome from './PropertyHome'
-import {
-  Box,
-  Fab,
-  IconButton,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material'
-import { useAuth } from '../contexts/AuthContext'
-import PaymentCell from '../components/PaymentCell'
-import DeleteIcon from '@mui/icons-material/Delete'
-import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
-import { useState } from 'react'
 import {
   FabButtonWithTooltip,
   IconButtonWithTooltip,
 } from '../components/ButtonWithTooltip'
+import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
+import LinkedCell from '../components/LinkedCell'
+import PaymentCell from '../components/PaymentCell'
+import StatusCell from '../components/StatusCell'
+import Table from '../components/Table'
+import { useAuth } from '../contexts/AuthContext'
+import { usePropertiesContext } from '../contexts/PropertiesContext'
+import PropertyForm from './PropertyForm'
+import PropertyHome from './PropertyHome'
 
-const NoData = () => {
-  return (
-    <Box textAlign='left'>
-      You current have no properties assigned.
-      <br />
-      <Link to='/properties/new'>Click here</Link> to get started
-    </Box>
-  )
-}
+const NoData = () => (
+  <Box textAlign='left'>
+    You current have no properties assigned.
+    <br />
+    <Link to='/properties/new'>Click here</Link> to get started
+  </Box>
+)
 
 const CheckboxActions = ({ disabled, onClick }) => {
   const theme = useTheme()
@@ -62,6 +53,10 @@ const CheckboxActions = ({ disabled, onClick }) => {
     </Stack>
   )
 }
+CheckboxActions.propTypes = {
+  disabled: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+}
 const getIsManager = ({ is_manager }) => is_manager
 
 const Properties = () => {
@@ -70,7 +65,6 @@ const Properties = () => {
     propertiesStatus,
     loaded,
     selectedProperties,
-    setSelectedProperties,
     setRefresh,
   } = usePropertiesContext()
   const {
@@ -140,14 +134,12 @@ const Properties = () => {
           const merged = propertiesStatus?.find(
             ({ rproperty_id }) => rproperty_id === property.property_id
           )
-          console.log({ merged, property })
           return { ...property, ...merged }
         })}
         NoDataMessage={<NoData />}
       />
       {showDialog && (
         <ConfirmRemoveDialog
-          setSelectedData={setSelectedProperties}
           items={selectedProperties}
           idField='property_id'
           setOpen={setShowDialog}

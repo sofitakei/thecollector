@@ -4,7 +4,6 @@ export const useData = ({
   supabaseFn,
   onError = err => console.log(err),
   onSuccess = () => {},
-  ...rest
 }) => {
   const [data, setData] = useState()
   const [refresh, setRefresh] = useState(false)
@@ -30,7 +29,7 @@ export const useData = ({
       getData()
       setRefresh(false)
     }
-  }, [refresh])
+  }, [loading, onError, onSuccess, refresh, supabaseFn])
 
   return { data, loaded, loading, refresh, setRefresh }
 }

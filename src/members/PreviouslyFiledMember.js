@@ -1,29 +1,20 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  setRef,
-  Stack,
-  Typography,
-} from '@mui/material'
-import { Link, useParams } from 'react-router-dom'
+import { Divider, Stack, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-import { Fragment, useEffect, useState } from 'react'
+import PropertyDashboardButton from '../components/PropertyDashboardButton'
+import { usePropertyContext } from '../contexts/PropertyContext'
 import { supabase } from '../supabaseClient'
 import MemberDetails from './MemberDetails'
-import { usePropertyContext } from '../contexts/PropertyContext'
-import PropertyDashboardButton from '../components/PropertyDashboardButton'
 
 const PreviouslyFiledMember = () => {
-  const { propertyId, fileId } = useParams()
+  const { fileId } = useParams()
   const [filing, setFiling] = useState()
   const { currentProperty } = usePropertyContext() || {}
 
   useEffect(() => {
     const getData = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('property_filing')
         .select('*')
         .eq('id', fileId)
@@ -31,7 +22,7 @@ const PreviouslyFiledMember = () => {
     }
 
     getData()
-  }, [])
+  }, [fileId])
 
   if (!filing) return <div>Loading</div>
 
@@ -42,10 +33,10 @@ const PreviouslyFiledMember = () => {
         {new Date(filing?.created_at).toLocaleDateString('en-US')}
       </Typography>
       <br />
-      {filing.filing.map((user, idx) => (
+      {filing.filing.map(user => (
         <>
           <MemberDetails user={user} />
-          <Divider sx={{ my: 3 }}></Divider>
+          <Divider sx={{ my: 3 }} />
         </>
       ))}
 

@@ -6,8 +6,9 @@ import {
   DialogTitle,
 } from '@mui/material'
 import PropTypes from 'prop-types'
-import { usePropertyContext } from '../contexts/PropertyContext'
+
 import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { usePropertyContext } from '../contexts/PropertyContext'
 
 const ConfirmActionDialog = ({
   getter = ({ name }) => name,
@@ -24,7 +25,7 @@ const ConfirmActionDialog = ({
     setOpen(false)
   }
   const handleConfirmAction = async () => {
-    const { data, error } = await onConfirmAction()
+    const { error } = await onConfirmAction()
     if (error === null) {
       setOpen(false)
       setSelectedMembers?.([])
@@ -55,9 +56,13 @@ const ConfirmActionDialog = ({
 }
 
 ConfirmActionDialog.propTypes = {
+  dialogText: PropTypes.string,
+  dialogTitle: PropTypes.string,
   getter: PropTypes.func,
   items: PropTypes.array.isRequired,
+  onConfirmAction: PropTypes.func.isRequired,
   setOpen: PropTypes.func.isRequired,
+  setRefresh: PropTypes.func,
 }
 
 export default ConfirmActionDialog

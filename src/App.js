@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react'
 import './App.css'
+import 'dayjs/locale/de'
 
-import Routes from './AppRoutes'
-import { supabase } from './supabaseClient'
-import Login from './authentication/Login'
-import AuthProvider from './contexts/AuthContext'
+import { LinearProgress } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import 'dayjs/locale/de'
+import { useEffect, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
+
+import Routes from './AppRoutes'
+import Login from './authentication/Login'
+import AuthProvider from './contexts/AuthContext'
+import { supabase } from './supabaseClient'
 import Wall from './Wall'
-import { LinearProgress } from '@mui/material'
 
 const App = () => {
   const [session, setSession] = useState()
@@ -39,13 +40,17 @@ const App = () => {
 
   return (
     <ErrorBoundary>
-      {!verified && !localStorage.getItem('verified') ? (
+      {!verified && !localStorage.getItem('verified')
+? (
         <Wall setVerified={setVerified} />
-      ) : (
+      )
+: (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          {loading ? (
+          {loading
+? (
             <LinearProgress />
-          ) : (
+          )
+: (
             <AuthProvider setSession={setSession} session={session}>
               {session ? <Routes /> : <Login />}
             </AuthProvider>

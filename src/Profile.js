@@ -1,20 +1,19 @@
-import { useRef, useState } from 'react'
-
-import { supabase } from './supabaseClient'
 import {
   Alert,
-  Button,
-  Divider,
   LinearProgress,
   Snackbar,
   Stack,
   TextField,
   Typography,
 } from '@mui/material'
+import { useState } from 'react'
+
 import Form from './components/Form'
-import { useAuth } from './contexts/AuthContext'
-import { getFormFields } from './utils'
 import LoadingBackdrop from './components/LoadingBackdrop'
+import { useAuth } from './contexts/AuthContext'
+import { supabase } from './supabaseClient'
+import { getFormFields } from './utils'
+
 const fields = [
   {
     name: 'last_name',
@@ -26,9 +25,8 @@ const fields = [
 ]
 
 const Profile = () => {
-  const ref = useRef()
   const [error, setError] = useState()
-  const { userProfile, user } = useAuth()
+  const { userProfile } = useAuth()
   const [loading, setLoading] = useState(false)
   const [successfulSave, setSuccessfulSave] = useState()
   const handleSubmit = async e => {
@@ -65,7 +63,8 @@ const Profile = () => {
       <Stack sx={{ alignItems: 'center', form: { width: '100%' } }} spacing={3}>
         {error && <Alert severity='error'>{error}</Alert>}
         <Typography variant='h4'>My Profile</Typography>
-        {userProfile?.email ? (
+        {userProfile?.email
+? (
           <Form onSubmit={handleSubmit}>
             <Stack spacing={3}>
               {fields.map(field => (
@@ -78,7 +77,8 @@ const Profile = () => {
               ))}
             </Stack>
           </Form>
-        ) : (
+        )
+: (
           <LinearProgress />
         )}
       </Stack>

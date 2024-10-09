@@ -1,16 +1,17 @@
-import { useState } from 'react'
-import { supabase } from '../supabaseClient'
 import { Button, Stack, TextField, Typography } from '@mui/material'
+import { useState } from 'react'
+
+import { supabase } from '../supabaseClient'
 
 const MagicLink = () => {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
-  const search = atob(location?.search?.substring(1)) || '{}'
+  //const search = atob(location?.search?.substring(1)) || '{}'
   //TODO: add user to property if defined
   const handleLogin = async event => {
     event.preventDefault()
     setLoading(true)
-    const { data, error } = await supabase.auth.signInWithOtp({ email })
+    const { error } = await supabase.auth.signInWithOtp({ email })
 
     if (error) {
       alert(error.error_description || error.message)
@@ -39,7 +40,7 @@ const MagicLink = () => {
           <Button
             type='submit'
             fullWidth
-            className={'button block'}
+            className='button block'
             disabled={loading}
             variant='contained'>
             {loading ? <span>Loading</span> : <span>Send magic link</span>}

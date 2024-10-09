@@ -1,11 +1,11 @@
-import { Search } from '@mui/icons-material'
-import Form from '../components/Form'
 import { Stack, TextField } from '@mui/material'
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
+
+import Form from '../components/Form'
+import { usePropertyContext } from '../contexts/PropertyContext'
 import { supabase } from '../supabaseClient'
 import { getFormFields } from '../utils'
-import { usePropertyContext } from '../contexts/PropertyContext'
-import { useParams } from 'react-router-dom'
 
 const SearchMember = () => {
   const [results, setResults] = useState()
@@ -17,7 +17,7 @@ const SearchMember = () => {
     setInfo(null)
     const formData = getFormFields(e.target)
     //TODO optimize and full text search for user
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('profiles')
       .select('id,email, first_name,last_name')
       .eq('email', formData?.search)
@@ -34,7 +34,7 @@ const SearchMember = () => {
 
   const handleClick = async e => {
     e.preventDefault()
-    const { data, error } = await supabase
+    await supabase
       .from('userproperty')
       .insert({
         user_id: results?.id,
@@ -54,13 +54,17 @@ const SearchMember = () => {
       <Form onSubmit={handleSubmit} buttonLabel='Search'>
         <TextField fullWidth name='search' />
       </Form>
-      {info ? (
+      {info
+? (
         info
-      ) : results ? (
+      )
+: results
+? (
         <a href='#' onClick={handleClick}>
           Add {`${results.first_name} ${results.last_name} (${results.email})`}
         </a>
-      ) : (
+      )
+: (
         'No results found'
       )}
     </Stack>

@@ -1,21 +1,20 @@
 import { Alert, MenuItem, TextField } from '@mui/material'
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import Form from '../components/Form'
-import { fields } from './config'
-import { useState } from 'react'
-import { supabase } from '../supabaseClient'
-import { useAuth } from '../contexts/AuthContext'
-import { getFormFields } from '../utils'
 import CountryDropdown from '../components/CountryDropdown'
-import { usePropertyContext } from '../contexts/PropertyContext'
-import { usePropertiesContext } from '../contexts/PropertiesContext'
+import Form from '../components/Form'
 import LoadingBackdrop from '../components/LoadingBackdrop'
+import { useAuth } from '../contexts/AuthContext'
+import { usePropertiesContext } from '../contexts/PropertiesContext'
+import { usePropertyContext } from '../contexts/PropertyContext'
+import { supabase } from '../supabaseClient'
+import { getFormFields } from '../utils'
+import { fields } from './config'
 
 const PropertyForm = () => {
   const navigate = useNavigate()
-  const { currentProperty, setRefresh, setPropertyRefresh } =
-    usePropertyContext() || {}
+  const { currentProperty, setPropertyRefresh } = usePropertyContext() || {}
   const { countries, countriesByName } = usePropertiesContext()
   const [errors, setErrors] = useState()
   const {
@@ -38,7 +37,7 @@ const PropertyForm = () => {
       //TODO: this should be done in the country dropdown component
       const country_id = countriesByName[formFields.country_jurisdiction_id]
       if (!currentProperty) {
-        const { data, error } = await supabase.rpc('add_property_with_owner', {
+        const { data } = await supabase.rpc('add_property_with_owner', {
           ...formFields,
           property_role,
           country_jurisdiction_id: country_id,
@@ -47,7 +46,7 @@ const PropertyForm = () => {
 
         propertyId = data?.[0]?.id
       } else {
-        const { data, error } = await supabase
+        await supabase
           .from('properties')
           .update({ ...formFields, country_jurisdiction_id: country_id })
           .eq('id', currentProperty.id)
@@ -63,7 +62,8 @@ const PropertyForm = () => {
     setErrors()
   }
   //TODO:checking this field to see if we loaded the details
-  return currentProperty?.created_at || idParam === 'new' ? (
+  return currentProperty?.created_at || idParam === 'new'
+? (
     <Form onSubmit={handleSubmit}>
       {errors && (
         <Alert severity='error' sx={{ mb: 2 }}>
@@ -71,15 +71,20 @@ const PropertyForm = () => {
         </Alert>
       )}
       {fields.map(({ name, options, select, ...rest }) =>
-        name === 'country_jurisdiction_id' ? (
+        name === 'country_jurisdiction_id'
+? (
           <CountryDropdown
             name={name}
+            key={name}
             countries={countries}
             defaultValue={countries.find(
               ({ value }) => value === currentProperty?.country_jurisdiction_id
             )}
           />
-        ) : name === 'property_role' && idParam !== 'new' ? null : (
+        )
+: name === 'property_role' && idParam !== 'new'
+? null
+: (
           <TextField
             style={{ marginBottom: 20 }}
             fullWidth
@@ -100,7 +105,8 @@ const PropertyForm = () => {
         )
       )}
     </Form>
-  ) : (
+  )
+: (
     <LoadingBackdrop />
   )
 }

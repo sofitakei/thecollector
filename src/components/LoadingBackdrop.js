@@ -1,4 +1,5 @@
 import { Backdrop, CircularProgress } from '@mui/material'
+import PropTypes from 'prop-types'
 
 const LoadingBackdrop = ({ open }) => (
   <Backdrop
@@ -8,4 +9,7 @@ const LoadingBackdrop = ({ open }) => (
   </Backdrop>
 )
 
+LoadingBackdrop.propTypes = {
+  open: PropTypes.bool.isRequired,
+}
 export default LoadingBackdrop

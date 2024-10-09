@@ -1,17 +1,14 @@
-import { Alert, Box, Button, Stack, Typography } from '@mui/material'
-
-import { useAuth } from '../contexts/AuthContext'
-import PropertyTable from './PropertyTable'
-import { supabase } from '../supabaseClient'
-import { useNavigate, useParams } from 'react-router-dom'
-import { usePropertyContext } from '../contexts/PropertyContext'
+import { Box, Button, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
-import CheckboxActions from './CheckboxActions'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
 import ConfirmManagerAddRemoveDialog from '../components/ConfirmManagerAddRemoveDialog'
+import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
 import ConfirmSendNotificationsDialog from '../components/ConfirmSendNotificationsDialog'
+import { usePropertyContext } from '../contexts/PropertyContext'
 import { emptyIfNull } from '../utils'
+import CheckboxActions from './CheckboxActions'
+import PropertyTable from './PropertyTable'
 
 const actionDialog = {
   send: ConfirmSendNotificationsDialog,
@@ -22,11 +19,6 @@ const actionDialog = {
   managerRemove: ConfirmManagerAddRemoveDialog,
 }
 
-const initialState = {
-  owner: [],
-  board: [],
-  nonreporting: [],
-}
 const PropertyHome = () => {
   const {
     propertyUsers,
@@ -39,7 +31,7 @@ const PropertyHome = () => {
   const { board_member, owner, unassigned } = propertyUsers
   const isManager = sessionPropertyUser?.is_manager
   const navigate = useNavigate()
-  const [allSelected, setAllSelected] = useState(initialState)
+
   const [action, setAction] = useState()
 
   const handleDelete = () => {
@@ -60,10 +52,6 @@ const PropertyHome = () => {
     } else {
       navigate(`/properties/${propertyId}/submit`)
     }
-  }
-
-  const handleSelected = role => selected => {
-    setAllSelected(old => ({ ...old, [role]: selected }))
   }
 
   const ConfirmRenderer = actionDialog[action]
@@ -101,26 +89,17 @@ const PropertyHome = () => {
         <Typography component='h2' gutterBottom variant='h6'>
           Board Members
         </Typography>
-        <PropertyTable
-          onSelected={handleSelected('board')}
-          users={board_member}
-          showCheckbox={isManager}
-        />
+        <PropertyTable users={board_member} showCheckbox={isManager} />
         <br />
         <Typography component='h2' gutterBottom variant='h6'>
           Owners of 25% or More
         </Typography>
-        <PropertyTable
-          onSelected={handleSelected('owner')}
-          users={owner}
-          showCheckbox={isManager}
-        />
+        <PropertyTable users={owner} showCheckbox={isManager} />
         <br />
         <Typography component='h2' gutterBottom variant='h6'>
           Non Reporting
         </Typography>
         <PropertyTable
-          onSelected={handleSelected('nonreporting')}
           users={unassigned}
           nonReporting
           showCheckbox={isManager}
@@ -136,9 +115,6 @@ const PropertyHome = () => {
             )} (${emptyIfNull(email)})`
           }
           items={selectedItems}
-          setSelectedData={() => {
-            setAllSelected(initialState)
-          }}
           setOpen={setAction}
           setRefresh={setRefresh}
         />

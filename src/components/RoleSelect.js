@@ -5,11 +5,10 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material'
+
 import { stakeholders } from '../properties/config'
 
-const RoleSelect = props => {
-  return (
-    <FormControl>
+const RoleSelect = (props) => <FormControl>
       <FormLabel id='role-radio-buttons-group-label'>Role*</FormLabel>
       <RadioGroup
         row
@@ -27,7 +26,5 @@ const RoleSelect = props => {
         ))}
       </RadioGroup>
     </FormControl>
-  )
-}
 
 export default RoleSelect

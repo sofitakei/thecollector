@@ -44,8 +44,9 @@ const ConfirmEmptyFieldsDialog = ({
 
 ConfirmEmptyFieldsDialog.propTypes = {
   items: PropTypes.array.isRequired,
-  setOpen: PropTypes.func.isRequired,
   onConfirmAction: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
 }
 
 export default ConfirmEmptyFieldsDialog

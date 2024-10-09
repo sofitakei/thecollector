@@ -1,17 +1,17 @@
 import { Stack } from '@mui/material'
+import { drawingSVG, qrcode } from 'bwip-js'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-import MemberForm from './MemberForm'
-import { qrcode, drawingSVG } from 'bwip-js'
 import PropertyDashboardButton from '../components/PropertyDashboardButton'
+import MemberForm from './MemberForm'
 
 const InviteMember = () => {
   const [copied, setCopiedState] = useState()
   const [membersCount, setMembersCount] = useState(1)
   const { propertyId } = useParams()
   const encoded = btoa(JSON.stringify({ propertyId }))
-  const link = location?.host + '?' + encoded
+  const link = `${location?.host}?${encoded}`
   let svg = qrcode(
     {
       bcid: 'code128', // Barcode type
@@ -41,7 +41,7 @@ const InviteMember = () => {
   const handleAddMember = () => {
     setMembersCount(count => count + 1)
   }
-  const handleRemoveMember = idx => () => {
+  const handleRemoveMember = () => {
     setMembersCount(count => count - 1)
   }
 
