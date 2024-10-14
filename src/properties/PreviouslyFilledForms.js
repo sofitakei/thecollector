@@ -22,13 +22,21 @@ const PreviouslyFilledForms = () => {
 
   return forms?.length ? (
     <>
-      <Typography variant='h4'>Form filed on:</Typography>
+      <Typography variant='h4'>Filings</Typography>
       <List>
         {forms.map(form => (
           <ListItemText key={form.id}>
+            Created:
             <Link to={`${form.id}`}>
-              {new Date(form.submitted).toLocaleDateString('en-US')}
+              {new Date(form.created_at).toLocaleDateString('en-US')}
             </Link>
+            {form.submitted && (
+              <span>
+                {' '}
+                Filed:
+                {new Date(form.submitted).toLocaleDateString('en-US')}
+              </span>
+            )}
           </ListItemText>
         ))}
       </List>
