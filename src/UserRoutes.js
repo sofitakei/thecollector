@@ -10,7 +10,6 @@ import PreviouslyFiledMember from './members/PreviouslyFiledMember'
 import PrivateRoute from './PrivateRoute'
 import Profile from './Profile'
 import Payment from './properties/Payment'
-import PaymentConfirmation from './properties/PaymentConfirmation'
 import PreviouslyFilledForms from './properties/PreviouslyFilledForms'
 import Properties, { Property } from './properties/Properties'
 import PropertyForm from './properties/PropertyForm'
@@ -24,7 +23,7 @@ const UserRoutes = () => (
       <Route element={<Profile />} exact path='/profile' />
       <Route element={<Settings />} exact path='/account' />
       <Route element={<Properties />} exact path='/properties' />
-      <Route element={<PaymentConfirmation />} path='/payment-confirmation' />
+      {/* <Route element={<PaymentConfirmation />} path='/payment-confirmation' /> */}
       <Route element={<Property />} path='/properties/:propertyId' />
       <Route element={<PropertyForm />} path='/properties/:propertyId/edit' />
       <Route element={<InviteMember />} path='/properties/:propertyId/invite' />
