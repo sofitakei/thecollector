@@ -11,7 +11,7 @@ const LinkedCell = ({ getter, buildUrl, item, type }) => {
   const { userProfile, userRole } = useAuth()
   const { sessionPropertyUser } = usePropertyContext() || {}
   const isManager = sessionPropertyUser?.is_manager
-  console.log({ item })
+
   const text = getter(item)
   return (
     <TableCell>

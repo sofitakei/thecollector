@@ -33,7 +33,7 @@ const AllProfilesForManager = () => {
   const [verified, setVerified] = useState(false)
   const { countries } = useCountries()
   const navigate = useNavigate()
-  const [photoUploaded, setPhotoUploaded] = useState()
+
   //TODO: finish reading the API docs
   // const formatFiling = () => {
   //   const filing = {
@@ -191,7 +191,7 @@ const AllProfilesForManager = () => {
             <Divider sx={{ my: 2 }}>
               {user.first_name} {user.last_name}
             </Divider>
-            <MemberDetails user={user} setPhotoUploaded={setPhotoUploaded} />
+            <MemberDetails user={user} />
             <Link to={`/properties/${propertyId}/users/${user.user_id}/edit`}>
               Edit Member
             </Link>

@@ -112,7 +112,6 @@ const NeedsFiling = () => {
 
   const handleConfirmMarkComplete = async () => {
     const submittedDate = new Date().toISOString()
-    console.log({ submittedDate })
     const { data, error } = await supabase
       .from('property_filing')
       .update({ submitted: submittedDate })
@@ -138,7 +137,7 @@ const NeedsFiling = () => {
               RendererProps: {
                 type: 'property',
                 getter: ({ name }) => name,
-                buildUrl: ({ id }) => `/properties/${id}`,
+                buildUrl: ({ property_id }) => `/properties/${property_id}`,
               },
             },
 
