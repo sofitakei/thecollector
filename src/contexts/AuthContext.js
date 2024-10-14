@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode'
 import PropTypes from 'prop-types'
 import { createContext, useContext, useEffect, useState } from 'react'
 
@@ -8,7 +9,12 @@ const AuthContext = createContext({})
 
 const AuthProvider = ({ children, session, setSession }) => {
   const [userProfile, setUserProfile] = useState({})
+
   const logout = () => supabase.auth.signOut()
+
+  const jwt = session ? jwtDecode(session.access_token) : {}
+
+  const userRole = jwt.user_role
 
   const getUserData = async () =>
     await supabase
@@ -26,16 +32,17 @@ const AuthProvider = ({ children, session, setSession }) => {
   })
 
   useEffect(() => {
-    if (session?.user?.id) {
+    if (session?.user?.id && !userProfile?.id) {
       setRefresh(true)
     }
-  }, [session?.user?.id, refresh, setRefresh])
+  }, [session?.user?.id, refresh, setRefresh, userProfile])
 
   return (
     <AuthContext.Provider
       value={{
         user: session?.user,
         userProfile,
+        userRole,
         logout,
         session,
         setRefresh,
@@ -50,7 +57,7 @@ AuthProvider.propTypes = {
   children: PropTypes.object,
   session: PropTypes.shape({
     user: PropTypes.shape({
-      id: PropTypes.number.isRequired,
+      id: PropTypes.string.isRequired,
       email: PropTypes.string,
     }),
   }),

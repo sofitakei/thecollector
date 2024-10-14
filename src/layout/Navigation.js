@@ -15,13 +15,19 @@ const Navigation = props => {
   const { currentProperty, sessionPropertyUser } = usePropertyContext() || {}
   const { propertyId } = useParams()
   const location = useLocation()
-  const { userProfile } = useAuth()
+  const { userProfile, userRole } = useAuth()
   const isManager = sessionPropertyUser?.is_manager
   const navigate = useNavigate()
 
   const isPropertyHome =
     matchPath('/properties/:propertyId', location.pathname) &&
     propertyId !== 'new'
+
+  const adminItems = [
+    { label: 'Admin Home', path: '/admin', include: true },
+    { label: 'Needs Filing', path: '/admin/needs-filing', include: true },
+    { label: 'Filings', path: '/admin/filed', include: true },
+  ]
 
   const items = [
     { label: 'Home', path: '/properties', include: true },
@@ -66,7 +72,10 @@ const Navigation = props => {
 
     { label: 'Add Property', path: '/properties/new', include: !propertyId },
   ]
-  const navItems = items.filter(item => item.include)
+  const navItems = [
+    ...(userRole === 'admin' ? adminItems : []),
+    ...items,
+  ].filter(item => item.include)
   const { onClose } = props
   return (
     <>

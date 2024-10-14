@@ -4,7 +4,7 @@ import { forwardRef } from 'react'
 
 // eslint-disable-next-line react/display-name
 const Form = forwardRef(
-  ({ children, onSubmit, disabled, buttonLabel = 'Save' }, ref) => (
+  ({ children, onSubmit, disabled = false, buttonLabel = 'Save' }, ref) => (
     <Box
       component='form'
       noValidate
@@ -30,7 +30,7 @@ Form.propTypes = {
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   onSubmit: PropTypes.func,
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
 }
 
 export default Form

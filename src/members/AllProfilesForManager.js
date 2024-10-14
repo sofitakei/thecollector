@@ -33,7 +33,7 @@ const AllProfilesForManager = () => {
   const [verified, setVerified] = useState(false)
   const { countries } = useCountries()
   const navigate = useNavigate()
-
+  const [photoUploaded, setPhotoUploaded] = useState()
   //TODO: finish reading the API docs
   // const formatFiling = () => {
   //   const filing = {
@@ -160,8 +160,7 @@ const AllProfilesForManager = () => {
         </RadioGroup>
       </FormControl>
       {fields.map(field =>
-        field.name !== 'property_role'
-? (
+        field.name !== 'property_role' ? (
           <Stack
             direction='row'
             justifyContent='space-between'
@@ -184,8 +183,7 @@ const AllProfilesForManager = () => {
                 : currentProperty?.[field.name]}
             </Typography>
           </Stack>
-        )
-: null
+        ) : null
       )}
       {[...propertyUsers.owner, ...propertyUsers.board_member].map(
         (user, idx) => (
@@ -193,7 +191,7 @@ const AllProfilesForManager = () => {
             <Divider sx={{ my: 2 }}>
               {user.first_name} {user.last_name}
             </Divider>
-            <MemberDetails user={user} />
+            <MemberDetails user={user} setPhotoUploaded={setPhotoUploaded} />
             <Link to={`/properties/${propertyId}/users/${user.user_id}/edit`}>
               Edit Member
             </Link>

@@ -40,7 +40,7 @@ ButtonWithTooltip.propTypes = {
   message: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   sxProps: PropTypes.object,
-  ButtonComponent: PropTypes.element,
+  ButtonComponent: PropTypes.object,
 }
 
 const IconButtonWithTooltip = ({ sxProps, ...rest }) => (

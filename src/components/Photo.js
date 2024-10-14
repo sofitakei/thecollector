@@ -15,8 +15,6 @@ const Photo = ({ refresh, user, photoPath, onLoad = () => {} }) => {
     photoPath?.replace('documents', '') ||
     `${userProfile?.auth_user_id}/photo/${photoUser?.user_id || photoUser?.id}`
 
-  //TODO: save path structure for future uploads
-
   useEffect(() => {
     const getPhoto = async () => {
       const { data, error } = await supabase.storage
@@ -26,23 +24,19 @@ const Photo = ({ refresh, user, photoPath, onLoad = () => {} }) => {
       onLoad({ data, error })
       setLoading(false)
     }
-    if (userProfile?.id) {
+    if (userProfile?.id && !loading && refresh) {
       setLoading(true)
       getPhoto()
     }
-  }, [location, onLoad, refresh, userProfile?.id])
+  }, [loading, location, onLoad, refresh, userProfile?.id])
 
   return (
     <Stack alignItems='center'>
-      {loading || !userProfile?.auth_user_id
-? (
+      {loading || !userProfile?.auth_user_id ? (
         <CircularProgress />
-      )
-: photo && photo != null
-? (
+      ) : photo && photo != null ? (
         <Box component='img' width='50%' src={URL.createObjectURL(photo)} />
-      )
-: (
+      ) : (
         <Typography color='error'>Missing</Typography>
       )}
     </Stack>

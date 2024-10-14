@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import ConfirmManagerAddRemoveDialog from '../components/ConfirmManagerAddRemoveDialog'
 import ConfirmRemoveDialog from '../components/ConfirmRemoveDialog'
 import ConfirmSendNotificationsDialog from '../components/ConfirmSendNotificationsDialog'
+import { useAuth } from '../contexts/AuthContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { emptyIfNull } from '../utils'
 import CheckboxActions from './CheckboxActions'
@@ -26,7 +27,7 @@ const PropertyHome = () => {
     setRefresh,
     selectedMembers: selectedItems,
   } = usePropertyContext() || {}
-
+  const { userRole } = useAuth()
   const { propertyId } = useParams()
   const { board_member, owner, unassigned } = propertyUsers
   const isManager = sessionPropertyUser?.is_manager
@@ -47,7 +48,7 @@ const PropertyHome = () => {
     setAction(add ? 'managerAdd' : 'managerRemove')
   }
   const handleClick = () => {
-    if (!isManager) {
+    if (!isManager && userRole !== 'admin') {
       console.log('TODO: send request access')
     } else {
       navigate(`/properties/${propertyId}/submit`)
@@ -66,7 +67,9 @@ const PropertyHome = () => {
         variant='outlined'
         disabled={isManager ? !submittable : false}
         onClick={handleClick}>
-        {isManager ? 'SUBMIT FORM' : 'Request manager access'}
+        {isManager || userRole === 'admin'
+          ? 'SUBMIT FORM'
+          : 'Request manager access'}
       </Button>
       {isManager && (
         <CheckboxActions

@@ -41,6 +41,9 @@ const MemberProfile = () => {
 
     if (!error) {
       setRefresh(true)
+      const { data, error } = await supabase.functions.invoke('resend', {
+        body: { email: 'admin@filehoaboi.com' },
+      })
       navigate(`/properties/${propertyId}`)
     } else {
       console.log('error verifying', { error })

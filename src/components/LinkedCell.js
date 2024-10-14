@@ -8,20 +8,21 @@ import { useAuth } from '../contexts/AuthContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
 
 const LinkedCell = ({ getter, buildUrl, item, type }) => {
-  const { userProfile } = useAuth()
+  const { userProfile, userRole } = useAuth()
   const { sessionPropertyUser } = usePropertyContext() || {}
   const isManager = sessionPropertyUser?.is_manager
-
+  console.log({ item })
   const text = getter(item)
   return (
     <TableCell>
-      {type === 'property' || isManager || userProfile?.id === item.user_id
-? (
+      {type === 'property' ||
+      isManager ||
+      userProfile?.id === item.user_id ||
+      userRole === 'admin' ? (
         <Link item={item} to={buildUrl(item)} type={type}>
           {text}
         </Link>
-      )
-: (
+      ) : (
         text
       )}
 

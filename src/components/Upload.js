@@ -2,7 +2,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { Button, Stack } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useAuth } from '../contexts/AuthContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
@@ -23,7 +23,7 @@ const VisuallyHiddenInput = styled('input')({
 
 const Upload = ({ onUploadComplete, savedPhotoPath, disabled }) => {
   const { userProfile } = useAuth()
-  const [refresh, setRefresh] = useState()
+  const [refresh, setRefresh] = useState(false)
   const { currentUser } = usePropertyContext()
   const photoPath =
     savedPhotoPath ||
@@ -40,13 +40,23 @@ const Upload = ({ onUploadComplete, savedPhotoPath, disabled }) => {
       onUploadComplete(data)
       setRefresh(true)
     } else {
+      setRefresh(false)
       console.log('There was an error uploading your photo', { error })
     }
   }
 
+  useEffect(() => {
+    setRefresh(true)
+  }, [])
+
   return (
     <Stack alignItems='center'>
-      <Photo refresh={refresh} user={currentUser} photoPath={photoPath} />
+      <Photo
+        onLoad={() => setRefresh(false)}
+        refresh={refresh}
+        user={currentUser}
+        photoPath={photoPath}
+      />
       <Button
         disabled={disabled}
         component='label'

@@ -62,8 +62,7 @@ const PropertyForm = () => {
     setErrors()
   }
   //TODO:checking this field to see if we loaded the details
-  return currentProperty?.created_at || idParam === 'new'
-? (
+  return currentProperty?.created_at || idParam === 'new' ? (
     <Form onSubmit={handleSubmit}>
       {errors && (
         <Alert severity='error' sx={{ mb: 2 }}>
@@ -71,20 +70,19 @@ const PropertyForm = () => {
         </Alert>
       )}
       {fields.map(({ name, options, select, ...rest }) =>
-        name === 'country_jurisdiction_id'
-? (
+        name === 'country_jurisdiction_id' ? (
           <CountryDropdown
             name={name}
             key={name}
             countries={countries}
-            defaultValue={countries.find(
-              ({ value }) => value === currentProperty?.country_jurisdiction_id
-            )}
+            defaultValue={
+              countries.find(
+                ({ value }) =>
+                  value === currentProperty?.country_jurisdiction_id
+              ) || ''
+            }
           />
-        )
-: name === 'property_role' && idParam !== 'new'
-? null
-: (
+        ) : name === 'property_role' && idParam !== 'new' ? null : (
           <TextField
             style={{ marginBottom: 20 }}
             fullWidth
@@ -105,9 +103,8 @@ const PropertyForm = () => {
         )
       )}
     </Form>
-  )
-: (
-    <LoadingBackdrop />
+  ) : (
+    <LoadingBackdrop open />
   )
 }
 

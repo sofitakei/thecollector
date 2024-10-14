@@ -1,14 +1,19 @@
 import { Stack, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 
 import { documentTypes } from '../components/DocumentTypeDropdown'
 import LoadingBackdrop from '../components/LoadingBackdrop'
 import Photo from '../components/Photo'
 import { groups } from './config'
 
-const MemberDetails = ({ user, setPhotoUploaded }) =>
-  user ? (
+const MemberDetails = ({ user, setPhotoUploaded }) => {
+  const [refreshPhoto, setRefreshPhoto] = useState(true)
+  const onLoad = ({ data }) => {
+    setRefreshPhoto(false)
+    setPhotoUploaded?.({ data })
+  }
+  return user ? (
     <Stack>
       {groups.map(({ fields }, idx) => (
         <Fragment key={idx}>
@@ -42,15 +47,17 @@ const MemberDetails = ({ user, setPhotoUploaded }) =>
       <Stack sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
         <p> Document</p>
         <Photo
+          refresh={refreshPhoto}
           user={user}
           photoPath={user.identification_url}
-          onLoad={setPhotoUploaded}
+          onLoad={onLoad}
         />
       </Stack>
     </Stack>
   ) : (
     <LoadingBackdrop />
   )
+}
 
 MemberDetails.propTypes = {
   user: PropTypes.object,

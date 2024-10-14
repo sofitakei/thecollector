@@ -20,22 +20,20 @@ const PreviouslyFilledForms = () => {
     getData()
   }, [propertyId])
 
-  return forms?.length
-? (
+  return forms?.length ? (
     <>
       <Typography variant='h4'>Form filed on:</Typography>
       <List>
         {forms.map(form => (
           <ListItemText key={form.id}>
             <Link to={`${form.id}`}>
-              {new Date(form.created_at).toLocaleDateString('en-US')}
+              {new Date(form.submitted).toLocaleDateString('en-US')}
             </Link>
           </ListItemText>
         ))}
       </List>
     </>
-  )
-: (
+  ) : (
     <Alert severity='info'>No forms previously filed</Alert>
   )
 }

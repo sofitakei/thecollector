@@ -198,8 +198,7 @@ const MemberProfileForm = ({ newMember = false }) => {
         <RoleSelect value={propertyRole} onChange={handlePropertyRoleChange} />
         <br />
         <h3>Edit Information</h3>
-        {propertyRole !== 'nonreporting'
-? (
+        {propertyRole !== 'nonreporting' ? (
           <>
             {groups.map(({ fields, groupLabel }) => (
               <Stack
@@ -211,8 +210,7 @@ const MemberProfileForm = ({ newMember = false }) => {
                 <h4>{groupLabel}</h4>
 
                 {fields.map(item =>
-                  item.control === 'date'
-? (
+                  item.control === 'date' ? (
                     <DatePicker
                       sx={{
                         label: {
@@ -235,33 +233,25 @@ const MemberProfileForm = ({ newMember = false }) => {
                         },
                       }}
                     />
-                  )
-: item.name.includes('country_jurisdiction')
-? (
+                  ) : item.name.includes('country_jurisdiction') ? (
                     <CountryDropdown
-                      defaultValue={currentUser[item.name]}
+                      defaultValue={currentUser[item.name] || ''}
                       name={item.name}
                     />
-                  )
-: item.name === 'document_type'
-? (
+                  ) : item.name === 'document_type' ? (
                     <DocumentTypeDropdown
                       onChange={handleDocumentChange}
                       value={documentType}
                     />
-                  )
-: item.name === 'document_jurisdiction_local_tribal_id'
-? (
+                  ) : item.name === 'document_jurisdiction_local_tribal_id' ? (
                     <LocalTribalDropdown
                       value={tribe}
                       name={item.name}
                       disabled={documentType !== 38}
                       onChange={handleTribeChange}
                     />
-                  )
-: item.name ===
-                    'document_jurisdiction_other_description'
-? (
+                  ) : item.name ===
+                    'document_jurisdiction_other_description' ? (
                     <TextField
                       key={item.name}
                       fullWidth
@@ -269,8 +259,7 @@ const MemberProfileForm = ({ newMember = false }) => {
                       disabled={documentType !== 38 || tribe?.id !== 588}
                       defaultValue={currentUser[item.name]}
                     />
-                  )
-: (
+                  ) : (
                     <TextField
                       key={item.name}
                       fullWidth
@@ -294,8 +283,7 @@ const MemberProfileForm = ({ newMember = false }) => {
               onUploadComplete={handleUploadComplete}
             />
           </>
-        )
-: (
+        ) : (
           <Stack spacing={2}>
             <TextField
               fullWidth
