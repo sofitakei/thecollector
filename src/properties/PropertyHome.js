@@ -9,6 +9,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { usePropertyContext } from '../contexts/PropertyContext'
 import { emptyIfNull } from '../utils'
 import CheckboxActions from './CheckboxActions'
+import MarkAsPaid from './MarkAsPaid'
 import PropertyTable from './PropertyTable'
 
 const actionDialog = {
@@ -26,10 +27,14 @@ const PropertyHome = () => {
     sessionPropertyUser,
     setRefresh,
     selectedMembers: selectedItems,
+    filing,
   } = usePropertyContext() || {}
+
   const { userRole } = useAuth()
   const { propertyId } = useParams()
+
   const { board_member, owner, unassigned } = propertyUsers
+
   const isManager = sessionPropertyUser?.is_manager
   const navigate = useNavigate()
 
@@ -56,21 +61,29 @@ const PropertyHome = () => {
   }
 
   const ConfirmRenderer = actionDialog[action]
-  const submittable = [
-    ...propertyUsers.owner,
-    ...propertyUsers.board_member,
-  ].every(({ status }) => status === 'verified')
+
+  const submittable =
+    [...propertyUsers.owner, ...propertyUsers.board_member].every(
+      ({ status }) => status === 'verified'
+    ) && typeof filing?.payment_id !== 'undefined'
 
   return (
     <Stack>
-      <Button
-        variant='outlined'
-        disabled={isManager ? !submittable : false}
-        onClick={handleClick}>
-        {isManager || userRole === 'admin'
-          ? 'SUBMIT FORM'
-          : 'Request manager access'}
-      </Button>
+      {filing?.status !== 'verified' ? (
+        <>
+          <Button
+            variant='outlined'
+            disabled={isManager || userRole === 'admin' ? !submittable : false}
+            onClick={handleClick}>
+            {isManager || userRole === 'admin'
+              ? 'SUBMIT FORM'
+              : 'Request manager access'}
+          </Button>
+          <MarkAsPaid />
+        </>
+      ) : (
+        'Your filing is complete'
+      )}
       {isManager && (
         <CheckboxActions
           onNotify={handleSend}

@@ -43,6 +43,6 @@ LinkedCell.propTypes = {
   getter: PropTypes.func,
   buildUrl: PropTypes.func,
   item: PropTypes.object.isRequired,
-  type: PropTypes.oneOf(['property', 'user']).isRequired,
+  type: PropTypes.string,
 }
 export default LinkedCell

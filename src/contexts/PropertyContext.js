@@ -12,7 +12,7 @@ const PropertyProvider = props => {
   const [showMemberCheckboxColumn, setShowMemberCheckboxColumn] = useState()
 
   const [selectedMembers, setSelectedMembers] = useState([])
-
+  const [filing, setFiling] = useState()
   const [propertyUsers, setPropertyUsers] = useState({
     owner: [],
     board_member: [],
@@ -89,6 +89,20 @@ const PropertyProvider = props => {
     setRefresh(true)
   }, [propertyId, setPropertyRefresh, setRefresh, userProfile?.id])
 
+  useEffect(() => {
+    const getData = async () => {
+      //This gets the latest created filing, which should be fine?
+      const { data, error } = await supabase
+        .from('property_filing')
+        .select('*')
+        .eq('property_id', propertyId)
+        .neq('status', 'void')
+        .order('created_at', { descending: true })
+      setFiling(data[0])
+    }
+    getData()
+  }, [propertyId])
+
   const allUsersForCurrentProperty = [
     ...propertyUsers.owner,
     ...propertyUsers.board_member,
@@ -119,6 +133,8 @@ const PropertyProvider = props => {
         setRefresh,
         loading,
         loaded,
+        filing,
+        setFiling,
       }}
     />
   )
