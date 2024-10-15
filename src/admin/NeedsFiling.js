@@ -3,8 +3,10 @@ import { Button, IconButton, TableCell } from '@mui/material'
 import { saveAs } from 'file-saver'
 import { json2csv } from 'json-2-csv'
 import JSZip from 'jszip'
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
+import { documentTypes } from '../components/DocumentTypeDropdown'
 import LinkedCell from '../components/LinkedCell'
 import PaginatedData from '../components/PaginatedData'
 import { taxIdTypes } from '../properties/config'
@@ -31,6 +33,7 @@ const fieldsToExport = [
   'document_jurisdiction_other_description',
   'document_expiration',
   'identification_url',
+  'property_role',
 ]
 
 const propertyFieldsToExport = [
@@ -57,11 +60,22 @@ const FiledButton = ({ item, handleClick }) => {
   )
 }
 
+FiledButton.propTypes = {
+  handleClick: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired,
+}
+
 const exportToCsv = data => {
   const filing = data
 
   const users = data.filing
     .filter(user => user !== null)
+    .map(user => ({
+      ...user,
+      document_type: documentTypes.find(
+        ({ value }) => `${value}` === user.document_type
+      ).label,
+    }))
     .map(user =>
       fieldsToExport.reduce(
         (acc, curr) => ({
