@@ -1,13 +1,14 @@
 import { Download } from '@mui/icons-material'
 import { Button, IconButton, TableCell } from '@mui/material'
+import { saveAs } from 'file-saver'
 import { json2csv } from 'json-2-csv'
+import JSZip from 'jszip'
 import { useState } from 'react'
 
 import LinkedCell from '../components/LinkedCell'
 import PaginatedData from '../components/PaginatedData'
 import { taxIdTypes } from '../properties/config'
 import { supabase } from '../supabaseClient'
-import { downloadFile } from '../utils'
 import ConfirmMarkCompleteDialog from './ConfirmMarkCompleteDialog'
 //TODO: have to check for payment status
 const fieldsToExport = [
@@ -82,11 +83,30 @@ const exportToCsv = data => {
     { email: 'N/A - Reporting Company Info' }
   )
 
-  const csv = json2csv([reportingCompany, ...users])
-  downloadFile({
-    data: csv,
-    fileName: `${filing.name}_${new Date().toLocaleDateString('en-US')}.csv`,
-    fileType: 'text/csv',
+  var zip = new JSZip()
+  zip.file('users.csv', json2csv(users))
+  zip.file('reporting_company.csv', json2csv([reportingCompany]))
+  var images = zip.folder('images')
+  users.forEach(async ({ identification_url, first_name, last_name }, idx) => {
+    if (!identification_url) return
+    const { data, error } = await supabase.storage
+      .from('documents')
+      .download(identification_url.replace('documents/', ''))
+
+    if (error !== null) return
+
+    const extension = data.type === 'image/png' ? 'png' : 'jpg'
+    images.file(`image_${idx}_${first_name}_${last_name}.${extension}`, data, {
+      base64: true,
+    })
+    if (idx === users?.length - 1) {
+      zip.generateAsync({ type: 'blob' }).then(content => {
+        saveAs(
+          content,
+          `${filing.name}_${new Date().toLocaleDateString('en-US')}.zip`
+        )
+      })
+    }
   })
 }
 
