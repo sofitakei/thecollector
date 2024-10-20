@@ -4,7 +4,7 @@ export const emptyIfNull = str => (!str || str === null ? '' : str)
 
 export const getFormFields = form => {
   const formData = Array.from(new FormData(form)).map(([k, v]) =>
-    v ? [k, v] : [k, null]
+    v ? [k, v.trim()] : [k, null]
   )
   return Object.fromEntries(formData)
 }

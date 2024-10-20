@@ -1,4 +1,4 @@
-import { Alert, Stack, TextField } from '@mui/material'
+import { Alert, LinearProgress, Stack, TextField } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import PropTypes from 'prop-types'
@@ -11,6 +11,7 @@ import DocumentTypeDropdown from '../components/DocumentTypeDropdown'
 import Form from '../components/Form'
 import LocalTribalDropdown from '../components/LocalTribalDropdown'
 import RoleSelect from '../components/RoleSelect'
+import StateDropdown from '../components/StateDropdown'
 import Upload from '../components/Upload'
 import { useAuth } from '../contexts/AuthContext'
 import { usePropertiesContext } from '../contexts/PropertiesContext'
@@ -24,7 +25,7 @@ const MemberProfileForm = ({ newMember = false }) => {
   const navigate = useNavigate()
   const { countriesByName } = usePropertiesContext()
   const { currentUser = {}, setRefresh } = usePropertyContext() || {}
-  const { setRefresh: setProfilesRefresh } = useAuth()
+  const { setRefresh: setProfilesRefresh, user } = useAuth()
   const { propertyId, userId } = useParams()
   const [propertyRole, setPropertyRole] = useState('')
   const [documentType, setDocumentType] = useState('')
@@ -35,6 +36,11 @@ const MemberProfileForm = ({ newMember = false }) => {
   const [dialogItems, setDialogItems] = useState([])
   const [formData, setFormData] = useState()
   const [photoPath, setPhotoPath] = useState()
+  const [stateValue, setStateValue] = useState()
+
+  const handleStateChange = val => {
+    setStateValue(val)
+  }
   const handlePropertyRoleChange = (_, v) => {
     setPropertyRole(v)
   }
@@ -69,6 +75,7 @@ const MemberProfileForm = ({ newMember = false }) => {
     } = allFields
     const fieldsToSave = {
       ...formFields,
+      state_id: stateValue || currentUser?.state_id,
       identification_url: photoPath || currentUser?.identification_url,
       document_jurisdiction_local_tribal_id: tribe !== null ? tribe.id : null,
       document_country_jurisdiction_id:
@@ -107,7 +114,11 @@ const MemberProfileForm = ({ newMember = false }) => {
         console.log({ upError })
         setRefresh(true)
         setProfilesRefresh(true)
-        navigate(`/properties/${propertyId}/users/${editedUserId}`)
+        navigate(
+          property_role === 'nonreporting'
+            ? `/properties/${propertyId}`
+            : `/properties/${propertyId}/users/${editedUserId}`
+        )
       } else {
         console.log({ error })
       }
@@ -198,7 +209,9 @@ const MemberProfileForm = ({ newMember = false }) => {
         <RoleSelect value={propertyRole} onChange={handlePropertyRoleChange} />
         <br />
         <h3>Edit Information</h3>
-        {propertyRole !== 'nonreporting' ? (
+        {!propertyRole && !newMember ? (
+          <LinearProgress />
+        ) : propertyRole !== 'nonreporting' ? (
           <>
             {groups.map(({ fields, groupLabel }) => (
               <Stack
@@ -258,6 +271,12 @@ const MemberProfileForm = ({ newMember = false }) => {
                       {...item}
                       disabled={documentType !== 38 || tribe?.id !== 588}
                       defaultValue={currentUser[item.name]}
+                    />
+                  ) : item.name === 'state_id' ? (
+                    <StateDropdown
+                      defaultValue={currentUser[item.name] || ''}
+                      name={item.name}
+                      onSetValue={handleStateChange}
                     />
                   ) : (
                     <TextField

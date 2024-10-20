@@ -72,6 +72,7 @@ const Navigation = props => {
 
     { label: 'Add Property', path: '/properties/new', include: !propertyId },
   ]
+
   const navItems = [
     ...(userRole === 'admin' ? adminItems : []),
     ...items,

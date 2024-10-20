@@ -28,7 +28,9 @@ const MemberDetails = ({ user, setPhotoUploaded }) => {
                 {label}
               </Typography>
               {/* TODO clean this up */}
-              {name === 'document_type'
+              {name === 'state_id'
+                ? user?.state
+                : name === 'document_type'
                 ? documentTypes.find(
                     ({ value }) => `${value}` === `${user?.[name]}`
                   )?.label || <Typography color='error'>Missing</Typography>

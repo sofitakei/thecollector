@@ -38,7 +38,7 @@ const MemberProfile = () => {
     const { error } = await supabase
       .from('userproperty_filing')
       .insert({ userproperty_id, status: 'verified', filingdata: rest })
-
+    //TODO: invalidate the current property filing
     if (!error) {
       setRefresh(true)
       const { data, error } = await supabase.functions.invoke('resend', {

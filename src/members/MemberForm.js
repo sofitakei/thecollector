@@ -21,8 +21,8 @@ import { supabase } from '../supabaseClient'
 import { checkEmailExists, checkForDuplicates, getFormFields } from '../utils'
 
 const fields = [
-  { name: 'first_name', label: 'First Name', required: true },
   { name: 'last_name', label: 'Last Name' },
+  { name: 'first_name', label: 'First Name', required: true },
   { name: 'email', label: 'Email', required: true },
   { name: 'is_manager', label: 'Add as Manager', checkbox: true },
   {
@@ -154,16 +154,14 @@ const MemberForm = ({
             {fields.map(
               ({ name, label, checkbox, options, select, required }) => (
                 <Fragment key={`${name}_${idx}`}>
-                  {checkbox
-? (
+                  {checkbox ? (
                     <FormControlLabel
                       control={<Checkbox />}
                       label={label}
                       name={`${name}_${idx}`}
                       default
                     />
-                  )
-: (
+                  ) : (
                     <TextField
                       onFocus={handleFocus}
                       fullWidth

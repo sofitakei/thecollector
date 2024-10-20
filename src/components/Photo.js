@@ -24,20 +24,23 @@ const Photo = ({ refresh, user, photoPath, onLoad = () => {} }) => {
       onLoad({ data, error })
       setLoading(false)
     }
-    if (userProfile?.id && !loading && refresh) {
+    if (userProfile?.id && !loading && refresh && photoPath) {
       setLoading(true)
       getPhoto()
     }
-  }, [loading, location, onLoad, refresh, userProfile?.id])
+  }, [loading, location, onLoad, photoPath, refresh, userProfile?.id])
 
   return (
     <Stack alignItems='center'>
-      {loading || !userProfile?.auth_user_id ? (
-        <CircularProgress />
-      ) : photo && photo != null ? (
-        <Box component='img' width='50%' src={URL.createObjectURL(photo)} />
-      ) : (
+      {!photoPath ? (
         <Typography color='error'>Missing</Typography>
+      ) : loading || !userProfile?.auth_user_id ? (
+        <CircularProgress />
+      ) : (
+        photo &&
+        photo != null && (
+          <Box component='img' width='50%' src={URL.createObjectURL(photo)} />
+        )
       )}
     </Stack>
   )

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { useCountries } from '../hooks/useCountries'
 import { useData } from '../hooks/useData'
+import { useStates } from '../hooks/useStates'
 import { useTribes } from '../hooks/useTribes'
 import { supabase } from '../supabaseClient'
 import { useAuth } from './AuthContext'
@@ -20,7 +21,7 @@ const PropertiesProvider = props => {
   const { countries, countriesByName } = useCountries()
   const { tribes, tribesByName } = useTribes()
   const [propertiesStatus, setPropertiesStatus] = useState()
-
+  const states = useStates()
   const getData = async () =>
     await supabase
       .from('user_properties_view')
@@ -71,6 +72,7 @@ const PropertiesProvider = props => {
         loading,
         countries,
         countriesByName,
+        states,
         tribes,
         tribesByName,
       }}

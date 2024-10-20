@@ -1,5 +1,6 @@
+import { LinearProgress } from '@mui/material'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 
 import { useData } from '../hooks/useData'
 import { supabase } from '../supabaseClient'
@@ -18,10 +19,10 @@ const PropertyProvider = props => {
     board_member: [],
     unassigned: [],
   })
-  const { userProfile } = useAuth()
+  const { userProfile, user } = useAuth()
   const { properties } = usePropertiesContext()
   const { propertyId, userId } = useParams()
-
+  const [allowed, setAllowed] = useState({ loaded: false })
   const currentProperty = properties?.find(
     ({ property_id }) => `${property_id}` === propertyId
   )
@@ -116,7 +117,24 @@ const PropertyProvider = props => {
     ({ user_id }) => user_id === userProfile?.id
   )
 
-  return (
+  useEffect(() => {
+    const getAllowed = async () => {
+      const { data } = await supabase.rpc('is_member_of', {
+        _user_id: user?.id,
+        _property_id: propertyId,
+      })
+      setAllowed({ loaded: true, allowed: data })
+    }
+    if (user?.id && propertyId) {
+      getAllowed()
+    }
+  }, [user?.id, propertyId])
+
+  return !allowed.loaded ? (
+    <LinearProgress />
+  ) : allowed.loaded && !allowed.allowed ? (
+    <Navigate to='/' />
+  ) : (
     <propertyContext.Provider
       {...props}
       value={{

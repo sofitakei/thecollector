@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 export const groups = [
   {
     groupLabel: 'Full legal name and date of birth',
@@ -48,7 +50,7 @@ export const groups = [
         label: 'Country/Jurisdiction',
         required: true,
       },
-      { name: 'state', label: 'State', required: true },
+      { name: 'state_id', label: 'State', required: true },
       { name: 'postal_code', label: 'ZIP/Foreign postal code', required: true },
     ],
   },
@@ -85,6 +87,7 @@ export const groups = [
         label: 'Identification Expiration Date',
         required: true,
         control: 'date',
+        minDate: dayjs().add(1, 'day'),
       },
     ],
   },

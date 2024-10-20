@@ -25,17 +25,18 @@ const Upload = ({ onUploadComplete, savedPhotoPath, disabled }) => {
   const { userProfile } = useAuth()
   const [refresh, setRefresh] = useState(false)
   const { currentUser } = usePropertyContext()
-  const photoPath =
-    savedPhotoPath ||
-    `${userProfile?.auth_user_id}/photo/${currentUser?.user_id || Date.now()}`
 
   const handleUpload = async event => {
     const idFile = event.target.files[0]
     const { data, error } = await supabase.storage
       .from('documents')
-      .upload(photoPath, idFile, {
-        upsert: true,
-      })
+      .upload(
+        `${userProfile?.auth_user_id}/photo/${currentUser?.user_id}`,
+        idFile,
+        {
+          upsert: true,
+        }
+      )
     if (!error) {
       onUploadComplete(data)
       setRefresh(true)
@@ -55,7 +56,7 @@ const Upload = ({ onUploadComplete, savedPhotoPath, disabled }) => {
         onLoad={() => setRefresh(false)}
         refresh={refresh}
         user={currentUser}
-        photoPath={photoPath}
+        photoPath={savedPhotoPath}
       />
       <Button
         disabled={disabled}
@@ -69,6 +70,7 @@ const Upload = ({ onUploadComplete, savedPhotoPath, disabled }) => {
           onChange={handleUpload}
           disabled={disabled}
           type='file'
+          accept='image/*'
         />
       </Button>
     </Stack>

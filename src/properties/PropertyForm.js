@@ -12,6 +12,7 @@ import { supabase } from '../supabaseClient'
 import { getFormFields } from '../utils'
 import { fields } from './config'
 
+//TODO: create gate for non-admins
 const PropertyForm = () => {
   const navigate = useNavigate()
   const { currentProperty, setPropertyRefresh } = usePropertyContext() || {}
