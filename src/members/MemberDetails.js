@@ -17,33 +17,35 @@ const MemberDetails = ({ user, setPhotoUploaded }) => {
     <Stack>
       {groups.map(({ fields }, idx) => (
         <Fragment key={idx}>
-          {fields.map(({ label, name, required }) => (
-            <Stack direction='row' justifyContent='space-between' key={name}>
-              <Typography
-                sx={{
-                  textTransform: 'capitalize',
-                  fontWeight: 'bold',
-                  textAlign: 'left',
-                }}>
-                {label}
-              </Typography>
-              {/* TODO clean this up */}
-              {name === 'state_id'
-                ? user?.state
-                : name === 'document_type'
-                ? documentTypes.find(
-                    ({ value }) => `${value}` === `${user?.[name]}`
-                  )?.label || <Typography color='error'>Missing</Typography>
-                : (name === 'document_jurisdiction_local_tribal_id'
-                    ? user?.code
-                    : user?.[name]) ||
-                  (required ? (
-                    <Typography color='error'>Missing</Typography>
-                  ) : (
-                    '---'
-                  ))}
-            </Stack>
-          ))}
+          {fields
+            .filter(({ name }) => name !== 'identification_url')
+            .map(({ label, name, required }) => (
+              <Stack direction='row' justifyContent='space-between' key={name}>
+                <Typography
+                  sx={{
+                    textTransform: 'capitalize',
+                    fontWeight: 'bold',
+                    textAlign: 'left',
+                  }}>
+                  {label}
+                </Typography>
+                {/* TODO clean this up */}
+                {name === 'state_id'
+                  ? user?.state
+                  : name === 'document_type'
+                  ? documentTypes.find(
+                      ({ value }) => `${value}` === `${user?.[name]}`
+                    )?.label || <Typography color='error'>Missing</Typography>
+                  : (name === 'document_jurisdiction_local_tribal_id'
+                      ? user?.code
+                      : user?.[name]) ||
+                    (required ? (
+                      <Typography color='error'>Missing</Typography>
+                    ) : (
+                      '---'
+                    ))}
+              </Stack>
+            ))}
         </Fragment>
       ))}
       <Stack sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>

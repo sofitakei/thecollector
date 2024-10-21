@@ -1,7 +1,6 @@
 import { Alert, LinearProgress, Stack, TextField } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
-import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import isEqual from 'react-fast-compare'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -35,7 +34,7 @@ const MemberProfileForm = ({ newMember = false }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [dialogItems, setDialogItems] = useState([])
   const [formData, setFormData] = useState()
-  const [photoPath, setPhotoPath] = useState()
+  const [photoPath, setPhotoPath] = useState(null)
   const [stateValue, setStateValue] = useState()
 
   const handleStateChange = val => {
@@ -75,7 +74,7 @@ const MemberProfileForm = ({ newMember = false }) => {
     } = allFields
     const fieldsToSave = {
       ...formFields,
-      state_id: stateValue || currentUser?.state_id,
+      state_id: stateValue?.id || currentUser?.state_id,
       identification_url: photoPath || currentUser?.identification_url,
       document_jurisdiction_local_tribal_id: tribe !== null ? tribe.id : null,
       document_country_jurisdiction_id:
@@ -86,32 +85,31 @@ const MemberProfileForm = ({ newMember = false }) => {
     if (isEqual(formFields, originalUser)) {
       //nothing to save
     } else {
+      //TODO all together as a function
       const { error, data } = await supabase
         .from('profiles')
         .upsert(fieldsToSave)
         .select()
 
-      //TODO as trigger?
       const editedUserId = userId || data?.[0]?.id
-      if (!newMember) {
-        await supabase
-          .from('userproperty_filing')
-          .update({ status: 'void' })
-          .eq('userproperty_id', userproperty_id)
-      } else {
-        await supabase.from('userproperty').insert({
+
+      const { data: upData } = await supabase
+        .from('userproperty')
+        .upsert({
+          ...(userproperty_id ? { id: userproperty_id } : {}),
           user_id: editedUserId,
           property_id: propertyId,
           property_role,
         })
-      }
+        .select()
+
+      //this creates a filing if needed
+      await supabase.rpc('update_user_filing', {
+        _property_id: propertyId,
+        _userproperty_id: upData[0].id,
+      })
+
       if (error === null) {
-        const { error: upError } = await supabase
-          .from('userproperty')
-          .update({ property_role })
-          .eq('user_id', editedUserId)
-          .eq('property_id', propertyId)
-        console.log({ upError })
         setRefresh(true)
         setProfilesRefresh(true)
         navigate(
@@ -131,7 +129,10 @@ const MemberProfileForm = ({ newMember = false }) => {
   const handleSave = async e => {
     e.preventDefault()
     setError(null)
-    const allFields = getFormFields(e.target)
+    const allFields = {
+      ...getFormFields(e.target),
+      identification_url: photoPath,
+    }
 
     if (!propertyRole) {
       setError('Property role is required')
@@ -149,6 +150,7 @@ const MemberProfileForm = ({ newMember = false }) => {
     const emptyFields = requiredFields.filter(
       ({ name }) => allFields[name] === null
     )
+
     setDialogItems(emptyFields)
     setFormData(allFields)
     if (emptyFields.length) {
@@ -169,6 +171,13 @@ const MemberProfileForm = ({ newMember = false }) => {
   const handleTribeChange = (e, v) => {
     setTribe(v)
   }
+
+  useEffect(() => {
+    if (currentUser?.identification_url) {
+      setPhotoPath(currentUser?.identification_url)
+    }
+  }, [currentUser?.identification_url])
+
   useEffect(() => {
     if (currentUser?.property_role) {
       setPropertyRole(currentUser.property_role)
@@ -274,9 +283,16 @@ const MemberProfileForm = ({ newMember = false }) => {
                     />
                   ) : item.name === 'state_id' ? (
                     <StateDropdown
-                      defaultValue={currentUser[item.name] || ''}
+                      defaultValue={currentUser.state_id}
                       name={item.name}
                       onSetValue={handleStateChange}
+                    />
+                  ) : item.name === 'identification_url' ? (
+                    <Upload
+                      savedPhotoPath={
+                        currentUser?.identification_url || photoPath
+                      }
+                      onUploadComplete={handleUploadComplete}
                     />
                   ) : (
                     <TextField
@@ -297,10 +313,6 @@ const MemberProfileForm = ({ newMember = false }) => {
                 )}
               </Stack>
             ))}
-            <Upload
-              savedPhotoPath={currentUser?.identification_url || photoPath}
-              onUploadComplete={handleUploadComplete}
-            />
           </>
         ) : (
           <Stack spacing={2}>
@@ -333,8 +345,5 @@ const MemberProfileForm = ({ newMember = false }) => {
       />
     </>
   )
-}
-MemberProfileForm.propTypes = {
-  newMember: PropTypes.bool,
 }
 export default MemberProfileForm

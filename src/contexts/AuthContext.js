@@ -26,16 +26,16 @@ const AuthProvider = ({ children, session, setSession }) => {
     setUserProfile({ ...data[0], email: session?.user?.email })
   }
 
-  const { refresh, setRefresh } = useData({
+  const { loading, refresh, setRefresh } = useData({
     supabaseFn: getUserData,
     onSuccess,
   })
 
   useEffect(() => {
-    if (session?.user?.id && !userProfile?.id) {
+    if (session?.user?.id && !userProfile?.id && !loading) {
       setRefresh(true)
     }
-  }, [session?.user?.id, refresh, setRefresh, userProfile])
+  }, [session?.user?.id, refresh, setRefresh, userProfile, loading])
 
   return (
     <AuthContext.Provider

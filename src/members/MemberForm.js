@@ -21,8 +21,8 @@ import { supabase } from '../supabaseClient'
 import { checkEmailExists, checkForDuplicates, getFormFields } from '../utils'
 
 const fields = [
-  { name: 'last_name', label: 'Last Name' },
   { name: 'first_name', label: 'First Name', required: true },
+  { name: 'last_name', label: 'Last Name' },
   { name: 'email', label: 'Email', required: true },
   { name: 'is_manager', label: 'Add as Manager', checkbox: true },
   {

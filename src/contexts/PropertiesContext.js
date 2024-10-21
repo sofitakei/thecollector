@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { useCountries } from '../hooks/useCountries'
@@ -57,27 +57,39 @@ const PropertiesProvider = props => {
     setRefresh(true)
   }, [userProfile?.id, propertyId, setRefreshStatus, setRefresh])
 
-  return (
-    <propertiesContext.Provider
-      {...props}
-      value={{
-        properties,
-        propertiesStatus,
-        showRemovePropertyColumn,
-        setShowRemovePropertyColumn,
-        selectedProperties,
-        setSelectedProperties,
-        setRefresh,
-        loaded,
-        loading,
-        countries,
-        countriesByName,
-        states,
-        tribes,
-        tribesByName,
-      }}
-    />
+  const value = useMemo(
+    () => ({
+      properties,
+      propertiesStatus,
+      showRemovePropertyColumn,
+      setShowRemovePropertyColumn,
+      selectedProperties,
+      setSelectedProperties,
+      setRefresh,
+      loaded,
+      loading,
+      countries,
+      countriesByName,
+      states,
+      tribes,
+      tribesByName,
+    }),
+    [
+      countries,
+      countriesByName,
+      loaded,
+      loading,
+      properties,
+      propertiesStatus,
+      selectedProperties,
+      setRefresh,
+      showRemovePropertyColumn,
+      states,
+      tribes,
+      tribesByName,
+    ]
   )
+  return <propertiesContext.Provider {...props} value={value} />
 }
 export default PropertiesProvider
 

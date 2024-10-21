@@ -5,12 +5,12 @@ export const groups = [
     groupLabel: 'Full legal name and date of birth',
     fields: [
       { name: 'fincen_id', label: 'FinCEN ID' },
+      { name: 'first_name', label: 'First Name', required: true },
       {
         name: 'last_name',
         label: "Individual's last name or entity's legal name",
         required: true,
       },
-      { name: 'first_name', label: 'First Name', required: true },
       { name: 'middle_name', label: 'Middle Name' },
       { name: 'suffix', label: 'Suffix' },
       {
@@ -88,6 +88,11 @@ export const groups = [
         required: true,
         control: 'date',
         minDate: dayjs().add(1, 'day'),
+      },
+      {
+        name: 'identification_url',
+        required: true,
+        label: 'Identification Photo',
       },
     ],
   },

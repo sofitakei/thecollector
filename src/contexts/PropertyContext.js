@@ -1,5 +1,5 @@
 import { LinearProgress } from '@mui/material'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
 
 import { useData } from '../hooks/useData'
@@ -99,16 +99,22 @@ const PropertyProvider = props => {
         .eq('property_id', propertyId)
         .neq('status', 'void')
         .order('created_at', { descending: true })
+
       setFiling(data[0])
     }
-    getData()
-  }, [propertyId])
+    if (!filing) {
+      getData()
+    }
+  }, [filing, propertyId])
 
-  const allUsersForCurrentProperty = [
-    ...propertyUsers.owner,
-    ...propertyUsers.board_member,
-    ...propertyUsers.unassigned,
-  ]
+  const allUsersForCurrentProperty = useMemo(
+    () => [
+      ...propertyUsers.owner,
+      ...propertyUsers.board_member,
+      ...propertyUsers.unassigned,
+    ],
+    [propertyUsers.board_member, propertyUsers.owner, propertyUsers.unassigned]
+  )
   const currentUser = allUsersForCurrentProperty.find(
     ({ user_id }) => `${user_id}` === userId
   )
@@ -130,31 +136,46 @@ const PropertyProvider = props => {
     }
   }, [user?.id, propertyId])
 
+  const value = useMemo(
+    () => ({
+      allUsersForCurrentProperty,
+      currentUser,
+      currentProperty: { ...currentProperty, ...propertyDetails?.[0] },
+      propertyUsers,
+      showMemberCheckboxColumn,
+      sessionPropertyUser,
+      setShowMemberCheckboxColumn,
+      selectedMembers,
+      setSelectedMembers,
+      setPropertyRefresh,
+      setRefresh,
+      loading,
+      loaded,
+      filing,
+      setFiling,
+    }),
+    [
+      allUsersForCurrentProperty,
+      currentProperty,
+      currentUser,
+      filing,
+      loaded,
+      loading,
+      propertyDetails,
+      propertyUsers,
+      selectedMembers,
+      sessionPropertyUser,
+      setPropertyRefresh,
+      setRefresh,
+      showMemberCheckboxColumn,
+    ]
+  )
   return !allowed.loaded ? (
     <LinearProgress />
   ) : allowed.loaded && !allowed.allowed ? (
     <Navigate to='/' />
   ) : (
-    <propertyContext.Provider
-      {...props}
-      value={{
-        allUsersForCurrentProperty,
-        currentUser,
-        currentProperty: { ...currentProperty, ...propertyDetails?.[0] },
-        propertyUsers,
-        showMemberCheckboxColumn,
-        sessionPropertyUser,
-        setShowMemberCheckboxColumn,
-        selectedMembers,
-        setSelectedMembers,
-        setPropertyRefresh,
-        setRefresh,
-        loading,
-        loaded,
-        filing,
-        setFiling,
-      }}
-    />
+    <propertyContext.Provider {...props} value={value} />
   )
 }
 export default PropertyProvider

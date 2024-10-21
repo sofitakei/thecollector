@@ -16,7 +16,8 @@ import MemberDetails from './MemberDetails'
 
 const MemberProfile = () => {
   const { propertyId, fileId } = useParams()
-  const { currentUser, currentProperty, setRefresh } = usePropertyContext()
+  const { currentUser, currentProperty, setRefresh, filing } =
+    usePropertyContext()
   const [verified, setVerified] = useState(false)
   const historic = Boolean(fileId)
   const navigate = useNavigate()
@@ -37,10 +38,13 @@ const MemberProfile = () => {
     } = currentUser
     const { error } = await supabase
       .from('userproperty_filing')
-      .insert({ userproperty_id, status: 'verified', filingdata: rest })
-    //TODO: invalidate the current property filing
+      .update({ status: 'complete', filingdata: rest })
+      .eq('userproperty_id', userproperty_id)
+      .eq('status', 'open')
+      .eq('propertyfiling_id', filing?.id)
     if (!error) {
       setRefresh(true)
+      //TODO: send email to manager?
       const { data, error } = await supabase.functions.invoke('resend', {
         body: { email: 'admin@filehoaboi.com' },
       })

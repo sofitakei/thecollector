@@ -6,15 +6,18 @@ import { usePropertiesContext } from '../contexts/PropertiesContext'
 //TODO: the autocomplete should return the id as the value
 const StateDropdown = ({ name, defaultValue, onSetValue }) => {
   const { states } = usePropertiesContext()
-  const [value, setValue] = useState()
+  const [value, setValue] = useState(null)
   const handleChange = (_, v) => {
-    setValue(v.id)
-    onSetValue?.(v.id)
+    setValue(v)
+    onSetValue?.(v)
   }
   useEffect(() => {
-    setValue(defaultValue)
-  }, [defaultValue])
-  //TODO: theres a duplicate key error
+    setValue({
+      id: defaultValue,
+      label: states.find(({ id }) => id === defaultValue)?.label,
+    })
+  }, [defaultValue, states])
+
   return (
     <Autocomplete
       value={value}
@@ -22,15 +25,18 @@ const StateDropdown = ({ name, defaultValue, onSetValue }) => {
       options={states}
       sx={{ width: '100%', mb: 2 }}
       onChange={handleChange}
+      getOptionLabel={option => option.label}
+      isOptionEqualToValue={(option, value) => option.id === value}
       renderInput={params => (
         <TextField {...params} name={name} label='State' />
       )}
+      getOptionKey={option => option.value}
     />
   )
 }
 StateDropdown.propTypes = {
   name: PropTypes.string.isRequired,
-  defaultValue: PropTypes.string.isRequired,
+  defaultValue: PropTypes.number.isRequired,
   onSetValue: PropTypes.func,
 }
 export default StateDropdown
