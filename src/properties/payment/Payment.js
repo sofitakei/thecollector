@@ -31,6 +31,7 @@ const Payment = () => {
         filing_id: filing?.id,
         priceId,
         user_id: userProfile.id,
+        url: window.location.origin,
       },
     })
 
