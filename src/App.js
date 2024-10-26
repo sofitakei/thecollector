@@ -1,7 +1,7 @@
 import './App.css'
 import 'dayjs/locale/de'
 
-import { LinearProgress } from '@mui/material'
+import { LinearProgress, ThemeProvider } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useEffect, useState } from 'react'
@@ -10,6 +10,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import Routes from './AppRoutes'
 import AuthProvider from './contexts/AuthContext'
 import { supabase } from './supabaseClient'
+import theme from './theme/theme'
 
 const App = () => {
   const [session, setSession] = useState()
@@ -37,15 +38,17 @@ const App = () => {
 
   return (
     <ErrorBoundary>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        {loading ? (
-          <LinearProgress />
-        ) : (
-          <AuthProvider setSession={setSession} session={session}>
-            <Routes />
-          </AuthProvider>
-        )}
-      </LocalizationProvider>
+      <ThemeProvider theme={theme}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          {loading ? (
+            <LinearProgress />
+          ) : (
+            <AuthProvider setSession={setSession} session={session}>
+              <Routes />
+            </AuthProvider>
+          )}
+        </LocalizationProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   )
 }
