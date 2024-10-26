@@ -32,3 +32,10 @@ export const downloadFile = ({ data, fileName, fileType }) => {
   a.dispatchEvent(clickEvt)
   a.remove()
 }
+
+export const wrapWithComponent = (Component, children) => (
+  <Component>{children}</Component>
+)
+
+export const maybeWrapProvider = (wrap, Provider, children) =>
+  wrap ? wrapWithComponent(Provider, children) : children

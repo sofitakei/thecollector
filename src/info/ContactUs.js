@@ -1,7 +1,7 @@
 import { Stack, TextField, Typography } from '@mui/material'
 
-import Form from './components/Form'
-import { getFormFields } from './utils'
+import Form from '../components/Form'
+import { getFormFields } from '../utils'
 
 const ContactUs = () => {
   const handleSubmit = e => {

@@ -2,12 +2,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 import AdminRoutes from './AdminRoutes'
 import Login from './authentication/Login'
-import ContactUs from './ContactUs'
-import FAQ from './FAQ'
 import Home from './Home'
+import ContactUs from './info/ContactUs'
+import FAQ from './info/FAQ'
+import Pricing from './info/Pricing'
+import Terms from './info/Terms'
 import AnimatedLayout from './layout/AnimatedOutlet'
 import PublicRoute from './PublicRoute'
-import Terms from './Terms'
 import UserRoutes from './UserRoutes'
 
 const AppRoutes = () => (
@@ -19,6 +20,7 @@ const AppRoutes = () => (
           <Route element={<Login />} exact path='/login' />
           <Route element={<Terms />} path='/terms' />
           <Route element={<FAQ />} path='/faq' />
+          <Route element={<Pricing />} path='/pricing' />
           <Route element={<ContactUs />} path='/contact-us' />
         </Route>
         <Route path='/*' element={<UserRoutes />} />

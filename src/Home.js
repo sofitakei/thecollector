@@ -11,6 +11,7 @@ const blurbs = [
 const Home = () => {
   const { session } = useAuth()
   if (session?.user?.id) return <Navigate to='/properties' />
+
   return (
     <Stack>
       {blurbs.map(({ left }, index) => (
