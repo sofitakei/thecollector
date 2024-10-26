@@ -6,13 +6,16 @@ import Home from './Home'
 import ContactUs from './info/ContactUs'
 import FAQ from './info/FAQ'
 import Pricing from './info/Pricing'
+import Privacy from './info/Privacy'
 import Terms from './info/Terms'
 import AnimatedLayout from './layout/AnimatedOutlet'
 import PublicRoute from './PublicRoute'
+import ScrollToTop from './ScrollToTop'
 import UserRoutes from './UserRoutes'
 
 const AppRoutes = () => (
   <Router>
+    <ScrollToTop />
     <Routes>
       <Route element={<AnimatedLayout />}>
         <Route element={<PublicRoute />}>
@@ -22,6 +25,7 @@ const AppRoutes = () => (
           <Route element={<FAQ />} path='/faq' />
           <Route element={<Pricing />} path='/pricing' />
           <Route element={<ContactUs />} path='/contact-us' />
+          <Route element={<Privacy />} path='/privacy' />
         </Route>
         <Route path='/*' element={<UserRoutes />} />
         <Route path='/admin/*' element={<AdminRoutes />} />

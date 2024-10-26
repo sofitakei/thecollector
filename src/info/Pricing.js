@@ -2,7 +2,7 @@ import { Stack, Typography } from '@mui/material'
 
 const Pricing = () => (
   <>
-    <Typography variant='h4'>Pricing</Typography>
+    <Typography variant='h1'>Pricing</Typography>
 
     <Stack
       my={4}

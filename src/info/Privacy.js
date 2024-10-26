@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material'
 
-const Terms = () => (
+const Privacy = () => (
   <Stack
     sx={{
       width: {
@@ -9,7 +9,7 @@ const Terms = () => (
       },
       margin: '0 auto',
     }}>
-    <Typography variant='h1'>Terms and conditions outlined below</Typography>
+    <Typography variant='h1'>Privacy Policy</Typography>
     <p>
       Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum ad cras nec
       fusce adipiscing orci. Blandit egestas donec ex accumsan tellus morbi
@@ -54,4 +54,4 @@ const Terms = () => (
   </Stack>
 )
 
-export default Terms
+export default Privacy

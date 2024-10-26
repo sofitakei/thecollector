@@ -16,25 +16,22 @@ const questions = [
 
 const FAQ = () => (
   <>
-    <Typography variant='h4'>Frequently Asked Questions</Typography>
+    <Typography variant='h1'>Frequently Asked Questions</Typography>
 
     <Stack
       my={4}
       mx='auto'
       sx={{
         width: {
-          xs: '100vw',
-          md: '60vw',
+          xs: '100%',
+          sm: '80%',
         },
         textAlign: 'left',
       }}>
       {questions.map(({ question }, index) => (
         <Accordion key={index}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls='panel1-content'
-            id='panel1-header'>
-            <strong>{question}</strong>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            {question}
           </AccordionSummary>
           <AccordionDetails>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
