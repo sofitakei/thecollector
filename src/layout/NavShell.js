@@ -21,11 +21,10 @@ const drawerWidth = 240
 const Copyright = props => (
   <Typography align='center' color='text.secondary' variant='body2' {...props}>
     {'Copyright © '}
-    <Link color='inherit' href='https://mui.com/'>
+    <Link color='inherit' href='https://filhoaboi.com/'>
       FileHOABOI
     </Link>{' '}
-    {new Date().getFullYear()}
-    .
+    {new Date().getFullYear()}.
   </Typography>
 )
 

@@ -16,6 +16,7 @@ export const useData = ({
       const { data, error } = await supabaseFn()
       if (error != null) {
         console.log('error with fetching data', { error })
+        setRefresh(false)
         onError(error)
       } else {
         onSuccess(data)

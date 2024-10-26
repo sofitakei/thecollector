@@ -8,14 +8,11 @@ import { useEffect, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 
 import Routes from './AppRoutes'
-import Login from './authentication/Login'
 import AuthProvider from './contexts/AuthContext'
 import { supabase } from './supabaseClient'
-import Wall from './Wall'
 
 const App = () => {
   const [session, setSession] = useState()
-  const [verified, setVerified] = useState()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -40,23 +37,15 @@ const App = () => {
 
   return (
     <ErrorBoundary>
-      {!verified && !localStorage.getItem('verified')
-? (
-        <Wall setVerified={setVerified} />
-      )
-: (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          {loading
-? (
-            <LinearProgress />
-          )
-: (
-            <AuthProvider setSession={setSession} session={session}>
-              {session ? <Routes /> : <Login />}
-            </AuthProvider>
-          )}
-        </LocalizationProvider>
-      )}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {loading ? (
+          <LinearProgress />
+        ) : (
+          <AuthProvider setSession={setSession} session={session}>
+            <Routes />
+          </AuthProvider>
+        )}
+      </LocalizationProvider>
     </ErrorBoundary>
   )
 }

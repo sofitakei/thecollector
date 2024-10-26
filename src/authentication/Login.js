@@ -7,8 +7,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
+import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../supabaseClient'
 import ForgotPassword from './ForgotPassword'
 import MagicLink from './MagicLink'
@@ -18,8 +20,10 @@ const LOGIN = 'login'
 const Login = () => {
   const emailRef = useRef(null)
   const passwordRef = useRef(null)
+  const { session } = useAuth()
   const [errorMsg, setErrorMsg] = useState('')
   const [pageState, setPageState] = useState(LOGIN)
+  const navigate = useNavigate()
   const handleLogin = async e => {
     e.preventDefault()
     if (!passwordRef?.current?.value || !emailRef?.current?.value) {
@@ -35,16 +39,23 @@ const Login = () => {
     }
   }
 
-  return pageState === LOGIN
-? (
+  useEffect(() => {
+    console.log('log in user ', session?.user?.id)
+    if (session?.user?.id) {
+      navigate('/properties')
+    }
+  }, [navigate, session?.user?.id])
+
+  return pageState === LOGIN ? (
     <Box
       sx={{
         px: 5,
         my: 5,
+        mx: 'auto',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        maxWidth: '100vw',
+        maxWidth: { xs: '100vw', md: '50%' },
       }}>
       {errorMsg && (
         <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible>
@@ -67,8 +78,7 @@ const Login = () => {
         <MagicLink />
       </Stack>
     </Box>
-  )
-: (
+  ) : (
     <ForgotPassword />
   )
 }

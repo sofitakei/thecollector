@@ -10,7 +10,9 @@ import MemberProfileForm from './members/MemberProfileForm'
 import PreviouslyFiledMember from './members/PreviouslyFiledMember'
 import PrivateRoute from './PrivateRoute'
 import Profile from './Profile'
-import Payment from './properties/Payment'
+import Payment from './properties/payment/Payment'
+import PaymentError from './properties/payment/PaymentError'
+import PaymentSuccess from './properties/payment/PaymentSuccess'
 import PreviouslyFilledForms from './properties/PreviouslyFilledForms'
 import Properties, { Property } from './properties/Properties'
 import PropertyForm from './properties/PropertyForm'
@@ -37,6 +39,15 @@ const UserRoutes = () => {
           element={<AddMember />}
           path='/properties/:propertyId/addMembers'
         />
+        <Route
+          element={<PaymentSuccess />}
+          path='/properties/:propertyId/payment-success'
+        />
+        <Route
+          element={<PaymentError />}
+          path='/properties/:propertyId/payment-error'
+        />
+
         <Route element={<Payment />} path='/properties/:propertyId/payment' />
         <Route
           element={<PreviouslyFilledForms />}
