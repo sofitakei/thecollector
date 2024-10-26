@@ -12,19 +12,13 @@ const Home = () => {
   const { session } = useAuth()
   if (session?.user?.id) return <Navigate to='/properties' />
   return (
-    <Stack
-      sx={{
-        width: {
-          xs: '100vw',
-          md: '60vw',
-        },
-        margin: '0 auto',
-      }}>
+    <Stack>
       {blurbs.map(({ left }, index) => (
         <Stack
           key={index}
           my={2}
-          direction='row'
+          spacing={2}
+          direction={{ xs: 'column', sm: 'row' }}
           alignItems='left'
           sx={{ textAlign: 'left', 'div,h4': { flex: 1 } }}>
           <Typography variant='h4' width='50%'>

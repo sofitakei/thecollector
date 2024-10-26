@@ -36,19 +36,28 @@ const ResetPassword = () => {
   }
 
   return (
-    <Stack spacing={2} alignItems='center' justifyContent='center'>
+    <Stack
+      mx='auto'
+      maxWidth={500}
+      spacing={2}
+      alignItems='center'
+      justifyContent='center'>
       {error && <Alert severity='error'>{error}</Alert>}
       <Typography component='h1' variant='h5' mb={2}>
         Set New Password
       </Typography>
       <TextField
+        fullWidth
         type='password'
         label='Password'
-        inputRef={passwordRef} />
+        inputRef={passwordRef}
+      />
       <TextField
+        fullWidth
         type='password'
         label='Confirm Password'
-        inputRef={confirmPasswordRef} />
+        inputRef={confirmPasswordRef}
+      />
       <Button variant='contained' onClick={handleReset}>
         Save Password
       </Button>

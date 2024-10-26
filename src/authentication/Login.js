@@ -1,12 +1,4 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Link,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Alert, Button, Stack, TextField, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -46,40 +38,41 @@ const Login = () => {
     }
   }, [navigate, session?.user?.id])
 
-  return pageState === LOGIN ? (
-    <Box
-      sx={{
-        px: 5,
-        my: 5,
-        mx: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        maxWidth: { xs: '100vw', md: '50%' },
-      }}>
-      {errorMsg && (
-        <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible>
-          {errorMsg}
-        </Alert>
+  return (
+    <Stack sx={{ margin: '0 auto', maxWidth: { xs: '100%', md: '60vw' } }}>
+      {pageState === LOGIN ? (
+        <>
+          {errorMsg && (
+            <Alert variant='danger' onClose={() => setErrorMsg('')} dismissible>
+              {errorMsg}
+            </Alert>
+          )}
+          <Typography component='h1' variant='h5' mb={2}>
+            Sign in
+          </Typography>
+          <Stack width='100%' spacing={2}>
+            <Stack spacing={2} component='form' onSubmit={handleLogin}>
+              <TextField label='email' inputRef={emailRef} />
+              <TextField
+                label='password'
+                type='password'
+                inputRef={passwordRef}
+              />
+              <Button type='submit' variant='outlined'>
+                Login
+              </Button>
+              <Button onClick={() => setPageState('forgot')}>
+                Forgot password?
+              </Button>
+            </Stack>
+            <Typography>OR</Typography>
+            <MagicLink />
+          </Stack>
+        </>
+      ) : (
+        <ForgotPassword />
       )}
-      <Typography component='h1' variant='h5' mb={2}>
-        Sign in
-      </Typography>
-      <Stack width='100%' spacing={2}>
-        <Stack spacing={2} component='form' onSubmit={handleLogin}>
-          <TextField label='email' inputRef={emailRef} />
-          <TextField label='password' type='password' inputRef={passwordRef} />
-          <Button type='submit' variant='outlined'>
-            Login
-          </Button>
-          <Link onClick={() => setPageState('forgot')}>Forgot password?</Link>
-        </Stack>
-        <Typography>OR</Typography>
-        <MagicLink />
-      </Stack>
-    </Box>
-  ) : (
-    <ForgotPassword />
+    </Stack>
   )
 }
 
