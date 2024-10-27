@@ -74,8 +74,7 @@ const HomeShell = ({ children }) => {
             px: 2,
             width: {
               xs: '100vw',
-              md: '80vw',
-              lg: '60vw',
+              lg: '80vw',
             },
           }}>
           {children}

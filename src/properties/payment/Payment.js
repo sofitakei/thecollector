@@ -8,12 +8,12 @@ import { usePropertyContext } from '../../contexts/PropertyContext'
 import { supabase } from '../../supabaseClient'
 import ConfirmInvoiceDialog from './ConfirmInvoice'
 
-const usdFormatter = new Intl.NumberFormat('en-US', {
+export const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
 })
 //TODO: get these prices in a different way
-const serviceTiers = ['Standard', 'Facilitated', 'Comprehensive']
+export const serviceTiers = ['Standard', 'Facilitated', 'Comprehensive']
 const Payment = () => {
   const { userProfile } = useAuth()
   const [loadingProducts, setLoadingProducts] = useState(false)
